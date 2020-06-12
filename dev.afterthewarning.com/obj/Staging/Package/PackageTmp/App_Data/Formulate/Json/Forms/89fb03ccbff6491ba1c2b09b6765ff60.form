@@ -1,0 +1,90 @@
+{
+  "Id": "89fb03cc-bff6-491b-a1c2-b09b6765ff60",
+  "Path": [
+    "3d634e15-7d15-45fa-a8a9-12838fa3a345",
+    "89fb03cc-bff6-491b-a1c2-b09b6765ff60"
+  ],
+  "Alias": "reportPage",
+  "Name": "Report Page",
+  "Fields": [
+    {
+      "Id": "974c66b2-e954-439a-bcee-2f4e26d7c646",
+      "Alias": "pageName",
+      "Name": "Page Name",
+      "Label": "Page Name",
+      "Category": null,
+      "Validations": [],
+      "MetaInfo": null,
+      "FieldConfiguration": "{}",
+      "TypeId": "3df6facd-2ffa-4055-b0be-94e8fa8e7c4a",
+      "IsTransitory": false,
+      "IsServerSideOnly": false,
+      "IsHidden": true,
+      "IsStored": true
+    },
+    {
+      "Id": "0f71461d-9ab1-4c65-8aa0-354c4714d761",
+      "Alias": "pageId",
+      "Name": "Page Id",
+      "Label": "Page Id",
+      "Category": null,
+      "Validations": [],
+      "MetaInfo": null,
+      "FieldConfiguration": "{}",
+      "TypeId": "3df6facd-2ffa-4055-b0be-94e8fa8e7c4a",
+      "IsTransitory": false,
+      "IsServerSideOnly": false,
+      "IsHidden": true,
+      "IsStored": true
+    },
+    {
+      "Id": "ab702de3-77be-477d-9bc3-2a8f18ba2d4e",
+      "Alias": "pageUrl",
+      "Name": "Page Url",
+      "Label": "Page Url",
+      "Category": null,
+      "Validations": [],
+      "MetaInfo": null,
+      "FieldConfiguration": "{}",
+      "TypeId": "3df6facd-2ffa-4055-b0be-94e8fa8e7c4a",
+      "IsTransitory": false,
+      "IsServerSideOnly": false,
+      "IsHidden": true,
+      "IsStored": true
+    },
+    {
+      "Id": "68214303-e4f0-447f-93e8-165b3b400585",
+      "Alias": "reportPage",
+      "Name": "Report Page",
+      "Label": "Report Page",
+      "Category": null,
+      "Validations": [],
+      "MetaInfo": null,
+      "FieldConfiguration": "{\r\n  \"buttonKind\": \"Submit\"\r\n}",
+      "TypeId": "cde8565c-5e92-4112-9a1f-7ffa1940c53c",
+      "IsTransitory": true,
+      "IsServerSideOnly": false,
+      "IsHidden": false,
+      "IsStored": true
+    }
+  ],
+  "Handlers": [
+    {
+      "Id": "d91945d0-a259-41e1-87f6-71624b649c61",
+      "Alias": "email",
+      "Name": "Email",
+      "Enabled": true,
+      "HandlerConfiguration": "{\r\n  \"recipients\": [\r\n    {\r\n      \"email\": \"saintpiofan@afterthewarning.com\"\r\n    }\r\n  ],\r\n  \"recipientFields\": [],\r\n  \"fieldsToInclude\": [],\r\n  \"senderEmail\": \"saintpiofan@afterthewarning.com\",\r\n  \"subject\": \"After the Warning | Reporting Page\",\r\n  \"message\": \"The following page has been reported for review.\",\r\n  \"appendFields\": true,\r\n  \"includeHiddenFields\": true\r\n}",
+      "TypeId": "a0c06033-cb94-424f-9c03-5b10a420db16"
+    },
+    {
+      "Id": "5720d68c-9bd0-47e8-bd87-84a52d3996f7",
+      "Alias": "storage",
+      "Name": "Storage",
+      "Enabled": true,
+      "HandlerConfiguration": "{}",
+      "TypeId": "238ea920-71f4-4d8c-9cc4-33d7181c9c46"
+    }
+  ],
+  "MetaInfo": null
+}

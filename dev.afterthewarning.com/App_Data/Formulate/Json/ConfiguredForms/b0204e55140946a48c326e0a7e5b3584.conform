@@ -1,0 +1,12 @@
+{
+  "Id": "b0204e55-1409-46a4-8c32-6e0a7e5b3584",
+  "Kind": 3,
+  "Name": "Report Page Configuration",
+  "Path": [
+    "3d634e15-7d15-45fa-a8a9-12838fa3a345",
+    "89fb03cc-bff6-491b-a1c2-b09b6765ff60",
+    "b0204e55-1409-46a4-8c32-6e0a7e5b3584"
+  ],
+  "TemplateId": "f3fb1485-c1d1-4806-b419-0d7abde39530",
+  "LayoutId": "3bea0377-33c7-43a7-86bf-4f217879f471"
+}

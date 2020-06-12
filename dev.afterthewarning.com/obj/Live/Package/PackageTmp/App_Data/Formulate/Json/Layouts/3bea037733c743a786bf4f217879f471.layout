@@ -1,0 +1,12 @@
+{
+  "KindId": "b03310e9-3207-44dc-be96-be0cf4f26c59",
+  "Id": "3bea0377-33c7-43a7-86bf-4f217879f471",
+  "Path": [
+    "f92ac99b-a3f2-4734-a91f-87f84f47a73a",
+    "503bdaef-388b-4509-bff2-1c872e627cf2",
+    "3bea0377-33c7-43a7-86bf-4f217879f471"
+  ],
+  "Alias": "reportPageLayouts",
+  "Name": "Report Page Layout",
+  "Data": "{\r\n  \"rows\": [\r\n    {\r\n      \"cells\": [\r\n        {\r\n          \"columnSpan\": 7,\r\n          \"fields\": [\r\n            {\r\n              \"id\": \"0f71461d9ab14c658aa0354c4714d761\"\r\n            },\r\n            {\r\n              \"id\": \"974c66b2e954439abcee2f4e26d7c646\"\r\n            },\r\n            {\r\n              \"id\": \"ab702de377be477d9bc32a8f18ba2d4e\"\r\n            }\r\n          ]\r\n        },\r\n        {\r\n          \"columnSpan\": 5,\r\n          \"fields\": [\r\n            {\r\n              \"id\": \"68214303e4f0447f93e8165b3b400585\"\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    }\r\n  ],\r\n  \"formId\": \"89fb03ccbff6491ba1c2b09b6765ff60\"\r\n}"
+}
