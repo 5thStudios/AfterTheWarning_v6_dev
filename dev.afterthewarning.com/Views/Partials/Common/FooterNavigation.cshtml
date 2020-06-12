@@ -1,0 +1,49 @@
+﻿@using Models;
+@inherits UmbracoViewPage
+
+
+@{
+    string urlContactUs = Umbraco.TypedContent((int)Common.siteNode.ContactUs).Url;
+}
+
+
+<footer class="noprint">
+    <div class="grid-container footerContentPnl">
+        <div class="grid-x align-bottom">
+            <div class="show-for-large large-1 large-offset-1 cell ">
+                <a href="PRINT" onclick="window.print(); return false;">
+                    <img alt="print" src="~/images/common/printericon.png" />
+                </a>
+            </div>
+            <div class="medium-22 cell text-right large-text-left">
+                <a href="#top" class="returnToTop">Return to Top</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="mainNav footer">
+        <div class="grid-container">
+            <div class="grid-x align-middle">
+                <div class="small- medium- large-22 large-offset-1 cell text-center large-text-right">
+                    <ul class="nav navbar-nav text-center">
+                        <li>
+                            <a href="@urlContactUs">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="grid-container footerContentPnl">
+        <div class="grid-x align-middle">
+            <div class="small- medium- large-24 cell text-center">
+                <br class="show-for-small-only" />
+                <h5>&copy;@DateTime.Now.Year &mdash; After the Warning</h5>
+                <h5>Designed by <a href="http://5thStudios.com" target="_blank">5thStudios.com</a></h5>
+            </div>
+        </div>
+    </div>
+    <br class="show-for-large" />
+
+</footer>

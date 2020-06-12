@@ -1,0 +1,138 @@
+﻿@using ClientDependency.Core.Mvc;
+@using Umbraco.Web.PublishedContentModels;
+@using Umbraco.Core;
+@using Umbraco.Core.Models;
+@using Umbraco.Core.Services;
+@using Models;
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+
+@inherits UmbracoViewPage<Models.illuminationStory>
+
+
+
+@using (Html.BeginUmbracoForm<Controllers.IlluminationController>("AddIlluminationStory", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.memberId);
+
+
+    <div id="pnlAddEditIlluminationStory">
+        <h3>Add Your Illumination Story</h3>
+        <br />
+        <p>Your Illumination story is very important, not only for the world, but for future generations long after we are gone.  Please provide as much information as you can below and be fully honest.</p>
+        <blockquote><strong>Note:</strong> This site does have a timeout set up.  To ensure you do not lose your story as you are writing it, please write your story locally on your computer before copying it to this page.</blockquote>
+
+        <br />
+        <div class="grid-x">
+            <div class="cell">
+                @Html.ValidationSummary()
+                <br />
+                <br />
+            </div>
+        </div>
+
+        <div class="grid-x grid-padding-x">
+            <div class="cell large-22 large-offset-1">
+                <div class="grid-x grid-padding-x">
+                    <div class="cell large-16">
+                        <h4>Title</h4>
+                        @Html.TextBoxFor(m => m.Title)
+                        <h6 class="text-left">@Html.ValidationMessageFor(m => m.Title)</h6>
+                    </div>
+                    <div class="cell large-8">
+                        <h4>Author</h4>
+                        @Html.Raw(Model.Author)
+                    </div>
+                </div>
+                <br />
+                <br />
+            </div>
+            <div class="cell large-24 experienceTypeSelect">
+                <h4 class="text-center">Experience Type</h4>
+                <hr />
+                <br />
+
+                <div class="grid-x grid-margin-x">
+                    <div class="cell large-9 large-offset-3">
+                        <label class="Heavenly">@Html.RadioButtonFor(m => m.ExperienceType, "Heavenly") <span>Heavenly</span></label>
+                    </div>
+                    <div class="cell large-9 large-offset-2">
+                        <label class="Hellish">@Html.RadioButtonFor(m => m.ExperienceType, "Hellish") <span>Hellish</span></label>
+                    </div>
+                    <div class="cell large-9 large-offset-3">
+                        <label class="Purgatorial">@Html.RadioButtonFor(m => m.ExperienceType, "Purgatorial") <span>Purgatorial</span></label>
+                    </div>
+                    <div class="cell large-9 large-offset-2">
+                        <label class="OtherUnsure">@Html.RadioButtonFor(m => m.ExperienceType, "OtherorUnsure") <span>Other or Unsure</span></label>
+                    </div>
+                </div>
+                <br />
+                <h6 class="text-right">@Html.ValidationMessageFor(m => m.ExperienceType)</h6>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="grid-x grid-padding-x grid-padding-y optionalFieldsPnl">
+            <div class="cell large-22 large-offset-1">
+                <h4 class="text-center">Optional Fields</h4>
+                <hr />
+                <p>Although this information is optional, we really hope you will consider providing it so that honest statistical data can be created.</p>
+                <br />
+                <div class="grid-x grid-margin-x grid-margin-y optionalFields">
+                    <div class="cell large-4">
+                        <p>Age</p>
+                    </div>
+                    <div class="cell large-8">
+                        @Html.DropDownListFor(m => m.lstAge, new SelectList(Model.lstAge))
+                    </div>
+                    <div class="cell large-4">
+                        <p>Gender</p>
+                    </div>
+                    <div class="cell large-8">
+                        @Html.EnumDropDownListFor(m => m.Gender, " ", new SelectList(Enum.GetValues(typeof(Models.Common.Genders))))
+                    </div>
+                    <div class="cell large-4">
+                        <p>Race</p>
+                    </div>
+                    <div class="cell large-8">
+                        @Html.EnumDropDownListFor(m => m.Race, " ", new SelectList(Enum.GetValues(typeof(Models.Common.Races))))
+                    </div>
+                    <div class="cell large-4">
+                        <p>Country</p>
+                    </div>
+                    <div class="cell large-8">
+                        @Html.EnumDropDownListFor(m => m.Country, " ", new SelectList(Enum.GetValues(typeof(Models.Common.Countries))))
+                    </div>
+                    <div class="cell large-4">
+                        <p>Religion</p>
+                    </div>
+                    <div class="cell large-8">
+                        @Html.EnumDropDownListFor(m => m.Religion, " ", new SelectList(Enum.GetValues(typeof(Models.Common.Religions))))
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <div class="grid-x grid-padding-x">
+            <div class="cell large-24">
+                <h4>Story</h4>
+                @Html.TextAreaFor(m => m.Story, 12, 20, null)
+                <h6 class="text-right">@Html.ValidationMessageFor(m => m.Story)</h6>
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <div class="grid-x  grid-padding-x">
+            <div class="cell large-6 large-offset-12">
+                <input type="submit" name="Submit" title="Submit" class="button expanded primary" />
+            </div>
+            <div class="cell large-6">
+                <button id="btnCancel" onclick="return false;" class="button primary expanded">Cancel</button>
+            </div>
+        </div>
+    </div>
+}

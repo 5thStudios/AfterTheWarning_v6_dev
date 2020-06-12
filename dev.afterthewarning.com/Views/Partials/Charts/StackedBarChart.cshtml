@@ -1,0 +1,121 @@
+﻿@inherits UmbracoViewPage
+
+
+
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell">
+        <h4>Stacked Bar Chart</h4>
+        @*<img alt="" src="~/images/temp/stackedBarChart.jpg" />
+            <br /><br />*@
+
+        <canvas id="Chart1"></canvas>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var barOptions_stacked = {
+            tooltips: {
+                enabled: true,
+                callbacks: {
+                    label: function (tooltipItems, data) {
+                        return ' ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' %';
+                    }
+                }
+            },
+            hover: {
+                animationDuration: 0
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontFamily: "'Open Sans Bold', sans-serif",
+                        fontSize: 12,
+                        callback: function (tick) {
+                            return tick.toString() + '%';
+                        }
+                    },
+                    scaleLabel: { display: true },
+                    gridLines: {},
+                    stacked: true
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        color: "#fff",
+                        zeroLineColor: "#fff",
+                        zeroLineWidth: 0
+                    },
+                    ticks: {
+                        fontFamily: "'Open Sans Bold', sans-serif",
+                        fontSize: 12
+                    },
+                    stacked: true
+                }]
+            },
+            legend: {
+                display: true
+            },
+            animation: {
+                onComplete: function () {
+                    var chartInstance = this.chart;
+                    var ctx = chartInstance.ctx;
+                    ctx.textAlign = "left";
+                    ctx.font = "12px Open Sans";
+                    ctx.fillStyle = "#fff";
+
+                    Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
+                        var meta = chartInstance.controller.getDatasetMeta(i);
+                        Chart.helpers.each(meta.data.forEach(function (bar, index) {
+                            data = dataset.data[index];
+                            //if (i == 0) {
+                            //    ctx.fillText(data, 50, bar._model.y + 4);
+                            //} else {
+                                ctx.fillText(data + ' %', bar._model.x - 35, bar._model.y + 4);
+                            //}
+                        }), this)
+                    }), this);
+                }
+            },
+            pointLabelFontFamily: "Quadon Extra Bold",
+            scaleFontFamily: "Quadon Extra Bold",
+        };
+
+
+        var ctx = document.getElementById("Chart1");
+        var myChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ["Country 1", "Country 2", "Country 3", "Country 4", "Country 5"],
+
+                datasets: [{
+                    label: "Heavenly",
+                    data: [25, 25, 25, 15, 10],
+                    backgroundColor: "#4f81bc",
+                    hoverBackgroundColor: "#8CACD3"
+                }, {
+                    label: "Hellish",
+                    data: [20, 20, 20, 20, 20],
+                    backgroundColor: "#bf4b49",
+                    hoverBackgroundColor: "#D58987"
+                }, {
+                    label: "Purgatorial",
+                    data: [10, 20, 45, 35, 40],
+                    backgroundColor: "#9bbb57",
+                    hoverBackgroundColor: "#BDD391"
+                }, {
+                    label: "Unknown/Unsure",
+                    data: [45, 35, 10, 30, 30],
+                    backgroundColor: "#21bea6",
+                    hoverBackgroundColor: "#6DD4C4"
+                }]
+            },
+
+            options: barOptions_stacked,
+        });
+    });
+</script>

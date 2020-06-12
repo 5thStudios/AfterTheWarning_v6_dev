@@ -1,0 +1,5 @@
+﻿{
+    css: [
+        '~/App_Plugins/BelleIconPack/css/whhg.css'
+	]
+}

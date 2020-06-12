@@ -1,0 +1,18 @@
+﻿{
+    'propertyEditors' : [
+        {
+            alias: 'MBran.CountryPicker',
+            name: 'Country Picker',
+            editor: {
+                view:'~/App_Plugins/MBran.CountryPicker/Views/countryPicker.editor.html'
+            }
+        }
+    ],
+    'javascript' : [
+        '~/App_Plugins/MBran.CountryPicker/Controller/countryPicker.editor.js',
+		'~/App_Plugins/MBran.CountryPicker/Js/countryPicker.resource.js'
+    ],
+	'css' : [
+        '~/App_Plugins/MBran.CountryPicker/Css/countryPicker.css'
+    ]
+}

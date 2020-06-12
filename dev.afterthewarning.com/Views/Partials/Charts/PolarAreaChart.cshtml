@@ -1,0 +1,51 @@
+﻿@using Models;
+@inherits UmbracoViewPage<Models.StatsByAge>
+
+
+@{ 
+    int index =  Int32.Parse(ViewData["index"].ToString());
+}
+
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell text-center">
+        <h4>@Model.LstChartData[index].Label</h4>
+        @*<img alt="" src="~/images/temp/polarAreaChart.jpg" />*@
+        <canvas id="@Model.LstChartData[index].Id"></canvas>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    $(window).on("load", function () {
+        var AgeRanges = @Html.Raw(Model.jsonAgeRange);
+        var rgba = "@Model.LstChartData[index].Color";
+        new Chart(document.getElementById("@Model.LstChartData[index].Id"),
+            {
+                "type": "polarArea",
+                "data": {
+                    "labels": AgeRanges,
+                    "datasets": [{
+                        "label": AgeRanges,
+                        "data": @Model.LstChartData[index].JsonData,
+                        "backgroundColor": [rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba, rgba]
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        enabled: true
+                    }
+                }
+            });
+
+
+        ////Run canvas chart
+        //var ctx = document.getElementById('canvasAvgHeavenlyExpByAge').getContext('2d');
+        //window.myLine = new Chart(ctx, config);
+    });
+</script>

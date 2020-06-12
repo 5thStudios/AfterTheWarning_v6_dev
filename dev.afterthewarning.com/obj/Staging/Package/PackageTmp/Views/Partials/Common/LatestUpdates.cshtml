@@ -1,0 +1,33 @@
+﻿@using Models;
+@inherits UmbracoViewPage<List<latestUpdates>>
+
+
+
+<div class="grid-x grid-padding-x">
+    <div class="large-22 large-offset-1 cell">
+        <div class="button large expanded secondary narrow">Latest Updates</div>
+    </div>
+</div>
+<div class="grid-x grid-padding-x">
+    <div class="large-20 large-offset-2 cell">
+        @foreach (latestUpdates _latestUpdate in Model)
+        {
+            <br />
+            <div class="date">@_latestUpdate.datePublished.ToString("MMMM d, yyyy")</div>
+
+            foreach (visionary _visionary in _latestUpdate.lstVisionaries)
+            {
+                <div class="name"><a data-visionaryid="@_visionary.id" href="@_visionary.url">@_visionary.name</a></div>
+
+                foreach (message _message in _visionary.lstMessages)
+                {
+                    <div class="title"><a data-messageid="@_message.id" href="@_message.url"><span class="cross">&#10014;</span>  @_message.title</a></div>
+                }
+            }
+        }
+
+        <br />
+        <div class="viewMore"><a href="@Umbraco.TypedContent((int)(Common.siteNode.MessagesFromHeaven)).Url">View All Messages</a></div>
+        <br />
+    </div>
+</div>

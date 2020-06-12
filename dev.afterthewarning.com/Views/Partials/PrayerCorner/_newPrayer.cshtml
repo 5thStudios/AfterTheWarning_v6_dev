@@ -1,0 +1,75 @@
+﻿@using Models;
+@inherits UmbracoViewPage<Models.PrayerRequestModel>
+
+
+@{ 
+    //Get url for the cancel button
+    String parentUrl = Umbraco.TypedContent((int)(Common.siteNode.PrayerRequests)).Url;
+    string prayerCornerUrl = Umbraco.TypedContent((int)(Common.siteNode.ThePrayerCorner)).Url;
+}
+
+
+@using (Html.BeginUmbracoForm<Controllers.PrayerController>("SubmitNewPrayerRequest", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.UserId)
+
+
+    <div id="pnlNewPrayer" class="">
+        <h3>New Prayer Request</h3>
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <p>Submitting a prayer is simple.  Just add your prayer request below and a simple title for your prayer and it’ll be added to <a href="@prayerCornerUrl">The Prayer Corner</a>.  As more offer to pray for you the brighter your prayer candle will become.</p>                
+                <br />
+
+                <div class="grid-x grid-padding-x">
+                    <div class="cell large-12">
+                        <h4>Prayer Title</h4>
+                    </div>
+                    <div class="cell large-12 text-right">
+                        <h6 class="text-right">@Html.ValidationMessageFor(m => m.PrayerTitle)</h6>
+                    </div>
+                    <div class="cell">
+                        @Html.TextBoxFor(m => m.PrayerTitle)
+                    </div>
+                </div>
+                <div class="grid-x grid-padding-x">
+                    <div class="cell large-12">
+                        <h4>@Html.DisplayNameFor(m => m.Prayer)</h4>
+                    </div>
+                    <div class="cell large-12 text-right">
+                        <h6 class="text-right">@Html.ValidationMessageFor(m => m.Prayer)</h6>
+                    </div>
+                    <div class="cell">
+                        @Html.TextAreaFor(m => m.Prayer, 12, 20, null)
+                    </div>
+                </div>
+
+                <br />
+                <br />
+
+                <div class="grid-x grid-margin-x grid-x">
+                    <div class="cell large-12">
+                        <input type="submit" name="Submit" title="Submit" class="button expanded primary" />
+                    </div>
+                    <div class="cell large-12">
+                        <a class="button primary expanded" href="@parentUrl">Cancel</a>
+                    </div>
+                </div>
+
+
+
+                <br />
+                <br />
+                <br />
+                <div class="grid-x">
+                    <div class="cell">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+}

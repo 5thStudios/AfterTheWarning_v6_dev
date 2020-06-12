@@ -1,0 +1,274 @@
+﻿@using Models;
+@inherits UmbracoViewPage<Models.IlluminationStoryList>
+
+
+
+@{
+    //build base url for filter links
+    string baseUrl = (Request.Url.ToString());
+    if (baseUrl.Contains("?"))
+    {
+        baseUrl = (baseUrl.Substring(0, baseUrl.IndexOf("?")));
+    }
+
+
+    //Create links for dropdown and buttons
+    var urlViewAll = baseUrl;
+    var urlHeavenly = baseUrl + "?viewBy=Heavenly";
+    var urlHellish = baseUrl + "?viewBy=Hellish";
+    var urlPurgatorial = baseUrl + "?viewBy=Purgatorial";
+    var urlOtherUnsure = baseUrl + "?viewBy=OtherUnsure";
+    var urlAddEditIllumStory = Umbraco.TypedContent((int)Common.siteNode.AddEditIlluminationStory).Url;
+    var urlViewIllumStatistics = Umbraco.TypedContent((int)Common.siteNode.IlluminationStatistics).Url;
+    var urlDownloadStories = UmbracoContext.Current.PublishedContentRequest.PublishedContent.GetPropertyValue<IPublishedContent>(Common.NodeProperties.compiledStories).Url;
+
+}
+
+
+<div class="illuminationList">
+    @{Html.RenderPartial("Partials/Common/Pagination", Model.Pagination); }
+
+    <div class="grid-x grid-padding-x">
+        <div class="cell large-16">
+            
+            <p>The Illumination is one of the greatest acts of mercy the Lord has ever bestowed onto the Earth.   And although the impact can be felt the world-over, this too will one day pass into history while future generations will be left with only written accounts of what we had experienced.</p>
+            <p>The following stories have been submitted for posterity.  Wise are those who will head to this generation's struggles and redirect their lives to Heaven.</p>
+
+            <div class="grid-x grid-margin-x">
+                <div class="cell large-8">
+                    <a href="@urlAddEditIllumStory" class="button primary expanded avgHeight">Add My Story</a>
+                </div>
+                <div class="cell large-8">
+                    <a href="@urlViewIllumStatistics" class="button primary expanded avgHeight">Statistics</a>
+                </div>
+                <div class="cell large-8">
+                    <a target="_blank" href="@urlDownloadStories" class="button primary expanded avgHeight">Download</a>
+                </div>
+            </div>
+        </div>
+        <div class="cell large-8 experiencePnl">
+            <h4 class="text-center">Experiences</h4>
+            <hr />
+            <div class="grid-x">
+                <div class="cell large-3 text-left">
+                    <img alt="" src="~/images/common/heavenly.png" />
+                </div>
+                <div class="cell large-9 text-center">
+                    <div class="dataType">Heavenly</div>
+                    <div class="dataValue">@Model.HeavenlyExperienceCount.ToString("N0")</div>
+                </div>
+                <div class="cell large-3 text-left">
+                    <img alt="" src="~/images/common/purgatorial.png" />
+                </div>
+                <div class="cell large-9 text-center">
+                    <div class="dataType">Purgatorial</div>
+                    <div class="dataValue">@Model.PurgatorialExperienceCount.ToString("N0")</div>
+                </div>
+            </div>
+            <br />
+            <div class="grid-x">
+                <div class="cell large-3 text-left">
+                    <img alt="" src="~/images/common/hellish.png" />
+                </div>
+                <div class="cell large-9 text-center">
+                    <div class="dataType">Hellish</div>
+                    <div class="dataValue">@Model.HellishExperienceCount.ToString("N0")</div>
+                </div>
+                <div class="cell large-3 text-left">
+                    <img alt="" src="~/images/common/other-unsure.png" />
+                </div>
+                <div class="cell large-9 text-center">
+                    <div class="dataType">Other/Unsure</div>
+                    <div class="dataValue">@Model.OtherExperienceCount.ToString("N0")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="grid-x grid-padding-x">
+        <div class="cell large-24 illuminationFilter">
+            <div class="grid-x large-up-5">
+                <div class="cell @(@Model.ViewBy == "" ? "active" : "")" data-experiencetype="All">
+                    <a href="@urlViewAll">
+                        <img alt="View All" src="~/images/common/view-all.png" />
+                        <label>View All</label>
+                    </a>
+                </div>
+                <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Heavenly ? "active" : "")" data-experiencetype="Heavenly">
+                    <a href="@urlHeavenly">
+                        <img alt="Heavenly" src="~/images/common/heavenly.png" />
+                        <label>Heavenly</label>
+                    </a>
+                </div>
+                <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Hellish ? "active" : "")" data-experiencetype="Hellish">
+                    <a href="@urlHellish">
+                        <img alt="Hellish" src="~/images/common/hellish.png" />
+                        <label>Hellish</label>
+                    </a>
+                </div>
+                <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Purgatorial ? "active" : "")" data-experiencetype="Purgatorial">
+                    <a href="@urlPurgatorial">
+                        <img alt="Purgatorial" src="~/images/common/purgatorial.png" />
+                        <label>Purgatorial</label>
+                    </a>
+                </div>
+                <div class="cell @(@Model.ViewBy == Common.ViewByTypes.OtherUnsure ? "active" : "")" data-experiencetype="Other/Unsure">
+                    <a href="@urlOtherUnsure">
+                        <img alt="Other/Unsure" src="~/images/common/other-unsure.png" />
+                        <label>Other/Unsure</label>
+                    </a>
+                </div>
+            </div>
+        </div>
+        @*<div class="cell large-8">
+            <div class="grid-x align-middle">
+                <div class="cell shrink text-right text-17U margin-up-17">Sort By &nbsp;&nbsp;</div>
+                <div class="cell auto">
+                    <select>
+                        <option value="title" selected>Title</option>
+                        <option value="titleDesc">Title [Z-A]</option>
+                        <option value="author">Author</option>
+                        <option value="authorDesc">Author [Z-A]</option>
+                    </select>
+                </div>
+            </div>
+        </div>*@
+    </div>
+
+    <br />
+
+
+    <div class="storyList">
+        @if (Model.lstStoryLink.Any())
+        {
+
+            <div class="grid-x align-middle grid-padding-x story header">
+                <div class="cell large-2 text-center">
+                    <h4>Type</h4>
+                </div>
+                <div class="cell auto">
+                    <h4>Title</h4>
+                </div>
+                <div class="cell shrink author">
+                    <h4>Author</h4>
+                </div>
+            </div>
+
+            foreach (illuminationStoryLink illuminationStory in Model.lstStoryLink)
+            {
+                <a href="@illuminationStory.url" data-experiencetype="@illuminationStory.experienceType" data-nodeid="@illuminationStory.id">
+                    <div class="grid-x align-middle grid-padding-x story">
+                        <div class="cell large-2 text-center">
+                            @{
+                                switch (illuminationStory.experienceType)
+                                {
+                                    case "Heavenly":
+                                        <img alt="" src="~/images/common/heavenly.png" />
+                                        break;
+                                    case "Hellish":
+                                        <img alt="" src="~/images/common/hellish.png" />
+                                        break;
+                                    case "Purgatorial":
+                                        <img alt="" src="~/images/common/purgatorial.png" />
+                                        break;
+                                    default:
+                                        <img alt="" src="~/images/common/other-unsure.png" />
+                                        break;
+                                }
+                            }
+                        </div>
+                        <div class="cell auto">
+                            <h4>@illuminationStory.title</h4>
+                        </div>
+                        <div class="cell shrink author" data-memberid="@illuminationStory.memberId">
+                            @Html.Raw(illuminationStory.memberName)
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+
+
+
+
+    <br />
+    <br />
+    @{Html.RenderPartial("Partials/Common/Pagination", Model.Pagination); }
+
+
+</div>
+
+
+
+
+
+@*<br />
+    @{Html.RenderPartial("Partials/Common/Pagination", new ViewDataDictionary { { "id", "1" },{ "id2", "2" } }); }*@
+
+@{
+    ////Instantiate variables
+    //List<illuminationStoryLink> lstStories = new List<illuminationStoryLink>();
+    //uint heavenlyCount = 0;
+    //uint hellishCount = 0;
+    //uint purgatorialCount = 0;
+    //uint otherCount = 0;
+    //String addEditIlluminationStoryUrl = Umbraco.TypedContent((int)(Common.siteNode.AddEditIlluminationStory)).Url;
+    //String illuminationStatisticsUrl = Umbraco.TypedContent((int)(Common.siteNode.IlluminationStatistics)).Url;
+
+
+    ////Loop through each record to obtain the data
+    //if (Model.Children.Any())
+    //{
+    //    foreach (IlluminationStory ipStory in Model.Children<IlluminationStory>())
+    //    {
+    //        //Create a new story object
+    //        illuminationStoryLink illuminationStory = new illuminationStoryLink();
+    //        var CmMember = new ContentModels.Member(ipStory.Member);
+
+    //        //Add data to story
+    //        illuminationStory.id = ipStory.Id;
+    //        illuminationStory.experienceType = ipStory.ExperienceType;
+    //        illuminationStory.url = ipStory.Url;
+    //        illuminationStory.title = ipStory.Title;
+    //        IPublishedContent ipMember = ipStory.Member;
+    //        illuminationStory.memberId = ipMember.Id;
+    //        //illuminationStory.memberName = ipMember.Name;
+
+
+    //        StringBuilder sbAuthor = new StringBuilder();
+    //        sbAuthor.Append(CmMember.FirstName);
+    //        sbAuthor.Append("&nbsp;&nbsp;&nbsp;");
+    //        sbAuthor.Append(CmMember.LastName);
+    //        sbAuthor.Append(".");
+    //        illuminationStory.memberName = sbAuthor.ToString();
+
+    //        //Add story to list
+    //        lstStories.Add(illuminationStory);
+
+    //        //Add the experience type to the count of total experiences.
+    //        switch (illuminationStory.experienceType)
+    //        {
+    //            case "Heavenly":
+    //                heavenlyCount += 1;
+    //                break;
+    //            case "Hellish":
+    //                hellishCount += 1;
+    //                break;
+    //            case "Purgatorial":
+    //                purgatorialCount += 1;
+    //                break;
+    //            default:
+    //                otherCount += 1;
+    //                break;
+    //        }
+    //    }
+    //}
+
+    //int pageNo = 1;
+    //ViewBag.heavenlyCount = 7;
+    //ViewBag.hellishCount = 6;
+    //ViewBag.purgatorialCount = 5;
+    //ViewBag.otherCount = 4;
+}

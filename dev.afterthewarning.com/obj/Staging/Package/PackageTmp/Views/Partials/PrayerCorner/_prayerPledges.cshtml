@@ -1,0 +1,53 @@
+﻿@using Models;
+
+@inherits UmbracoViewPage<List<PrayerRequestModel>>
+
+
+<div>
+    <h3>Prayers Pledged For</h3>
+    <p>Praying for others is just as important as being prayed for.  The following is a list of all prayers you pledged to pray for.  Just click on the prayer to view the prayer request again.</p>
+
+    <br />
+    <br />
+
+    <div class="prayerList">
+        <div class="grid-x align-middle grid-padding-x prayer header">
+            <div class="cell auto">
+                <h5>Title</h5>
+            </div>
+            <div class="cell shrink">
+                <h5>Pledged On</h5>
+            </div>
+            <div class="cell large-1 show-for-large">&nbsp;</div>
+        </div>
+
+
+        @if (Model.Count == 0)
+        {
+            <div class="grid-x align-middle grid-padding-x prayer">
+                <div class="cell text-center">
+                    <br />
+                    <h5>You have no existing prayer pledges</h5>
+                    <br />
+                </div>
+            </div>
+        }
+        else
+        {
+            foreach (PrayerRequestModel prayer in Model)
+            {
+                <a href="@prayer.Url" data-nodeid="@prayer.Id">
+                    <div class="grid-x align-middle grid-padding-x prayer">
+                        <div class="cell auto">
+                            <h5>@prayer.PrayerTitle</h5>
+                        </div>
+                        <div class="cell shrink">
+                            <h5>@prayer.date.ToString("MMM d, yyyy")</h5>
+                        </div>
+                        <div class="cell large-1">&nbsp;</div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@using ClientDependency.Core.Mvc;
+@using Umbraco.Web.PublishedContentModels;
+@using Umbraco.Core;
+@using Umbraco.Core.Models;
+@using Umbraco.Core.Services;
+@using Models;
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+
+@inherits UmbracoViewPage<ContentModels.AddEditIlluminationStory>
+@{ Layout = "ManageAccount.cshtml"; }
+
+
+@{
+    //Instantiate variables.
+    Boolean doesStoryExist = false;
+
+    //Obtain current page as strongly typed ip
+    UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+    int? currentPageId = UmbracoContext.Current.PageId;
+    IPublishedContent ipCurrentPg = umbracoHelper.TypedContent(currentPageId);
+
+    //Determine if user already submitted an illumination story
+    IMember member = ApplicationContext.Current.Services.MemberService.GetByUsername(User.Identity.Name);
+    if (member != null)
+    {
+        if (member.GetValue(Common.NodeProperties.illuminationStory) != null) { doesStoryExist = true; }
+    }
+}
+
+
+<div id="pnlIlluminationStory">
+    @if (TempData["showAddEditPnl"] != null && (bool)TempData["showAddEditPnl"])
+    {
+        <input type="hidden" value="true" id="hfldShowAddEditPnl" />
+    }
+    <div class="grid-x">
+        <div class="cell">
+            @if (!User.Identity.IsAuthenticated)
+            {
+                //Redirect to login page.
+                Response.Redirect(Umbraco.TypedContent((int)(Models.Common.siteNode.Login)).Url);
+            }
+            else
+            {
+                if (doesStoryExist)
+                {
+                    Html.RenderAction("RenderStory", "Illumination", new { member = member });
+                    Html.RenderAction("RenderForm", "Illumination", new { member = member, editMode = true });
+                }
+                else
+                {
+                    Html.RenderAction("RenderInstructions", "Illumination");
+                    Html.RenderAction("RenderForm", "Illumination", new { member = member });
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+
+@section Footer {
+    <script type="text/javascript" src="~/Scripts/custom/manageIlluminationPanels.js"></script>
+}

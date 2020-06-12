@@ -1,0 +1,17 @@
+﻿@using Controllers;
+@using Models;
+@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{ Layout = null; }
+
+
+@{
+    string results = IlluminationController.GenerateTestStories();
+}
+
+
+<h1>Generate Stories for Testing</h1>
+<hr />
+<br />
+
+
+<p>Title: @Html.Raw(results)</p>

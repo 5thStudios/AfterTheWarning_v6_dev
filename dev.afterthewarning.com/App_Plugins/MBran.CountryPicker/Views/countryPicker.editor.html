@@ -1,0 +1,7 @@
+﻿<div ng-controller="MBran.CountryPicker" class="country-picker">
+    <div class="country-picker-listing">
+        <select name="Country" id="Country" ng-model="model.value">
+            <option ng-repeat="country in countries" value="{{country.Code}}" ng-selected="country.Code == model.value">{{country.Name}}</option>
+        </select>
+    </div>
+</div>

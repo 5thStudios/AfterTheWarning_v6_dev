@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AfterTheWarning.com_v6", "dev.afterthewarning.com\AfterTheWarning.com_v6.csproj", "{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Dev|Any CPU = Dev|Any CPU
+		Live|Any CPU = Live|Any CPU
+		Staging|Any CPU = Staging|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Dev|Any CPU.Build.0 = Dev|Any CPU
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Live|Any CPU.ActiveCfg = Live|Any CPU
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Live|Any CPU.Build.0 = Live|Any CPU
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Staging|Any CPU.ActiveCfg = Staging|Any CPU
+		{68EE301D-DDEE-4F70-A6C2-A11B9F32F337}.Staging|Any CPU.Build.0 = Staging|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F0EEA50-F617-44CB-A4C8-0B8B82BFFF03}
+	EndGlobalSection
+EndGlobal

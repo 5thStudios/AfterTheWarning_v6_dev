@@ -1,0 +1,38 @@
+﻿@inherits UmbracoViewPage
+
+
+
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell">
+        <h4>Pie Chart</h4>
+        @*<img alt="" src="~/images/temp/pieChart.jpg" />
+            <br /><br />*@
+        <canvas id="chartjs-4" class="chartjs"></canvas>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        new Chart(document.getElementById("chartjs-4"), {
+            "type": "pie",
+            "data": {
+                "labels": ["Heavenly", "Purgatorial", "Hellish", "Unknown/Unsure"],
+                "datasets": [{
+                    "label": "Experience Type",
+                    "data": [20, 40, 30, 10],
+                    "backgroundColor": ["#4f81bc", "#9bbb57", "#bf4b49", "#21bea6"],
+                    "hoverBackgroundColor": ["#8CACD3", "#BDD391", "#D58987", "#6DD4C4"]
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        });
+    });
+</script>

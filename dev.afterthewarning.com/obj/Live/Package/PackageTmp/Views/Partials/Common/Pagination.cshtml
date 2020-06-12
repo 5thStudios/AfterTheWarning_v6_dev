@@ -1,0 +1,69 @@
+﻿@using Models;
+@using System.Text;
+@using System.Web.Script.Serialization;
+
+@inherits UmbracoViewPage<Models.Pagination>
+
+
+@{
+    //build base url for navigation links
+    var baseUri = new Uri(Request.Url.ToString());
+    // this gets all the query string key value pairs as a collection
+    var queryString = HttpUtility.ParseQueryString(baseUri.Query);
+    // this removes the key if exists
+    queryString.Remove("pageNo");
+    queryString.Add("pageNo", "");
+    // this gets the page path from root without QueryString
+    string baseUrl = baseUri.GetLeftPart(UriPartial.Path);
+    baseUrl = queryString.Count > 0 ? String.Format("{0}?{1}", baseUrl, queryString) : baseUrl;
+
+
+    //Set values for page indexes
+    int index = 1;
+    int previous = Model.pageNo - 1;
+    int next = Model.pageNo + 1;
+
+
+    //Determine if prev/next values are correct.
+    if (previous < 1) { previous = 1; }
+    if (next > Model.totalPages) { next = Model.totalPages; }
+}
+
+
+
+<div class="grid-x">
+    <div class="cell text-center medium-text-right">
+        <div class="paginationLst">
+            @Html.HiddenFor(m => m.pageNo)
+            @Html.HiddenFor(m => m.totalPages)
+
+            <span class="pagination-first"><a href="@(baseUrl + "1")">First</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+            <span class="pagination-previous"><a href="@(baseUrl + previous.ToString())">Previous</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+
+            <span class="pagination-previous-set"><a onclick="return false;">&hellip;</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+
+            @while (index <= Model.totalPages)
+            {
+                if (index == Model.pageNo)
+                {
+                    <span class="current page-no" data-pageno="@index">@index &nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+                }
+                else
+                {
+                    <span class="page-no" data-pageno="@index"><a href="@(baseUrl + index.ToString())">@index</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+                }
+
+                //Increment index
+                index++;
+            }
+
+            <span class="pagination-next-set"><a onclick="return false;">&hellip;</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+
+            <span class="pagination-next"><a href="@(baseUrl + next.ToString())">Next</a>&nbsp;&nbsp;<span class="hide-for-small show-for-medium">&nbsp;&nbsp;&nbsp;</span></span>
+            <span class="pagination-last"><a href="@(baseUrl + Model.totalPages.ToString())">Last</a></span>
+
+            <br />
+            <br />
+        </div>
+    </div>
+</div>

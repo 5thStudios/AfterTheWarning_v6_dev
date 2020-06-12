@@ -1,0 +1,93 @@
+﻿<style>
+.EmailUpdatesController h4{color:#666}
+.EmailUpdatesController input[type=text]{font-weight:700;color:#8d869c;border-width:0;background-color:transparent;width:100%;cursor:text}
+.EmailUpdatesController a{color:#549dd8;text-decoration:underline}
+.EmailUpdatesController a:hover{color:#2573B1}
+.EmailUpdatesController button{color:#fff;background-color:#41365a;border:1px solid #2e2247;font-size:20px;font-weight:400;padding:12px 24px}
+.EmailUpdatesController button:hover{background-color:#8d869c}
+.EmailUpdatesController button.disabled{background-color:#8d869c;opacity:.3}
+.EmailUpdatesController button.btnExportToExcel{background:url(/App_Plugins/EmailUpdates/exportAsExcel.jpg);height:48px;width:119px;border-width:0}
+.EmailUpdatesController .alertMsg{color:#B91800}
+.EmailUpdatesController table.paleBlueRows{font-family:"Trebuchet MS",Helvetica,sans-serif;width:100%;text-align:left;border-collapse:collapse}
+.EmailUpdatesController table.paleBlueRows td,table.paleBlueRows th{padding:6px 12px}
+.EmailUpdatesController table.paleBlueRows tbody td{font-size:16px;color:#333}
+.EmailUpdatesController table.paleBlueRows tr:nth-child(even){background:#D0E4F5}
+.EmailUpdatesController table.paleBlueRows thead tr{background:#1C6EA4}
+.EmailUpdatesController table.paleBlueRows thead th{font-size:17px;font-weight:700;color:#FFF;text-align:left;border-left:2px solid #D0E4F5}
+.EmailUpdatesController table.paleBlueRows thead th:first-child{border-left:none}
+</style>
+
+
+<div class="EmailUpdatesController" ng-controller="EmailUpdatesController">
+    <button class="btnEmailUpdates">Send Recent Updates</button>
+
+    <br />
+    <br />
+    <br />
+    <div>
+        <div class="alertMsg ">
+            <strong>The following errors occured:</strong><br />
+            <span class="errorMsg">[Error msgs to go here...]</span>
+        </div>
+
+        <div class="msg ">
+            <!--hide-->
+            <br />
+            <br />
+            <!--Successfully emailed <strong></strong><span class="errorMsg"></span>-->
+
+            <table class="paleBlueRows" id="tblVideoCompletionData">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td valign="top">Successful emails</td>
+                        <td valign="top"><strong>21</strong></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Failed emails</td>
+                        <td valign="top"><strong>8</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <!--<%--======================================================================================--%>-->
+            <!--<script id="scrObtainList" type="text/x-jsrender">
+        <tr>
+            <td valign="top"><a href="{{>MemberEditUrl}}">{{>Member}}</a></td>
+            <td valign="top"><a href="mailto:{{>Email}}">{{>Email}}</a></td>
+            <td valign="top">{{:ImisId}}</td>
+            <td valign="top">{{:MemberType}}</td>
+            <td valign="top">
+                {{for LstVideoLinks tmpl="columnTemplate"/}}
+            </td>
+        </tr>
+    </script>
+    <script id="columnTemplate" type="text/x-jsrender">
+        <div>
+            <a href="{{>Link}}">{{>Title}}</a>
+        </div>
+    </script>
+    <table class="paleBlueRows" id="tblVideoCompletionData">
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Email</th>
+                <th>Imis Id</th>
+                <th>Member Type</th>
+                <th>Completed Videos</th>
+            </tr>
+        </thead>
+        <tbody id="tblListResult">
+        </tbody>
+    </table>-->
+            <!--<%--======================================================================================--%>-->
+
+        </div>
+    </div>
+</div>

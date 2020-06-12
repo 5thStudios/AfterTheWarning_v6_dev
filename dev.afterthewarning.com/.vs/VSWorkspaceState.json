@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Controllers",
+    "\\Models",
+    "\\Views",
+    "\\Views\\Partials",
+    "\\Views\\Partials\\PrayerCorner"
+  ],
+  "SelectedNode": "\\Models\\PrayerList.cs",
+  "PreviewInSolutionExplorer": false
+}

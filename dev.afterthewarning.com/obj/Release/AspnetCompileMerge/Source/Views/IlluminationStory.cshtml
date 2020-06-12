@@ -1,0 +1,144 @@
+﻿@using Models;
+@using System.Text;
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+@using formulate.core.Models;
+@using formulate.app.Types;
+@inherits UmbracoViewPage<ContentModels.IlluminationStory>
+@{ Layout = "TopLevel.cshtml"; }
+
+
+@{
+    //Obtain page data
+    String title = Model.Title;
+    String experienceType = Model.ExperienceType;
+    IHtmlString story = Html.Raw(umbraco.library.ReplaceLineBreaks(Model.Story));
+
+    var cmMember = new ContentModels.Member(Model.Member);
+
+    //Add data to story model
+    StringBuilder sbAuthor = new StringBuilder();
+    sbAuthor.Append(cmMember.FirstName);
+    sbAuthor.Append("&nbsp;&nbsp;&nbsp;");
+    sbAuthor.Append(cmMember.LastName);
+    sbAuthor.Append(".");
+    String memberName = sbAuthor.ToString();
+
+    String gender = Umbraco.GetPreValueAsString(cmMember.Gender);
+    String religion = cmMember.Religion;
+    String country = cmMember.Country;
+
+
+    //Obtain the form and its view model
+    ConfiguredFormInfo pickedForm = Model.Parent.GetPropertyValue<ConfiguredFormInfo>("formPicker");
+    FormViewModel vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, Model);
+}
+
+<div id="pnlIlluminationStory" class="illuminationStory">
+    <div class="grid-x grid-padding-x">
+        <div class="cell large-14">
+            <br class="show-for-small-only" />
+            <h2>@title</h2>
+            <h4>By: @Html.Raw(memberName)</h4>
+            <br class="show-for-small-only" />
+        </div>
+        <div class="cell large-10 experiencePnl">
+            <h5 class="text-center">
+                @switch (experienceType)
+                {
+                    case "Heavenly":
+                        <img alt="" src="~/images/common/heavenly.png" />
+                        break;
+                    case "Hellish":
+                        <img alt="" src="~/images/common/hellish.png" />
+                        break;
+                    case "Purgatorial":
+                        <img alt="" src="~/images/common/purgatorial.png" />
+                        break;
+                    default:
+                        <img alt="" src="~/images/common/other-unsure.png" />
+                        break;
+                }
+
+                &nbsp;&nbsp;&nbsp;
+                <strong>@experienceType Experience</strong>
+            </h5>
+
+            <hr />
+            @if (cmMember.Age > 0)
+            {
+                <div class="grid-x grid-margin-x">
+                    <div class="cell small-12 large-12 text-right dataType">
+                        Age
+                    </div>
+                    <div class="cell small-12 large-12 text-left dataValue">
+                        @cmMember.Age.ToString() years young
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(gender))
+            {
+                <div class="grid-x grid-margin-x">
+                    <div class="cell small-12 large-12 text-right dataType">
+                        Gender
+                    </div>
+                    <div class="cell small-12 large-12 text-left dataValue">
+                        @gender
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(religion))
+            {
+                <div class="grid-x grid-margin-x">
+                    <div class="cell small-12 large-12 text-right dataType">
+                        Religion
+                    </div>
+                    <div class="cell small-12 large-12 text-left dataValue">
+                        @religion
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(country))
+            {
+                <div class="grid-x grid-margin-x">
+                    <div class="cell small-12 large-12 text-right dataType">
+                        Country
+                    </div>
+                    <div class="cell small-12 large-12 text-left dataValue">
+                        @country
+                    </div>
+                </div>
+            }
+
+            @if (cmMember.Race.FirstOrDefault() != null)
+            {
+                <div class="grid-x grid-margin-x">
+                    <div class="cell small-12 large-12 text-right dataType">
+                        Race
+                    </div>
+
+                    <div class="cell small-12 large-12 text-left dataValue">
+                        @foreach (var race in cmMember.Race)
+                        {
+                            @race <br />
+                        }
+                    </div>
+                </div>
+            }
+            <br />
+        </div>
+    </div>
+
+    <br />
+    <p>@story</p>
+
+    <div class="formulate-wrapper report-page">
+        <input type="hidden" id="pageId" value="@Model.Id" />
+        <input type="hidden" id="pageName" value="@Model.Name" />
+        <input type="hidden" id="pageUrl" value="@Model.Url" />
+
+        @Html.Partial("~/Views/Partials/Formulate/RenderForm.cshtml", vm)
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@using ClientDependency.Core.Mvc
+@using Models
+@using Umbraco.Web.Models
+@using Umbraco.Web.PublishedContentModels
+@inherits UmbracoViewPage
+@{ Layout = "TopLevel.cshtml"; }
+
+
+
+<div class="form createAcct">
+    <div class="grid-x">
+        <div class="cell">
+
+            @if (TempData["CreatedSuccessfully"] != null && (bool)TempData["CreatedSuccessfully"])
+            {
+                <h3 class="text-center">A verification email has been sent to the address provided.</h3>
+            }
+            else if (TempData["UpdatedSuccessfully"] != null && (bool)TempData["UpdatedSuccessfully"])
+            {
+                <h3 class="text-center">Your account has been successfully updated!</h3>
+            }
+            else
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    Html.RenderAction("RenderFormWithData", "Membership", new { loginId = User.Identity.Name });
+                }
+                else
+                {
+                    Html.RenderAction("RenderForm", "Membership");
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+
+@section Footer {
+    <script src="~/Scripts/custom/password-validation.js"></script>
+}

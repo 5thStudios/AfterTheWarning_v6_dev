@@ -1,0 +1,51 @@
+﻿@using Models;
+@inherits UmbracoViewPage
+
+
+@{
+    //Instantiate variables
+    IPublishedContent currentNode = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
+    String supportUsUrl = "";
+    bool showPnl = (currentNode.Id == (int)Common.siteNode.Home);
+
+    //Only retrieve data if the panel can be shown
+    if (showPnl)
+    {
+        //Get url to donation page
+        supportUsUrl = Umbraco.TypedContent((int)Common.siteNode.Donate).Url;
+    }
+
+}
+
+
+@if (showPnl)
+{
+    <div id="pnlSupportMsg" class="grid-container supportMsg noprint">
+
+        <br class="hide-for-large" />
+        <div class="grid-x grid-padding-x align-middle">
+
+            <div class="small-24 medium-8 medium-order-2 large-4 large-order-1 cell">
+                <a href="@supportUsUrl" class="button primary expanded paddedSides supportUsToday">Support Us Today</a>
+            </div>
+
+            <div class="small-24 medium-24 medium-order-1 large-12 large-order-2 cell msg">
+                <br class="hide-for-medium" />
+                <p>Without your charitable donations it would be hard to continue spreading Heaven's warnings. Please consider helping us keep the site going strong.  Thank you and may God Bless you all.</p>
+                <br class="hide-for-large" />
+            </div>
+
+
+            <div class="small-24 medium-8 medium-order-3 large-4 large-order-3 cell">
+                <a class="button primary expanded remindLater">Remind Me Tomorrow</a>
+            </div>
+            
+            <div class="small-24 medium-8 medium-order-4 large-4 large-order-4 cell">
+                <br class="hide-for-medium" />
+                <a class="button primary expanded noThanks">No Thanks</a>
+            </div>
+        </div>
+
+        <br class="hide-for-large" />
+    </div>
+}

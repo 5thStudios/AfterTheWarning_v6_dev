@@ -1,0 +1,7 @@
+﻿@using Models;
+
+@inherits UmbracoViewPage<Standard>
+@{ Layout = "TopLevel.cshtml"; }
+
+
+@Model.GetGridHtml(Html, Common.NodeProperties.content, Common.miscellaneous.Foundation6)

@@ -1,0 +1,19 @@
+﻿@using ClientDependency.Core.Mvc
+@using Models
+@using Umbraco.Web.Models
+@using Umbraco.Web.PublishedContentModels
+
+@inherits UmbracoViewPage
+@{ Layout = "ManageAccount.cshtml"; }
+
+
+
+<div id="pnlPrayerPledges">
+    <div class="grid-x">
+        <div class="cell">
+            @{
+                Html.RenderAction("RenderForm_PrayerPledges", "Prayer", new { userName = User.Identity.Name });
+            }
+        </div>
+    </div>
+</div>
