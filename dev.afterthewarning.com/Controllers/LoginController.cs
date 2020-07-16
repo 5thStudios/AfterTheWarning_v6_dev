@@ -41,7 +41,7 @@ namespace Controllers
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"LoginController.cs : RenderForm()");
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(LoginController));
 
                 ModelState.AddModelError("", "*An error occured while validating your account.");
             }
@@ -85,7 +85,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"LoginController.cs : LogMemberIn()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(LoginController));
 
                 ModelState.AddModelError("", "An error occured while logging into your account.");
                 return CurrentUmbracoPage();
@@ -116,7 +116,7 @@ namespace Controllers
                 //Save error message to umbraco
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"LoginController.cs : LogMemberOut()");
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(LoginController));
 
                 ModelState.AddModelError(null, "An error occured while logging out of your account.");
                 return CurrentUmbracoPage();

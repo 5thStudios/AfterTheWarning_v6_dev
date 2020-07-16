@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using umbraco;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Models
 {
@@ -34,7 +38,6 @@ namespace Models
             PrayerRequests = 3665,
             Preface = 1110,
             Search = 1117,
-            SiteErrors = 1091,
             TheDouayRheimsBible = 1109,
             ThePrayerCorner = 1104
         }
@@ -303,6 +306,7 @@ namespace Models
             public const string religion = "religion";
             public const string requestDate = "requestDate";
 
+            public const string SaveErrorMessage = "saveErrorMessage";
             public const string showInMinorNavigation = "showInMinorNavigation";
             public const string story = "story";
             public const string subtitle = "subtitle";
@@ -323,11 +327,13 @@ namespace Models
         public struct docType
         {
             public const string AddEditIlluminationStory = "addEditIlluminationStory";
+            public const string AppStartEvents = "appStartEvents";
             public const string BlockList = "blockList";
             public const string BlockListWithThumbnail = "blockListWithThumbnail";
             public const string Chapter = "chapter";
             public const string ContactUs = "contactUs";
             public const string CreateAccount = "createAccount";
+            public const string DataLayer = "dataLayer";
             public const string Donations = "donations";
             public const string EditAccount = "editAccount";
             public const string ErrorMessage = "errorMessage";
@@ -453,28 +459,81 @@ namespace Models
             }
             return text;
         }
-        public static void saveErrorMessage(string _exceptionMsg, string _generalInfo)
+        //public static void saveErrorMessage(string _exceptionMsg, string _generalInfo)
+        //{
+        //    try
+        //    {
+        //        // Create a new node
+        //        IContentService cs = ApplicationContext.Current.Services.ContentService;
+        //        IContent siteErrors = cs.GetById((int)siteNode.SiteErrors);
+        //        DateTime timeStamp = DateTime.Now;
+        //        IContent errorMsg = cs.CreateContentWithIdentity(timeStamp.ToString(), siteErrors, docType.ErrorMessage);
+
+        //        // Set values
+        //        errorMsg.SetValue(NodeProperties.exceptionMessage, _exceptionMsg);
+        //        errorMsg.SetValue(NodeProperties.generalInfo, _generalInfo);
+
+        //        // Save values
+        //        cs.SaveAndPublishWithStatus(errorMsg);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        public static void SaveErrorMessage(Exception ex, StringBuilder sb, Type type, bool saveAsWarning = false)
         {
+            StringBuilder sbGeneralInfo = new StringBuilder();
+
             try
             {
-                // Create a new node
-                IContentService cs = ApplicationContext.Current.Services.ContentService;
-                IContent siteErrors = cs.GetById((int)siteNode.SiteErrors);
-                DateTime timeStamp = DateTime.Now;
-                IContent errorMsg = cs.CreateContentWithIdentity(timeStamp.ToString(), siteErrors, docType.ErrorMessage);
+                UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                bool SaveErrorMsgs = true;
+                //IPublishedContent ipData = umbracoHelper.TypedContentAtRoot().FirstOrDefault(x => x.ContentType.Alias.Equals(docType.DataLayer));
+                //IPublishedContent ipAppStartEvents = ipData.FirstChild<IPublishedContent>(x => x.ContentType.Alias.Equals(docType.AppStartEvents));
+                //if (ipAppStartEvents.HasProperty(NodeProperties.SaveErrorMessage))
+                //    SaveErrorMsgs = ipAppStartEvents.GetPropertyValue<bool>(NodeProperties.SaveErrorMessage);
 
-                // Set values
-                errorMsg.SetValue(NodeProperties.exceptionMessage, _exceptionMsg);
-                errorMsg.SetValue(NodeProperties.generalInfo, _generalInfo);
+                if (SaveErrorMsgs)
+                {
+                    try
+                    {
+                        StackTrace st = new StackTrace(ex, true);
+                        StackFrame frame = st.GetFrame(0);
+                        sbGeneralInfo.AppendLine("fileName: " + frame.GetFileName());
+                        sbGeneralInfo.AppendLine("methodName: " + frame.GetMethod().Name);
+                        sbGeneralInfo.AppendLine("line: " + frame.GetFileLineNumber());
+                        sbGeneralInfo.AppendLine("col: " + frame.GetFileColumnNumber());
+                    }
+                    catch (Exception exc)
+                    {
+                        if (!saveAsWarning)
+                        {
+                            sbGeneralInfo.AppendLine("Error attempting to add stack information in SaveErrorMessage()");
+                            sbGeneralInfo.AppendLine(exc.ToString());
+                        }
+                    }
 
-                // Save values
-                cs.SaveAndPublishWithStatus(errorMsg);
+                    sbGeneralInfo.AppendLine(sb.ToString());
+
+                    if (saveAsWarning)
+                    {
+                        LogHelper.Warn(type, sbGeneralInfo.ToString());
+                    }
+                    else
+                    {
+                        LogHelper.Error(type, sbGeneralInfo.ToString(), ex);
+                    }
+                }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                throw;
+                LogHelper.Error(typeof(Common), "Error Saving Exception Message.  Original Data: " + sbGeneralInfo.ToString() + " ||| " + ex.ToString(), error);
             }
         }
+
+
         public static int? getPrevalueId(string dataTypeName, string dataTypeValue)
         {
             // Instantiate datatype service

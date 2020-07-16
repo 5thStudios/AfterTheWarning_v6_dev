@@ -1,6 +1,0 @@
-﻿{
-	javascript: [
-		'~/App_Plugins/AppPoolRefresh/ngControllers/apppoolrefresh.controller.js',
-		'~/App_Plugins/AppPoolRefresh/apppoolrefresh.resource.js'
-	]
-}

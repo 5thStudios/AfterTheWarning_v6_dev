@@ -21,6 +21,11 @@
             </div>
         </div>
 
+        @*<hr />
+        <h3>Count: @Model.lstMsgLinks.Count</h3>
+        @{ Newtonsoft.Json.JsonConvert.SerializeObject(Model);}
+        <hr />*@
+
         @foreach (var msgLink in Model.lstMsgLinks)
         {
             <a href="@msgLink.Url" data-nodeid="@msgLink.Id">
@@ -29,7 +34,7 @@
                         <h4>@msgLink.Title @(string.IsNullOrEmpty(msgLink.Subtitle) ? "" : " | " + msgLink.Subtitle )</h4>
                     </div>
                     <div class="cell  small-24 medium-shrink author text-right small-order-1 medium-order-2">
-                        @(Convert.ToDateTime(msgLink.Date).ToString("MMMM d, yyyy"))
+                        @msgLink.Dates 
                     </div>
                 </div>
             </a>

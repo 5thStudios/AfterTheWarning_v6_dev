@@ -70,9 +70,8 @@ namespace Controllers
                 sb.AppendLine(@"IlluminationController.cs : RenderStory()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStory));
                 sb.AppendLine("member:" + Newtonsoft.Json.JsonConvert.SerializeObject(member));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
-
-
+                Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
+                
                 ModelState.AddModelError("", "*An error occured while retrieving your story.");
                 return PartialView("~/Views/Partials/IlluminationStories/_showIlluminationStory.cshtml", illuminationStory);
             }
@@ -248,7 +247,7 @@ namespace Controllers
                 sb.AppendLine("editMode:" + editMode.ToString());
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStory));
                 sb.AppendLine("member:" + Newtonsoft.Json.JsonConvert.SerializeObject(member));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
 
                 ModelState.AddModelError("", "*An error occured while creating a form to submit your story.");
@@ -414,7 +413,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"IlluminationController.cs : RenderList()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStoryList));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
 
                 ModelState.AddModelError("", "*An error occured while creating a list of illumination stories.");
@@ -471,7 +470,8 @@ namespace Controllers
                             sb.AppendLine(@"Controllers/IlluminationController.cs : AddIlluminationStory()");
                             sb.AppendLine(@"Member Id returned nothing.  Cannot add illumination story to member.");
                             sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                            Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                            Exception ex = new Exception();
+                            Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
                         }
                         else
                         {
@@ -537,7 +537,8 @@ namespace Controllers
                         sb.AppendLine(@"Controllers/IlluminationController.cs : AddIlluminationStory()");
                         sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
                         sb.AppendLine("result:" + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                        Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                        Exception ex = new Exception();
+                        Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
                         //Return with error
                         ModelState.AddModelError(string.Empty, "An error occured while submitting your Illumination story.");
@@ -558,7 +559,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"IlluminationController.cs : AddIlluminationStory()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
                 ModelState.AddModelError(string.Empty, "An error occured while adding your story.");
                 return CurrentUmbracoPage();
@@ -606,7 +607,8 @@ namespace Controllers
                             sb.AppendLine(@"Controllers/IlluminationController.cs : UpdateIlluminationStory()");
                             sb.AppendLine(@"Member Id returned nothing.  Cannot update illumination story to member.");
                             sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                            Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                            Exception ex = new Exception();
+                            Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
                         }
                         else
                         {
@@ -670,7 +672,8 @@ namespace Controllers
                         sb.AppendLine(@"Controllers/IlluminationController.cs : UpdateIlluminationStory()");
                         sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
                         sb.AppendLine("result:" + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                        Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                        Exception ex = new Exception();
+                        Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
                         //Return with error
                         ModelState.AddModelError(string.Empty, "An error occured while updating your Illumination story.");
@@ -690,7 +693,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"IlluminationController.cs : UpdateIlluminationStory()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
 
                 ModelState.AddModelError(string.Empty, "An error occured while updating your story.");
                 return CurrentUmbracoPage();

@@ -29,7 +29,8 @@ namespace Helpers
                 sb.AppendLine(@"Helpers/HtmlExtensions.cs : isUserPledgedForPrayer()");
                 sb.AppendLine("loginId: " + loginId);
                 sb.AppendLine("prayerId: " + prayerId);
-                Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                Exception ex = new Exception();
+                Common.SaveErrorMessage(ex, sb, typeof(HtmlExtensions));
 
                 return false;
             }

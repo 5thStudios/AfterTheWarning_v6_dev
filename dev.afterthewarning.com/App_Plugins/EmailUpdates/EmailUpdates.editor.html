@@ -25,16 +25,14 @@
     <br />
     <br />
     <div>
-        <div class="alertMsg ">
+        <div class="alertMsg hide">
             <strong>The following errors occured:</strong><br />
-            <span class="errorMsg">[Error msgs to go here...]</span>
+            <span class="errorMsg"></span>
         </div>
 
-        <div class="msg ">
-            <!--hide-->
+        <div class="msg hide">
             <br />
             <br />
-            <!--Successfully emailed <strong></strong><span class="errorMsg"></span>-->
 
             <table class="paleBlueRows" id="tblVideoCompletionData">
                 <thead>
@@ -46,48 +44,22 @@
                 <tbody>
                     <tr>
                         <td valign="top">Successful emails</td>
-                        <td valign="top"><strong>21</strong></td>
+                        <td valign="top">
+                            <strong>
+                                <label id="lblSuccessfulEmails"></label>
+                            </strong>
+                        </td>
                     </tr>
                     <tr>
                         <td valign="top">Failed emails</td>
-                        <td valign="top"><strong>8</strong></td>
+                        <td valign="top">
+                            <strong>
+                                <label id="lblFailedEmails"></label>
+                            </strong>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
-
-            <!--<%--======================================================================================--%>-->
-            <!--<script id="scrObtainList" type="text/x-jsrender">
-        <tr>
-            <td valign="top"><a href="{{>MemberEditUrl}}">{{>Member}}</a></td>
-            <td valign="top"><a href="mailto:{{>Email}}">{{>Email}}</a></td>
-            <td valign="top">{{:ImisId}}</td>
-            <td valign="top">{{:MemberType}}</td>
-            <td valign="top">
-                {{for LstVideoLinks tmpl="columnTemplate"/}}
-            </td>
-        </tr>
-    </script>
-    <script id="columnTemplate" type="text/x-jsrender">
-        <div>
-            <a href="{{>Link}}">{{>Title}}</a>
-        </div>
-    </script>
-    <table class="paleBlueRows" id="tblVideoCompletionData">
-        <thead>
-            <tr>
-                <th>Member</th>
-                <th>Email</th>
-                <th>Imis Id</th>
-                <th>Member Type</th>
-                <th>Completed Videos</th>
-            </tr>
-        </thead>
-        <tbody id="tblListResult">
-        </tbody>
-    </table>-->
-            <!--<%--======================================================================================--%>-->
-
         </div>
     </div>
 </div>

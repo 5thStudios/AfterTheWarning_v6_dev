@@ -90,7 +90,8 @@ namespace Controllers
                     msgLink.Title = sRecord.Fields[Common.NodeProperties.nodeName];
                     msgLink.Subtitle = sRecord.Fields[Common.NodeProperties.subtitle];
                     msgLink.Url = Umbraco.NiceUrl(sRecord.Id);
-                    msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+                    //msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+                    msgLink.Dates = (Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate])).ToString("MMMM dd");
 
                     msgList.lstMsgLinks.Add(msgLink);
                 }
@@ -100,7 +101,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MessageController.cs : RenderAllMessages()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(msgList));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MessageController));
 
 
                 ModelState.AddModelError("", "*An error occured while retrieving all messages.");
@@ -218,13 +219,135 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MessageController.cs : RenderLatestMessages()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(lstLatestUpdates));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MessageController));
 
 
                 ModelState.AddModelError("", "*An error occured while creating the latest message list.");
                 return CurrentUmbracoPage();
             }
         }
+        //public ActionResult RenderMsgs_byVisionary(IPublishedContent ipVisionary)
+        //{
+        //    //Instantiate variables
+        //    MsgList msgList = new MsgList();
+        //    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+
+
+        //    try
+        //    {
+        //        msgList.VisionaryName = "working";
+
+        //        //Get all prayers
+        //        BaseSearchProvider mySearcher = ExamineManager.Instance.SearchProviderCollection[Common.searchProviders.MessagesSearcher];
+        //        ISearchCriteria criteria = mySearcher.CreateSearchCriteria(IndexTypes.Content);
+        //        IBooleanOperation query = criteria.Field(Common.NodeProperties.indexType, Common.NodeProperties.content); //gets all items when this exists for every record. 
+        //        query.And().OrderByDescending(Common.NodeProperties.publishDate);
+        //        query.And().OrderBy(Common.NodeProperties.nodeName);
+        //        query.And().Field(Common.miscellaneous.Path, ipVisionary.Path.MultipleCharacterWildcard());
+        //        ISearchResults isResults = mySearcher.Search(query.Compile());
+
+
+        //        //Get item counts and total experiences.
+        //        msgList.Pagination.itemsPerPage = 30;
+        //        msgList.Pagination.totalItems = isResults.Count();
+
+
+        //        //Determine how many pages/items to skip and take, as well as the total page count for the search result.
+        //        if (msgList.Pagination.totalItems > msgList.Pagination.itemsPerPage)
+        //        {
+        //            msgList.Pagination.totalPages = (int)Math.Ceiling((double)msgList.Pagination.totalItems / (double)msgList.Pagination.itemsPerPage);
+        //        }
+        //        else
+        //        {
+        //            msgList.Pagination.itemsPerPage = msgList.Pagination.totalItems;
+        //            msgList.Pagination.totalPages = 1;
+        //        }
+
+
+        //        //Determine current page number 
+        //        var pageNo = 1;
+        //        if (!string.IsNullOrEmpty(Request.QueryString[Common.miscellaneous.PageNo]))
+        //        {
+        //            int.TryParse(Request.QueryString[Common.miscellaneous.PageNo], out pageNo);
+        //            if (pageNo <= 0 || pageNo > msgList.Pagination.totalPages)
+        //            {
+        //                pageNo = 1;
+        //            }
+        //        }
+        //        msgList.Pagination.pageNo = pageNo;
+
+
+        //        //Determine how many pages/items to skip
+        //        if (msgList.Pagination.totalItems > msgList.Pagination.itemsPerPage)
+        //        {
+        //            msgList.Pagination.itemsToSkip = msgList.Pagination.itemsPerPage * (pageNo - 1);
+        //        }
+
+
+        //        //Convert list of SearchResults to list of classes
+        //        foreach (SearchResult sRecord in isResults.Skip(msgList.Pagination.itemsToSkip).Take(msgList.Pagination.itemsPerPage))
+        //        {
+        //            var msgLink = new Models.MsgLink();
+        //            msgLink.Id = sRecord.Id;
+        //            msgLink.Title = sRecord.Fields[Common.NodeProperties.nodeName];
+        //            msgLink.Subtitle = sRecord.Fields[Common.NodeProperties.subtitle];
+        //            msgLink.Url = Umbraco.NiceUrl(sRecord.Id);
+
+
+        //            //msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+
+
+        //            //Obtain list of all dates
+        //            var ipMsg = Umbraco.TypedContent(sRecord.Id);
+        //            List<DateTime> lstDateRange = ipMsg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+
+        //            //Determine proper date range for messages
+        //            if (lstDateRange != null && lstDateRange.Count > 0)
+        //            {
+        //                if (lstDateRange.Count == 1)
+        //                {
+        //                    msgLink.Dates = lstDateRange.First().ToString("MMM d");
+        //                }
+        //                else
+        //                {
+        //                    StringBuilder sbDateRange = new StringBuilder();
+        //                    sbDateRange.Append(lstDateRange.First().ToString("MMM d"));
+        //                    sbDateRange.Append(" — ");
+        //                    sbDateRange.Append(lstDateRange.Last().ToString("MMM d"));
+
+        //                    msgLink.Dates = sbDateRange.ToString();
+        //                }
+        //            }
+        //            else
+        //            {
+        //                msgLink.Dates = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]).ToString("MMM d");
+        //            }
+
+        //            msgList.lstMsgLinks.Add(msgLink);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        sb.AppendLine(@"MessageController.cs : RenderMsgs_byVisionary()");
+        //        //sb.AppendLine("ipVisionary:" + Newtonsoft.Json.JsonConvert.SerializeObject(ipVisionary));
+        //        sb.AppendLine("msgList:" + Newtonsoft.Json.JsonConvert.SerializeObject(msgList));
+        //        Common.SaveErrorMessage(ex, sb, typeof(MessageController));
+
+
+        //        ModelState.AddModelError("", "*An error occured while retrieving messages by visionary.");
+        //    }
+
+
+        //    //Return data to partialview
+        //    return PartialView("~/Views/Partials/MessagesFromHeaven/_msgList.cshtml", msgList);
+        //}
+
+
+
+
+
         public ActionResult RenderMsgs_byVisionary(IPublishedContent ipVisionary)
         {
             //Instantiate variables
@@ -234,6 +357,8 @@ namespace Controllers
 
             try
             {
+                msgList.VisionaryName = "working";
+
                 //Get all prayers
                 BaseSearchProvider mySearcher = ExamineManager.Instance.SearchProviderCollection[Common.searchProviders.MessagesSearcher];
                 ISearchCriteria criteria = mySearcher.CreateSearchCriteria(IndexTypes.Content);
@@ -282,28 +407,62 @@ namespace Controllers
 
 
                 //Convert list of SearchResults to list of classes
-                foreach (SearchResult sRecord in isResults.Skip(msgList.Pagination.itemsToSkip).Take(msgList.Pagination.itemsPerPage))
+                foreach (SearchResult sRecord in isResults) //.Skip(msgList.Pagination.itemsToSkip).Take(msgList.Pagination.itemsPerPage))
                 {
                     var msgLink = new Models.MsgLink();
                     msgLink.Id = sRecord.Id;
                     msgLink.Title = sRecord.Fields[Common.NodeProperties.nodeName];
                     msgLink.Subtitle = sRecord.Fields[Common.NodeProperties.subtitle];
                     msgLink.Url = Umbraco.NiceUrl(sRecord.Id);
-                    msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
 
-                    //msgLink.VisionaryId = ipVisionary.Id;
-                    //msgLink.VisionaryName = ipVisionary.GetPropertyValue<string>(Common.NodeProperties.visionarysName);
+
+                   /* msgLink.Date = */Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+
+
+                    //Obtain list of all dates
+                    var ipMsg = Umbraco.TypedContent(sRecord.Id);
+                    List<DateTime> lstDateRange = ipMsg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+
+                    //Determine proper date range for messages
+                    if (lstDateRange != null && lstDateRange.Count > 0)
+                    {
+                        if (lstDateRange.Count == 1)
+                        {
+                            msgLink.Dates = lstDateRange.First().ToString("MMM d");
+                        }
+                        else
+                        {
+                            StringBuilder sbDateRange = new StringBuilder();
+                            sbDateRange.Append(lstDateRange.First().ToString("MMM d"));
+                            sbDateRange.Append(" — ");
+                            sbDateRange.Append(lstDateRange.Last().ToString("MMM d"));
+
+                            msgLink.Dates = sbDateRange.ToString();
+                        }
+                                                
+                        msgLink.Date = lstDateRange.First(); //Used for resorting list before displaying
+                    }
+                    else
+                    {
+                        msgLink.Dates = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]).ToString("MMM d");
+                        msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]); //Used for resorting list before displaying
+                    }
 
                     msgList.lstMsgLinks.Add(msgLink);
                 }
+
+                //Reorder messages by date and obtain only what is to be displayed.
+                msgList.lstMsgLinks = msgList.lstMsgLinks.OrderByDescending(x => x.Date).Skip(msgList.Pagination.itemsToSkip).Take(msgList.Pagination.itemsPerPage).ToList();
+
             }
             catch (Exception ex)
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MessageController.cs : RenderMsgs_byVisionary()");
-                sb.AppendLine("ipVisionary:" + Newtonsoft.Json.JsonConvert.SerializeObject(ipVisionary));
+                //sb.AppendLine("ipVisionary:" + Newtonsoft.Json.JsonConvert.SerializeObject(ipVisionary));
                 sb.AppendLine("msgList:" + Newtonsoft.Json.JsonConvert.SerializeObject(msgList));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MessageController));
 
 
                 ModelState.AddModelError("", "*An error occured while retrieving messages by visionary.");
@@ -313,6 +472,9 @@ namespace Controllers
             //Return data to partialview
             return PartialView("~/Views/Partials/MessagesFromHeaven/_msgList.cshtml", msgList);
         }
+
+
+
         #endregion
 
 

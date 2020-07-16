@@ -145,7 +145,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"ForgotPasswordController.cs : ResetPassword()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(ForgotPasswordController));
 
                 ModelState.AddModelError("", "*An error occured while resetting the password.  We will look into this issue to correct it.  Please refresh the page and try again.  Or contact us for further assistance.");
                 return CurrentUmbracoPage();

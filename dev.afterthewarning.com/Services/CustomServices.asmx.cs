@@ -17,28 +17,25 @@ namespace Services
     {
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public string HelloWorld()
-        {
-            Dictionary<int, string> dict = new Dictionary<int, string>();
-            dict.Add(1, "Hello");
-            dict.Add(2, "World");
-
-            return JsonConvert.SerializeObject(dict);
-        }
-
-
-
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public string SendUpdatesByEmail()
         {
-            var response = Controllers.MembershipController.SendUpdatesByEmail();
-
-
-            Dictionary<int, string> dict = new Dictionary<int, string>();
-            dict.Add(1, response);
-
+            //Send updates via email and return results.
+            Dictionary<string, int> dict = Controllers.MembershipController.SendUpdatesByEmail();
             return JsonConvert.SerializeObject(dict);
         }
     }
 }
+
+
+
+
+//[WebMethod]
+//[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+//public string HelloWorld()
+//{
+//    Dictionary<int, string> dict = new Dictionary<int, string>();
+//    dict.Add(1, "Hello");
+//    dict.Add(2, "World");
+
+//    return JsonConvert.SerializeObject(dict);
+//}

@@ -17,6 +17,7 @@ using Umbraco.Web;
 using System.Net.Mime;
 using System.Collections.Specialized;
 using Umbraco.Web.Security;
+using umbraco.editorControls.SettingControls.Pickers;
 
 namespace Controllers
 {
@@ -40,7 +41,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MembershipController.cs : RenderFormWithData()");
                 sb.AppendLine("loginId:" + loginId);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
 
                 ModelState.AddModelError("", "*An error occured while displaying a form with the user information.");
                 return PartialView("~/Views/Partials/ManageAccount/_editAcct.cshtml");
@@ -104,7 +105,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MembershipController.cs : CreateMember()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
 
                 ModelState.AddModelError(null, "An error occured while creating your account.");
                 return CurrentUmbracoPage();
@@ -164,7 +165,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MembershipController.cs : UpdateMember()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
 
                 ModelState.AddModelError(null, "An error occured while updating your account.");
                 return CurrentUmbracoPage();
@@ -173,142 +174,249 @@ namespace Controllers
         #endregion
 
         #region "Methods"
-        public static string SendUpdatesByEmail()
+        public static Dictionary<string, int> SendUpdatesByEmail()
         {
-            StringBuilder sb = new StringBuilder();
+            //Scope variables
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            List<latestUpdates> lstLatestUpdates = new List<latestUpdates>();
+            StringBuilder sbHtmlList = new StringBuilder();
+            StringBuilder sbTextList = new StringBuilder();
+            string emailBody_Html = string.Empty;
+            string emailBody_Text = string.Empty;
+            Boolean errored = false;
+            int totalSuccessful = 0;
+            int totalFailed = 0;
+            DateTime datePublished = DateTime.Today;
+
+
+            //Obtain list of most recent messages
             try
             {
-                //Instantiate variables
-                UmbracoHelper umbHelper = new UmbracoHelper(UmbracoContext.Current);
-                IMemberService memberService = ApplicationContext.Current.Services.MemberService;
-                IEnumerable<IMember> members = memberService.GetAllMembers();
-                Boolean isFirst = true;
-                //string visionary = "";
-
-                List<latestUpdates> lstLatestUpdates = Controllers.MessageController.ObtainLatestMessages();
-                //sb.Append(Newtonsoft.Json.JsonConvert.SerializeObject(lstLatestUpdates));
-
-                string latestUpdates = "<h1 class='date'  style='color:#74010a;font-family:'Helvetica','Arial',sans-serif;font-size:40px;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:center;word-break:normal;'>[DATE]</h1>";
-                string strVisionary = "<br /><br /><div class='name' style='font-size:18px;font-weight:900;text-align:center;'><a href='[HREF]' style='color: #f3a42a; text-decoration: none;'>[VISIONARY]</a></div>";
-                string strMsg = "<div class='title' style='font-size:20px;text-align:center;'><a href='[HREF]'><span class='cross' style='color: #f3a42a; text-decoration: none;'>&#x271E; </span>[TITLE]</a></div>";
-
-
-                //<h1 class="date" style="color: #74010a; font-family: 'Helvetica','Arial',sans-serif; font-size: 40px; font-weight: 400; line-height: 1.3; margin: 0; padding: 0; text-align: center; word-break: normal;">September 03, 2019</h1>
-                //<br />
-                //<br />
-                //<div class="name" style="font-size: 18px; font-weight: 900; text-align: center;"><a href="/" style="color: #f3a42a; text-decoration: none;">Children of the Renewal</a></div>
-                //<div class="title" style="font-size: 20px; text-align: center;"><a href="/" style="color: #f3a42a; text-decoration: none;"><span class="cross">✞  </span>Recent Messages</a></div>
-                //<br />
-                //<br /> 
-
-
-
-                foreach (latestUpdates latestUpdate in lstLatestUpdates)
-                {
-                    if (isFirst)
-                    {
-                        sb.AppendLine(latestUpdates.Replace("[DATE]", latestUpdate.datePublished.ToString("MMMM d, yyyy")));
-                        isFirst = false;
-                    }
-                    foreach (visionary visionary in latestUpdate.lstVisionaries)
-                    {
-                        sb.AppendLine(strVisionary.Replace("[HREF]", visionary.url).Replace("[VISIONARY]", visionary.name));
-
-                        foreach (message msg in visionary.lstMessages)
-                        {
-                            sb.AppendLine(strMsg.Replace("[HREF]", msg.url).Replace("[TITLE]", msg.title));
-                        }
-                    }
-                }
-
-
-
-
-                // member.Email
-                string tempEmail = "jim.fifth@5thstudios.com";
-                string hostUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Host + "/";
-
-                // set the content by openning the files.
-                //string filePath_html = HostingEnvironment.MapPath("~/Emails/RecentUpdates/RecentUpdates-uncompressed.html");
-                string filePath_html = HostingEnvironment.MapPath("~/Emails/RecentUpdates/RecentUpdates.html");
-                //string filePath_Text = HostingEnvironment.MapPath("~/Emails/ContactUs/ContactUs.txt");
-                string emailBody_Html = System.IO.File.ReadAllText(filePath_html);
-                //string emailBody_Text = System.IO.File.ReadAllText(filePath_Text);
-
-                // Insert data into page
-                emailBody_Html = emailBody_Html.Replace("[INFO]", sb.ToString());
-                emailBody_Html = emailBody_Html.Replace("[AFTERTHEWARNING_URL]", hostUrl);
-
-
-
-
-                emailBody_Html = emailBody_Html.Replace("[INFO]", sb.ToString());
-                emailBody_Html = emailBody_Html.Replace("[YEAR]", DateTime.Today.Year.ToString());
-
-
-
-
-                //Loop through each member                
-                foreach (IMember member in members)
-                {
-
-
-                    SmtpClient smtp = new SmtpClient();
-
-
-                    //Obtain list of email addresses for forms
-                    //IPublishedContent ipHome = Umbraco.TypedContent((int)Common.SiteNode.Home);
-                    //List<string> lstEmails = (ipHome.GetPropertyValue<string[]>(Common.NodeProperty.FormEmails)).ToList();
-                    //IPublishedContent ipPg = Umbraco.TypedContent((int)model.PgId);
-                    //List<string> lstEmails = (ipPg.GetPropertyValue<string[]>(Common.NodeProperty.FormEmails)).ToList();
-
-
-                    // Create mail message
-                    //MailMessage Msg = new MailMessage() { From = new MailAddress(smtpUsername) };
-                    //MailMessage Msg = new MailMessage("support@5thstudios.com", "jim.fifth@5thstudios.com");
-                    MailMessage Msg = new MailMessage();
-                    Msg.To.Add(new MailAddress(tempEmail));
-                    Msg.To.Add(new MailAddress("fifthamy@gmail.com"));
-                    //foreach (string email in lstEmails)
-                    //{
-                    //    if (!string.IsNullOrWhiteSpace(email))
-                    //    {
-                    //        Msg.To.Add(new MailAddress(email));
-                    //    }
-                    //}
-                    Msg.BodyEncoding = Encoding.UTF8;
-                    Msg.SubjectEncoding = Encoding.UTF8;
-                    Msg.Subject = "Recent Updates | After the Warning";
-                    Msg.IsBodyHtml = true;
-                    Msg.Body = "";
-                    Msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(emailBody_Html, new System.Net.Mime.ContentType(MediaTypeNames.Text.Html)));
-                    //Msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(emailBody_Text, new System.Net.Mime.ContentType(MediaTypeNames.Text.Plain)));
-
-
-                    // Send email
-                    smtp.Send(Msg);
-                    smtp.ServicePoint.CloseConnectionGroup(smtp.ServicePoint.ConnectionName);
-
-
-
-                    //End after test
-                    break;
-                }
-
-
+                lstLatestUpdates = Controllers.MessageController.ObtainLatestMessages();
             }
             catch (Exception ex)
             {
                 //Save error message to umbraco
-                StringBuilder sb2 = new StringBuilder();
-                sb2.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
-                //sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb2.ToString());
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                sb.AppendLine("Error retrieving latest messages.");
+                Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
 
-                return ex.ToString();
+                errored = true;
             }
 
-            return sb.ToString();
+
+            //Convert List to Html
+            if (!errored)
+            {
+                try
+                {
+                    //Instantiate variables
+                    Boolean isFirst = true;
+                    string lastVisionary = "";
+                    const string strVisionary = "<br /><br /><div class='name' style='font-size:18px;font-weight:900;text-align:center;'><a href='[HREF]' style='color: #f3a42a; text-decoration: none;'>[VISIONARY]</a></div>";
+                    const string strMsg = "<div class='title' style='font-size:20px;text-align:center;'><a href='[HREF]' style='color: #f3a42a; text-decoration: none;'><span class='cross' style='color: #f3a42a; text-decoration: none;'>&#x271E; </span>[TITLE]</a></div>";
+
+
+                    //Convert list to html
+                    foreach (latestUpdates latestUpdate in lstLatestUpdates)
+                    {
+                        if (isFirst)
+                        {
+                            //Obtain date published
+                            datePublished = latestUpdate.datePublished;
+                            isFirst = false;
+                        }
+
+                        foreach (visionary visionary in latestUpdate.lstVisionaries)
+                        {
+
+                            if (lastVisionary != visionary.name)
+                            {
+                                sbHtmlList.AppendLine(strVisionary.Replace("[HREF]", visionary.url).Replace("[VISIONARY]", visionary.name));
+                                lastVisionary = visionary.name;
+                            }
+
+                            foreach (message msg in visionary.lstMessages)
+                            {
+                                sbHtmlList.AppendLine(strMsg.Replace("[HREF]", msg.url).Replace("[TITLE]", msg.title));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Save error message to umbraco
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                    sb.AppendLine("Error converting list to html:");
+                    sb.AppendLine(Newtonsoft.Json.JsonConvert.SerializeObject(lstLatestUpdates));
+                    Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
+
+                    errored = true;
+                }
+            }
+
+
+            //Convert List to Text
+            if (!errored)
+            {
+                try
+                {
+                    //Instantiate variables
+                    Boolean isFirst = true;
+                    string lastVisionary = "";
+
+                    //Convert list to html
+                    foreach (latestUpdates latestUpdate in lstLatestUpdates)
+                    {
+                        foreach (visionary visionary in latestUpdate.lstVisionaries)
+                        {
+                            if (lastVisionary != visionary.name)
+                            {
+                                sbTextList.AppendLine(" ");
+                                sbTextList.AppendLine(" ");
+                                sbTextList.AppendLine(visionary.name);
+                                lastVisionary = visionary.name;
+                            }
+
+                            foreach (message msg in visionary.lstMessages)
+                            {
+                                sbTextList.AppendLine(msg.title + "  |  " + msg.url);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Save error message to umbraco
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                    sb.AppendLine("Error converting list to text:");
+                    sb.AppendLine(Newtonsoft.Json.JsonConvert.SerializeObject(lstLatestUpdates));
+                    Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
+
+                    errored = true;
+                }
+            }
+
+
+            //Create email files
+            if (!errored)
+            {
+                try
+                {
+                    //Obtain host url
+                    string hostUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Host + "/";
+
+                    //Extract templates from email files
+                    //string filePath_html = HostingEnvironment.MapPath("~/Emails/RecentUpdates/RecentUpdates-uncompressed.html");
+                    string filePath_html = HostingEnvironment.MapPath("~/Emails/RecentUpdates/RecentUpdates.html");
+                    string filePath_Text = HostingEnvironment.MapPath("~/Emails/RecentUpdates/RecentUpdates.txt");
+                    emailBody_Html = System.IO.File.ReadAllText(filePath_html);
+                    emailBody_Text = System.IO.File.ReadAllText(filePath_Text);
+
+                    // Insert data into page
+                    emailBody_Html = emailBody_Html.Replace("[AFTERTHEWARNING_URL]", hostUrl);
+                    emailBody_Html = emailBody_Html.Replace("[INFO]", sbHtmlList.ToString());
+                    emailBody_Html = emailBody_Html.Replace("[DATE]", datePublished.ToString("MMMM d, yyyy"));
+                    emailBody_Html = emailBody_Html.Replace("[YEAR]", DateTime.Today.Year.ToString());
+
+                    emailBody_Text = emailBody_Text.Replace("[AFTERTHEWARNING_URL]", hostUrl);
+                    emailBody_Text = emailBody_Text.Replace("[INFO]", sbTextList.ToString());
+                    emailBody_Text = emailBody_Text.Replace("[DATE]", datePublished.ToString("MMMM d, yyyy"));
+                    emailBody_Text = emailBody_Text.Replace("[YEAR]", DateTime.Today.Year.ToString());
+                }
+                catch (Exception ex)
+                {
+                    //Save error message to umbraco
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                    sb.AppendLine("Error creating email files");
+                    Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
+
+                    errored = true;
+                }
+            }
+
+
+            //Send email files to each member via email.
+            if (!errored)
+            {
+                try
+                {
+                    //Instantiate variables
+                    UmbracoHelper umbHelper = new UmbracoHelper(UmbracoContext.Current);
+                    IMemberService memberService = ApplicationContext.Current.Services.MemberService;
+                    IEnumerable<IMember> members = memberService.GetAllMembers();
+                    SmtpClient smtp = new SmtpClient();
+                    MailMessage Msg = new MailMessage();
+
+
+
+                    ////CREATE TEST MEMBER LIST
+                    //IMember tempMember1 = memberService.GetByEmail("jim.fifth@5thstudios.com");
+                    //IMember tempMember2 = memberService.GetByEmail("jfifth1976@gmail.com");
+                    //List<IMember> members = new List<IMember>();
+                    //members.Add(tempMember1);
+                    //members.Add(tempMember2);
+
+
+                    //Create email message
+                    Msg.BodyEncoding = Encoding.UTF8;
+                    Msg.SubjectEncoding = Encoding.UTF8;
+                    Msg.Subject = "Recent Updates | After the Warning";
+                    Msg.IsBodyHtml = true;
+                    Msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(emailBody_Text, Encoding.UTF8, MediaTypeNames.Text.Plain));
+                    Msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(emailBody_Html, Encoding.UTF8, MediaTypeNames.Text.Html));
+
+
+                    //Loop through each member                
+                    foreach (IMember member in members)
+                    {
+                        try
+                        {
+                            //Clear email list and add new member email
+                            Msg.To.Clear();
+                            Msg.To.Add(new MailAddress(member.Email));
+
+                            // Send email
+                            smtp.Send(Msg);
+
+                            //Increment successful tally
+                            totalSuccessful++;
+                        }
+                        catch (Exception ex)
+                        {
+                            //Save error message to umbraco
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                            sb.AppendLine(@"Error sending email to:" + member.Name);
+                            Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
+
+                            //Increment failed tally
+                            totalFailed++;
+                        }
+                    }
+
+                    //Close connection after emails have been sent.
+                    smtp.ServicePoint.CloseConnectionGroup(smtp.ServicePoint.ConnectionName);
+                }
+                catch (Exception ex)
+                {
+                    //Save error message to umbraco
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(@"MembershipController.cs : SendUpdatesByEmail()");
+                    sb.AppendLine(@"Error creating smtpClient and/or list of members.");
+                    Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
+                }
+            }
+
+
+            //Return results
+            dict.Add("successful", totalSuccessful);
+            dict.Add("failed", totalFailed);
+            return dict;
         }
 
 
@@ -381,7 +489,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"MembershipController.cs : SendVerificationEmail()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(MembershipController));
             }
 
         }

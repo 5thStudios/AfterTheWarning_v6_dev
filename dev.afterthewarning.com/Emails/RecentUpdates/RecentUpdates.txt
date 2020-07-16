@@ -1,16 +1,11 @@
-﻿Email Verification
-
-Thank you for becoming a member with us. To complete the creation of your account, simply click the "Verify" button below.
-
-Verify Email! [1]
-
-God bless
-—The Webmaster
+﻿After the Warning
+[AFTERTHEWARNING_URL]
 
 
-After the Warning [2] | ©[YEAR]
-By 5th Studios, LLC [3]
+Recent Updates For
+[DATE]
+[INFO]
 
-[1] [LINK]
-[2] [AFTERTHEWARNING_URL]
-[3] [5THSTUDIOS_URL]
+After the Warning | ©[YEAR]
+By 5th Studios, LLC
+http://5thstudios.com

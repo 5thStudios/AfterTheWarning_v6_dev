@@ -3,8 +3,8 @@
 
 
 @{ 
-    //Obtain facebook url
-    string facebookUrl = Umbraco.TypedContent((int)Common.siteNode.Donate).GetPropertyValue<string>(Common.NodeProperties.facebookUrl);
+//Obtain facebook url
+//string facebookUrl = Umbraco.TypedContent((int)Common.siteNode.Donate).GetPropertyValue<string>(Common.NodeProperties.facebookUrl);
 }
 
 <div class="socialControls">
@@ -12,7 +12,7 @@
         <img alt="print" src="~/images/common/printericon.png" />
     </a>
 
-    <a href="@facebookUrl" target="_blank">
+    @*<a href="@facebookUrl" target="_blank">
         <img alt="Facebook" src="~/images/common/fbicon.png" />
-    </a>
+    </a>*@
 </div>

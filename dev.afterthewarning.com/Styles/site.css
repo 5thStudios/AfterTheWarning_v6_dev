@@ -48,7 +48,7 @@ ul li:before { content: "\271E";color: #f3a42a; padding-right: 12px;}
 ol {font-family: 'Buda', cursive; font-style: normal; font-weight: 300; margin-left: 2.25rem;}
 ol li {padding-left: 8px;}
 mark {}
-cite {font-family: 'Buda', cursive; font-style: normal; font-weight: 300; text-align:right;font-size: 17px;}
+cite {font-family: 'Buda', cursive; font-style: normal; font-weight: 300; font-size: 17px;/*text-align:right;*/}
 dfn {}
 fieldset {margin-inline-start: 1px;margin-inline-end: 2px;padding-block-start: 0.35em;padding-inline-start: 0.75em;padding-inline-end: 0.75em;padding-block-end: 0.625em;border-width: 1px;border-style: solid;border-color: #f3a42a;}
 legend {padding: 0 9px;font-weight: 500;color: #74010a;}
@@ -137,8 +137,8 @@ div.button.secondary:hover {cursor:default;}
 .titleSectionPnl {background-image:url('/images/toplevel/BannerBg01.png'); background-repeat:no-repeat;background-position: center top;background-size: cover;}
 .titleSectionPnl.tall {min-height: 350px;}
 .titleSectionPnl.narrow {/*min-height: 350px;*/}
-.titleSectionPnl h1 {color:#fff;font-size:72px;line-height: 51px;margin-bottom: 24px;}
-.titleSectionPnl h3 {color:#fff;line-height: 1em;margin-top:0;}
+.titleSectionPnl h1 {color:#fff;font-size:72px;line-height: 51px;margin-bottom: 16px;}
+.titleSectionPnl h3 {color:#fff;line-height: 1em;margin-top:0;margin-bottom: 12px;}
 .titleSectionPnl p {font-size:23px;line-height: 1.4em;color:#fff;}
 .titleSectionPnl cite {font-size:26px;line-height: 1.2em; color:#fff;}
 .titleSectionPnl a {color:#fff;}

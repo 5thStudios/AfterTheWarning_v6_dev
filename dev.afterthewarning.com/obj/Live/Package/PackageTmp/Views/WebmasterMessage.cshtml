@@ -1,8 +1,0 @@
-﻿@using Models;
-@using ContentModels = Umbraco.Web.PublishedContentModels;
-@inherits UmbracoViewPage<ContentModels.WebmasterMessage>
-@{ Layout = "TopLevel.cshtml"; }
-
-
-<h4>@Model.Subtitle</h4>
-@Model.GetGridHtml(Html, Common.NodeProperties.content, Common.miscellaneous.Foundation6)

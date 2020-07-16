@@ -46,6 +46,24 @@ namespace Umbraco.Web.PublishedContentModels
 		}
 
 		///<summary>
+		/// Send all recent updates via email to members.
+		///</summary>
+		[ImplementPropertyType("sendAllRecentUpdatesViaEmailToMembers")]
+		public object SendAllRecentUpdatesViaEmailToMembers
+		{
+			get { return this.GetPropertyValue("sendAllRecentUpdatesViaEmailToMembers"); }
+		}
+
+		///<summary>
+		/// Send Updates by Email
+		///</summary>
+		[ImplementPropertyType("sendUpdatesByEmail")]
+		public Newtonsoft.Json.Linq.JToken SendUpdatesByEmail
+		{
+			get { return this.GetPropertyValue<Newtonsoft.Json.Linq.JToken>("sendUpdatesByEmail"); }
+		}
+
+		///<summary>
 		/// Hide Children from Navigation: Displays page in menu, but hides the children.
 		///</summary>
 		[ImplementPropertyType("hideChildrenFromNavigation")]

@@ -43,9 +43,8 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : RenderForm_NewPrayer()");
                 sb.AppendLine("userName:" + userName);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
-
-
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
+                
                 ModelState.AddModelError("", "*An error occured while creating a new prayer form.");
                 return PartialView("~/Views/Partials/PrayerCorner/_newPrayer.cshtml");
             }
@@ -73,7 +72,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : RenderForm_EditPrayer()");
                 sb.AppendLine("nodeId:" + nodeId);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
 
                 ModelState.AddModelError("", "*An error occured while creating an edit form with your prayers.");
@@ -124,7 +123,7 @@ namespace Controllers
                 sb.AppendLine(@"PrayerController.cs : RenderForm_PrayerPledges()");
                 sb.AppendLine("userName:" + userName);
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(lstPrayers));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
 
                 ModelState.AddModelError("", "*An error occured while...");
@@ -300,7 +299,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : RenderList()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(prayerList));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
 
                 ModelState.AddModelError("", "*An error occured while creating the prayer list.");
@@ -352,7 +351,8 @@ namespace Controllers
                             sb.AppendLine(@"Controllers/PrayerController.cs : SubmitNewPrayerRequest()");
                             sb.AppendLine(@"Member Id returned nothing.  Cannot add prayer request to member.");
                             sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                            Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                            Exception ex = new Exception();
+                            Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
                         }
                         else
                         {
@@ -387,7 +387,8 @@ namespace Controllers
                         sb.AppendLine(@"Controllers/PrayerController.cs : SubmitNewPrayerRequest()");
                         sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
                         sb.AppendLine("result:" + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                        Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                        Exception ex = new Exception();
+                        Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                         //Return with error
                         ModelState.AddModelError(string.Empty, "An error occured while creating your prayer request.");
@@ -405,7 +406,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : SubmitNewPrayerRequest()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                 ModelState.AddModelError(string.Empty, "An error occured while submitting your prayer request.");
                 return CurrentUmbracoPage();
@@ -446,7 +447,8 @@ namespace Controllers
                         sb.AppendLine(@"Updating prayer request was not successful.");
                         sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
                         sb.AppendLine("result:" + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                        Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                        Exception ex = new Exception();
+                        Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                         //Return with error
                         ModelState.AddModelError(string.Empty, "An error occured while updating your prayer request.");
@@ -464,7 +466,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : UpdatePrayerRequest()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                 ModelState.AddModelError(string.Empty, "An error occured while updating your prayer request.");
                 return CurrentUmbracoPage();
@@ -519,7 +521,8 @@ namespace Controllers
                     sb.AppendLine("loginId: " + loginId);
                     sb.AppendLine("prayerId: " + prayerId);
                     sb.AppendLine("result: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                    Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                    Exception ex = new Exception();
+                    Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                     //Return with error
                     ModelState.AddModelError(string.Empty, "An error occured while submitting your pledge.");
@@ -536,7 +539,8 @@ namespace Controllers
                     sb.AppendLine(@"Cannot add prayer pledge to member.");
                     sb.AppendLine("loginId: " + loginId);
                     sb.AppendLine("prayerId: " + prayerId);
-                    Common.saveErrorMessage(sb.ToString(), sb.ToString());
+                    Exception ex = new Exception();
+                    Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
                 }
                 else
                 {
@@ -569,7 +573,7 @@ namespace Controllers
                 //Save error message to umbraco
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"PrayerController.cs : PledgePrayers()");
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(PrayerController));
 
                 ModelState.AddModelError(string.Empty, "An error occured while submitting your prayer pledge.");
                 return CurrentUmbracoPage();

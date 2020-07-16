@@ -84,7 +84,7 @@ namespace Controllers
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"SearchController.cs : RenderForm()");
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(searchList));
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(SearchController));
 
                 ModelState.AddModelError("", "*An error occured while performing your search request.");
             }
@@ -256,7 +256,8 @@ namespace Controllers
                     msgLink.Title = sRecord.Fields[Common.NodeProperties.nodeName];
                     msgLink.Subtitle = sRecord.Fields[Common.NodeProperties.subtitle];
                     msgLink.Url = Umbraco.NiceUrl(sRecord.Id);
-                    msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+                    //msgLink.Date = Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+                    msgLink.Dates = (Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate])).ToString("MMMM dd");
 
                     searchList.lstMsgsFromHeavenLinks.Add(msgLink);
                 }

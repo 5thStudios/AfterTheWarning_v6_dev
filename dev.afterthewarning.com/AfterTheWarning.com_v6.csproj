@@ -2862,9 +2862,9 @@
     <Content Include="Views\IlluminationStoryList.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_illuminationStoryList.cshtml" />
     <Content Include="Views\PrayerRequest.cshtml" />
-    <Content Include="Web.config">
+    <None Include="Web.config">
       <SubType>Designer</SubType>
-    </Content>
+    </None>
     <Content Include="Views\Partials\Formulate\Responsive.ZurbFoundation.cshtml" />
     <Content Include="Views\GenerateStories.cshtml" />
     <Content Include="Views\StatsByAge.cshtml" />

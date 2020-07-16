@@ -10,6 +10,7 @@ namespace Models
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public DateTime Date { get; set; }
+        public string Dates { get; set; }
         public string Url { get; set; }
 
         public int? VisionaryId { get; set; }

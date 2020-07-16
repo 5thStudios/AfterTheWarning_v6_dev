@@ -113,7 +113,7 @@ namespace Models
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"_membership.cs : getMemberModel_byEmail()");
                 sb.AppendLine("_email:" + _email);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(_memberships));
 
                 return null;
             }
@@ -374,7 +374,7 @@ namespace Models
                 sb.AppendLine("lastName:" + lastName);
                 sb.AppendLine("email:" + email);
                 sb.AppendLine("password:" + password);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(_memberships));
 
                 return -1;
             }
@@ -531,7 +531,7 @@ namespace Models
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("_memberships.cs : MakeAcctActive()");
                 sb.AppendLine("memberId:" + memberId);
-                Common.saveErrorMessage( ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(_memberships));
 
                 return false;
             }
@@ -569,7 +569,7 @@ namespace Models
                 sb.AppendLine(@"Models/_membership.cs : logMemberIn()");
                 sb.AppendLine("loginId:" + loginId);
                 sb.AppendLine("password:" + password);
-                Common.saveErrorMessage(ex.ToString(), sb.ToString());
+                Common.SaveErrorMessage(ex, sb, typeof(_memberships));
 
                 return false;
             }
