@@ -1,13 +1,53 @@
 ﻿@using Models;
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @inherits UmbracoViewPage<ContentModels.VisionaryList>
-@{ Layout = "TopLevel.cshtml";}
+@{
+    Layout = "TopLevel.cshtml";
+
+    //Instantiate variables
+    var pageNo = 1;
+    Boolean isFirst = true;
+
+    //Obtain page number if in querystring.
+    if (!string.IsNullOrEmpty(Request.QueryString[Common.miscellaneous.PageNo]))
+    {
+        int.TryParse(Request.QueryString[Common.miscellaneous.PageNo], out pageNo);
+    }
+
+    //Obtain all messages by page number.
+    LatestUpdateList lstLatestUpdates = Controllers.MessageController.ObtainAllMessages(pageNo);
+}
 
 
 
-<div class="blockList">
+<div id="view-messages-by" class="grid-x">
+    <div class="cell shrink">
+        <h4 class="noTopMarginHeader">View:</h4>
+    </div>
+    <div class="cell large-4 large-offset-1 text-center">
+        <ul class="filters">
+            <li id="liByVisionary" class="active">
+                <a href="#by-visionary">
+                    <h5>By Visionary</h5>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="cell large-4 large-offset-1 text-center">
+        <ul class="filters">
+            <li id="liByDate">
+                <a href="#by-date">
+                    <h5>By Date</h5>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="pnlByVisionary" class="blockList">
+    <br />
     <div class="grid-x small-up-1 medium-up-2 large-up-4">
-
         @foreach (var ipVisionary in Model.Children<Visionary>())
         {
             <div class="cell blockItem">
@@ -31,4 +71,58 @@
             </div>
         }
     </div>
+</div>
+
+
+<div id="pnlByDate" class="visionaryMsgList">
+    <br />
+    @{Html.RenderPartial("Partials/Common/Pagination", lstLatestUpdates.Pagination); }
+    <div class="msgList">
+        @{
+            //Convert list to html
+            foreach (latestUpdates latestUpdate in lstLatestUpdates.LstLatestUpdates)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    <br /><br /><br />
+                }
+                <div class="msgGroup">
+                    <div class="grid-x align-middle grid-padding-x story header">
+                        <div class="cell text-center">
+                            <h4>@latestUpdate.datePublished.ToString("MMMM d, yyyy")</h4>
+                        </div>
+                    </div>
+
+                    @foreach (visionary visionary in latestUpdate.lstVisionaries)
+                    {
+                        <a href="@visionary.url" data-nodeid="@visionary.id">
+                            <div class="grid-x align-middle grid-padding-x story">
+                                <div class="cell">
+                                    <h4><strong>@visionary.name</strong></h4>
+                                </div>
+                            </div>
+                        </a>
+
+                        foreach (var msg in visionary.lstMessages)
+                        {
+                            <a href="@msg.url" data-nodeid="@msg.id">
+                                <div class="grid-x align-middle grid-padding-x story">
+                                    <div class="cell small-offset-1">
+                                        <h4>@msg.title</h4>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+    <br />
+    <br />
+    @{Html.RenderPartial("Partials/Common/Pagination", lstLatestUpdates.Pagination); }
 </div>

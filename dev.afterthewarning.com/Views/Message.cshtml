@@ -4,5 +4,28 @@
 @{ Layout = "TopLevel.cshtml"; }
 
 
+@*Display original post by*@
+@if (!string.IsNullOrEmpty(Model.OriginallyPostedBy))
+{
+    <h5 style="text-align: right;">
+        <strong>Originally Posted On:</strong> <br />
+
+        @if (string.IsNullOrEmpty(Model.OriginalPostUrl))
+        {
+            <a href="#" target="_blank" rel="noopener">
+                @Model.OriginallyPostedBy
+            </a>
+        }
+        else
+        {
+            <a href="@Model.OriginalPostUrl" target="_blank" rel="noopener">
+                @Model.OriginallyPostedBy
+            </a>
+        }
+    </h5>
+}
+
+
+
 <h4>@Model.Subtitle</h4>
 @Model.GetGridHtml(Html, Common.NodeProperties.content, Common.miscellaneous.Foundation6)

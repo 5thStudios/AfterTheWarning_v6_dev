@@ -1440,6 +1440,7 @@
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\custom-formulate-script.js" />
     <Content Include="Scripts\custom\listPagination.js" />
+    <Content Include="Scripts\custom\viewMsgsBy.js" />
     <Content Include="Scripts\custom\reportPage.js" />
     <Content Include="Scripts\custom\supportMsg.js" />
     <Content Include="Scripts\custom\navigation.js" />
@@ -2899,6 +2900,7 @@
     <Compile Include="Helpers\HtmlExtensions.cs" />
     <Compile Include="Models\addressRecord.cs" />
     <Compile Include="Models\ChartDataset.cs" />
+    <Compile Include="Models\LatestUpdateList.cs" />
     <Compile Include="Models\ScriptureLink.cs" />
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\illuminationStory.cs" />

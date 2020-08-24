@@ -346,8 +346,6 @@ namespace Controllers
 
 
 
-
-
         public ActionResult RenderMsgs_byVisionary(IPublishedContent ipVisionary)
         {
             //Instantiate variables
@@ -416,7 +414,8 @@ namespace Controllers
                     msgLink.Url = Umbraco.NiceUrl(sRecord.Id);
 
 
-                   /* msgLink.Date = */Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
+                    /* msgLink.Date = */
+                    Convert.ToDateTime(sRecord.Fields[Common.NodeProperties.publishDate]);
 
 
                     //Obtain list of all dates
@@ -440,7 +439,7 @@ namespace Controllers
 
                             msgLink.Dates = sbDateRange.ToString();
                         }
-                                                
+
                         msgLink.Date = lstDateRange.First(); //Used for resorting list before displaying
                     }
                     else
@@ -472,9 +471,6 @@ namespace Controllers
             //Return data to partialview
             return PartialView("~/Views/Partials/MessagesFromHeaven/_msgList.cshtml", msgList);
         }
-
-
-
         #endregion
 
 
@@ -606,6 +602,161 @@ namespace Controllers
 
 
             //
+            return lstLatestUpdates;
+        }
+
+
+
+
+        public static LatestUpdateList ObtainAllMessages(int pageNo = 1)
+        {
+
+            //Instantiate variables
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            LatestUpdateList lstLatestUpdates = new LatestUpdateList();
+
+
+            //try
+            //{
+            //Get all ...
+            BaseSearchProvider mySearcher = ExamineManager.Instance.SearchProviderCollection[Common.searchProviders.MessagesSearcher];
+            ISearchCriteria criteria = mySearcher.CreateSearchCriteria(IndexTypes.Content);
+            IBooleanOperation query = criteria.Field(Common.NodeProperties.indexType, Common.NodeProperties.content); //gets all items
+            query.And().OrderByDescending(Common.NodeProperties.publishDate);
+            query.And().OrderBy(Common.NodeProperties.nodeName);
+            query.And().OrderBy(Common.miscellaneous.Path);
+            ISearchResults isResults = mySearcher.Search(query.Compile());
+
+            if (isResults.Any())
+            {
+                //Instantiate variables
+                DateTime msgDate = new DateTime(1900, 1, 1);
+                DateTime prevDate = new DateTime(1900, 1, 1);
+                latestUpdates latestUpdate = new latestUpdates();
+                visionary visionary = new visionary();
+                message message;
+                IPublishedContent ipMsg;
+                IPublishedContent ipVisionary;
+
+
+
+                //Get item counts and total experiences.
+                lstLatestUpdates.Pagination.itemsPerPage = 20;
+                lstLatestUpdates.Pagination.totalItems = isResults.Count();
+
+
+                //Determine how many pages/items to skip and take, as well as the total page count for the search result.
+                if (lstLatestUpdates.Pagination.totalItems > lstLatestUpdates.Pagination.itemsPerPage)
+                {
+                    lstLatestUpdates.Pagination.totalPages = (int)Math.Ceiling((double)lstLatestUpdates.Pagination.totalItems / (double)lstLatestUpdates.Pagination.itemsPerPage);
+                }
+                else
+                {
+                    lstLatestUpdates.Pagination.itemsPerPage = lstLatestUpdates.Pagination.totalItems;
+                    lstLatestUpdates.Pagination.totalPages = 1;
+                }
+
+
+                //Determine current page number 
+                if (pageNo <= 0 || pageNo > lstLatestUpdates.Pagination.totalPages)
+                {
+                    pageNo = 1;
+                }
+                lstLatestUpdates.Pagination.pageNo = pageNo;
+
+
+                //Determine how many pages/items to skip
+                if (lstLatestUpdates.Pagination.totalItems > lstLatestUpdates.Pagination.itemsPerPage)
+                {
+                    lstLatestUpdates.Pagination.itemsToSkip = lstLatestUpdates.Pagination.itemsPerPage * (pageNo - 1);
+                }
+
+
+
+                //Get top 'n' results and determine link structure
+                //foreach (SearchResult srResult in isResults.Take(30))
+                foreach (SearchResult srResult in isResults.Skip(lstLatestUpdates.Pagination.itemsToSkip).Take(lstLatestUpdates.Pagination.itemsPerPage))
+                {
+                    //Obtain message's node
+                    ipMsg = umbracoHelper.TypedContent(Convert.ToInt32(srResult.Id));
+                    if (ipMsg != null)
+                    {
+                        //Obtain date of message
+                        msgDate = ipMsg.GetPropertyValue<DateTime>(Common.NodeProperties.publishDate);
+
+                        //Create a new date for messages
+                        if (msgDate != prevDate)
+                        {
+                            //Update current date
+                            prevDate = msgDate;
+
+                            //Create new instances for updates and add to list of all updates.
+                            latestUpdate = new latestUpdates();
+                            latestUpdate.datePublished = msgDate;
+                            lstLatestUpdates.LstLatestUpdates.Add(latestUpdate);
+
+                            //Reset the visionary class on every new date change.
+                            visionary = new visionary();
+                        }
+
+                        //Obtain current visionary or webmaster
+                        if (ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary) != null)
+                        {
+                            if (visionary.id != ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).Id)
+                            {
+                                //Obtain visionary node
+                                ipVisionary = ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary);
+
+                                //Create new visionary class and add to latest update class
+                                visionary = new visionary();
+                                visionary.id = ipVisionary.Id;
+                                visionary.name = ipVisionary.Name;
+                                visionary.url = ipVisionary.Url;
+                                latestUpdate.lstVisionaries.Add(visionary);
+                            }
+                        }
+                        else if (ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList) != null)
+                        {
+                            if (visionary.id != ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList).Id)
+                            {
+                                //Obtain visionary node
+                                ipVisionary = ipMsg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList);
+
+                                //Create new visionary class and add to latest update class
+                                visionary = new visionary();
+                                visionary.id = ipVisionary.Id;
+                                visionary.name = ipVisionary.Name;
+                                visionary.url = ipVisionary.Url;
+                                latestUpdate.lstVisionaries.Add(visionary);
+                            }
+                        }
+
+                        //Create new message and add to existing visionary class.
+                        message = new message();
+                        message.id = ipMsg.Id;
+                        message.title = ipMsg.Name;
+                        message.url = ipMsg.Url;
+                        visionary.lstMessages.Add(message);
+                    }
+                }
+            }
+
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    //StringBuilder sb = new StringBuilder();
+            //    //sb.AppendLine(@"MessageController.cs : RenderLatestMessages()");
+            //    //sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(lstLatestUpdates));
+            //    //Common.SaveErrorMessage(ex, sb, typeof(MessageController));
+
+
+            //    //ModelState.AddModelError("", "*An error occured while creating the latest message list.");
+            //    //return CurrentUmbracoPage();
+            //}
+
+
+            //Return data to partialview
             return lstLatestUpdates;
         }
         #endregion

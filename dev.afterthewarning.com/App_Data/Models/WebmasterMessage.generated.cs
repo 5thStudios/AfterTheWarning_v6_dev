@@ -64,6 +64,15 @@ namespace Umbraco.Web.PublishedContentModels
 		}
 
 		///<summary>
+		/// Headings
+		///</summary>
+		[ImplementPropertyType("headings")]
+		public object Headings
+		{
+			get { return Umbraco.Web.PublishedContentModels.Message.GetHeadings(this); }
+		}
+
+		///<summary>
 		/// Meta Robots
 		///</summary>
 		[ImplementPropertyType("metaRobots")]
@@ -73,7 +82,25 @@ namespace Umbraco.Web.PublishedContentModels
 		}
 
 		///<summary>
-		/// Page Content
+		/// Originally Posted By: *Optional
+		///</summary>
+		[ImplementPropertyType("originallyPostedBy")]
+		public string OriginallyPostedBy
+		{
+			get { return Umbraco.Web.PublishedContentModels.Message.GetOriginallyPostedBy(this); }
+		}
+
+		///<summary>
+		/// Original Post Url: *Optional
+		///</summary>
+		[ImplementPropertyType("originalPostUrl")]
+		public string OriginalPostUrl
+		{
+			get { return Umbraco.Web.PublishedContentModels.Message.GetOriginalPostUrl(this); }
+		}
+
+		///<summary>
+		/// Content
 		///</summary>
 		[ImplementPropertyType("pageContent")]
 		public object PageContent

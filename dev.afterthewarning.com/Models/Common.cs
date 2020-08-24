@@ -289,6 +289,8 @@ namespace Models
             public const string originalSiteName = "originalSiteName";
             public const string originalSiteUrl = "originalSiteUrl";
             public const string originalSource = "originalSource";
+            public const string originallyPostedBy = "originallyPostedBy";
+            public const string originalPostUrl = "originalPostUrl";
 
             public const string pageImage = "pageImage";
             public const string paypalUrl = "paypalUrl";

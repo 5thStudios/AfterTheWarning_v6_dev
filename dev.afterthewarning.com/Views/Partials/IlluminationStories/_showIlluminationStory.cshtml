@@ -1,7 +1,8 @@
 ﻿@inherits UmbracoViewPage<Models.illuminationStory>
+@using Models;
 
 
-@{ 
+@{
     //Redirect to home if illumination settings are not active.
     IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
     if (ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls) != true)

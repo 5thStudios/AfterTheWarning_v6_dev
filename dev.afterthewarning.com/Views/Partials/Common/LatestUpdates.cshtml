@@ -2,6 +2,11 @@
 @inherits UmbracoViewPage<List<latestUpdates>>
 
 
+@{ 
+    //Get the 'view all' url
+    string viewAllMsgs = Umbraco.TypedContent((int)(Common.siteNode.MessagesFromHeaven)).Url + "#by-date";
+}
+
 
 <div class="grid-x grid-padding-x">
     <div class="large-22 large-offset-1 cell">
@@ -27,7 +32,7 @@
         }
 
         <br />
-        <div class="viewMore"><a href="@Umbraco.TypedContent((int)(Common.siteNode.MessagesFromHeaven)).Url">View All Messages</a></div>
+        <div class="viewMore"><a href="@viewAllMsgs">View All Messages</a></div>
         <br />
     </div>
 </div>

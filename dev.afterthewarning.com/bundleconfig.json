@@ -18,9 +18,10 @@
       "Scripts/custom/pagination.js",
       "Scripts/custom/reportPage.js",
       "Scripts/app.js",
-      "App_Plugins/formulate/responsive.plain-javascript.min.js",
       "Scripts/custom-formulate-script.js",
-      "Scripts/custom/navigation.js"
+      "Scripts/custom/navigation.js",
+      "Scripts/custom/viewMsgsBy.js",
+      "App_Plugins/formulate/responsive.plain-javascript.min.js"
     ]
   }
 ]

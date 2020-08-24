@@ -138,7 +138,7 @@ div.button.secondary:hover {cursor:default;}
 .titleSectionPnl {background-image:url('/images/toplevel/BannerBg01.png'); background-repeat:no-repeat;background-position: center top;background-size: cover;}
 .titleSectionPnl.tall {min-height: 350px;}
 .titleSectionPnl.narrow {/*min-height: 350px;*/}
-.titleSectionPnl h1 {color:#fff;font-size:72px;line-height: 60px;margin-bottom: 16px;}
+.titleSectionPnl h1 {color:#fff;font-size:72px;line-height: 51px;margin-bottom: 16px;}
 .titleSectionPnl h3 {color:#fff;line-height: 1em;margin-top:0;margin-bottom: 12px;}
 .titleSectionPnl p {font-size:23px;line-height: 1.4em;color:#fff;}
 .titleSectionPnl cite {font-size:26px;line-height: 1.2em; color:#fff;}
@@ -427,7 +427,7 @@ a.breadcrumb:hover {color: #74010a;text-decoration:underline;}
 ----------------------------------------------------------*/
 .filters {margin:0;}
 .filters li {background-color: rgba(116, 1, 10, 0.15);color: #74010a;margin-bottom: 3px;/*padding: 9px 0 9px 9px;*/}
-.filters li h5 {margin:0;padding: 9px 0 9px 9px;}
+.filters li h5 {margin:0;padding: 9px;}
 .filters li:hover {background-color: rgba(116, 1, 10, 0.35);cursor:pointer;}
 .filters li.active {background-color: rgba(116, 1, 10, 1);}
 .filters li.active h5 {color: #fff;}
@@ -680,10 +680,32 @@ a.breadcrumb:hover {color: #74010a;text-decoration:underline;}
 
 
 
+/* 
+----------------------------------------------------------*/
+#pnlByVisionary {display:none;}
+#pnlByDate {display:none;}
+.visionaryMsgList .msgList {}
+.visionaryMsgList .msgList div {}
+.visionaryMsgList .msgList .story {border:2px solid transparent;}
+.visionaryMsgList .msgList a:nth-child(odd) .story {background-color:rgba(116, 1, 10, 0.05);}
+.visionaryMsgList .msgList a:hover .story {border-color:rgba(116, 1, 10, 0.15);}
+.visionaryMsgList .msgList .story h4 {margin:0;padding-left:12px;}
+.visionaryMsgList .msgList .story.header {background-color:rgba(116, 1, 10, 0.15);}
+.visionaryMsgList .msgList .story.header h4 {font-weight: 600;}
+@media screen and (max-width: 39.9375em) {
+    /*.visionaryMsgList .msgList .story .author {font-size:16px;}*/
+}
+@media screen and (max-width: 63.9375em) {
+    /*.visionaryMsgList .msgList .story .author {font-style: italic;}*/
+}
+
+
+
+
 
 /* Miscellaneous
 ----------------------------------------------------------*/
-.validation-summary-errors { background-color: rgba(116, 1, 10, 0.05); font-size: 24px; padding: 24px 8px 12px 8px;}
+.validation-summary-errors {background-color: rgba(116, 1, 10, 0.05);font-size: 24px;padding: 24px 8px 12px 8px;}
 @media screen and (max-width: 39.9375em) {
     .validation-summary-errors li { font-size:20px; }
 }

@@ -30,10 +30,19 @@ namespace Umbraco.Web.PublishedContentModels
 		/// <summary>Date of Message(s)</summary>
 		List<DateTime> DateOfMessages { get; }
 
+		/// <summary>Headings</summary>
+		object Headings { get; }
+
 		/// <summary>Meta Robots</summary>
 		object MetaRobots { get; }
 
-		/// <summary>Page Content</summary>
+		/// <summary>Originally Posted By</summary>
+		string OriginallyPostedBy { get; }
+
+		/// <summary>Original Post Url</summary>
+		string OriginalPostUrl { get; }
+
+		/// <summary>Content</summary>
 		object PageContent { get; }
 
 		/// <summary>Publish Date</summary>
@@ -105,6 +114,18 @@ namespace Umbraco.Web.PublishedContentModels
 		public static List<DateTime> GetDateOfMessages(IMessage that) { return that.GetPropertyValue<List<DateTime>>("dateOfMessages"); }
 
 		///<summary>
+		/// Headings
+		///</summary>
+		[ImplementPropertyType("headings")]
+		public object Headings
+		{
+			get { return GetHeadings(this); }
+		}
+
+		/// <summary>Static getter for Headings</summary>
+		public static object GetHeadings(IMessage that) { return that.GetPropertyValue("headings"); }
+
+		///<summary>
 		/// Meta Robots
 		///</summary>
 		[ImplementPropertyType("metaRobots")]
@@ -117,7 +138,31 @@ namespace Umbraco.Web.PublishedContentModels
 		public static object GetMetaRobots(IMessage that) { return that.GetPropertyValue("metaRobots"); }
 
 		///<summary>
-		/// Page Content
+		/// Originally Posted By: *Optional
+		///</summary>
+		[ImplementPropertyType("originallyPostedBy")]
+		public string OriginallyPostedBy
+		{
+			get { return GetOriginallyPostedBy(this); }
+		}
+
+		/// <summary>Static getter for Originally Posted By</summary>
+		public static string GetOriginallyPostedBy(IMessage that) { return that.GetPropertyValue<string>("originallyPostedBy"); }
+
+		///<summary>
+		/// Original Post Url: *Optional
+		///</summary>
+		[ImplementPropertyType("originalPostUrl")]
+		public string OriginalPostUrl
+		{
+			get { return GetOriginalPostUrl(this); }
+		}
+
+		/// <summary>Static getter for Original Post Url</summary>
+		public static string GetOriginalPostUrl(IMessage that) { return that.GetPropertyValue<string>("originalPostUrl"); }
+
+		///<summary>
+		/// Content
 		///</summary>
 		[ImplementPropertyType("pageContent")]
 		public object PageContent
@@ -125,7 +170,7 @@ namespace Umbraco.Web.PublishedContentModels
 			get { return GetPageContent(this); }
 		}
 
-		/// <summary>Static getter for Page Content</summary>
+		/// <summary>Static getter for Content</summary>
 		public static object GetPageContent(IMessage that) { return that.GetPropertyValue("pageContent"); }
 
 		///<summary>
