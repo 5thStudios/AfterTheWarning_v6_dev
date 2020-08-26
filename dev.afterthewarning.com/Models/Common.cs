@@ -311,6 +311,7 @@ namespace Models
             public const string SaveErrorMessage = "saveErrorMessage";
             public const string showInMinorNavigation = "showInMinorNavigation";
             public const string story = "story";
+            public const string subscribed = "subscribed";
             public const string subtitle = "subtitle";
 
             public const string testament = "testament";

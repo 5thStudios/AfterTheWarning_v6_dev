@@ -14,7 +14,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.memberId)
 
-    <p>Updating your account?  No problem.  Simply enter your credentials below and respond to the verification email that will be sent to you. It’s that easy.</p>
+    <p>Updating your account?  No problem.  Simply update your credentials below and save your changes. It’s that easy.</p>
     <br />
 
     <div class="grid-x grid-padding-x">
@@ -44,8 +44,20 @@
 
 
     <br />
+    <div class="grid-x grid-padding-x">
+        <div class="cell">
+            <h4>
+                @Html.DisplayNameFor(m => m.Subscribed)
+                &nbsp;&nbsp;&nbsp;
+                @Html.CheckBoxFor(m => m.Subscribed)
+            </h4>
+        </div>
+    </div>
+
+
     <br />
-    <div class="cell createPasswordPnl">
+    <br />
+    <div class="createPasswordPnl">
         <div class="grid-x grid-padding-x grid-padding-y grid-margin-x grid-margin-y">
             <div class="cell large-12">
                 <h4>@Html.DisplayNameFor(m => m.Password)</h4>
@@ -138,85 +150,85 @@
         </div>
         @*<div class="pwValidationPnl">
 
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>6+ characters</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-                <div class="cell large-18 text-center">
-                    <h3>6+ characters</h3>
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>At least 1 uppercase letter</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>At least 1 lowercase letter</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-            </div>
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>At least 1 number</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-                <div class="cell large-18 text-center">
-                    <h3>At least 1 uppercase letter</h3>
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>Alpha-numeric only</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                <div class="grid-x grid-padding-x align-middle">
+                    <div class="cell large-3 text-left pwd1">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
+                    <div class="cell large-18 text-center">
+                        <h3>Both passwords match</h3>
+                    </div>
+                    <div class="cell large-3 text-right pwd2">
+                        <img alt="valid" src="~/images/common/valid.png" class="valid" />
+                        <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
+                    </div>
                 </div>
-            </div>
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-                <div class="cell large-18 text-center">
-                    <h3>At least 1 lowercase letter</h3>
-                </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-            </div>
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-                <div class="cell large-18 text-center">
-                    <h3>At least 1 number</h3>
-                </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-            </div>
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-                <div class="cell large-18 text-center">
-                    <h3>Alpha-numeric only</h3>
-                </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-            </div>
-            <div class="grid-x grid-padding-x align-middle">
-                <div class="cell large-3 text-left pwd1">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-                <div class="cell large-18 text-center">
-                    <h3>Both passwords match</h3>
-                </div>
-                <div class="cell large-3 text-right pwd2">
-                    <img alt="valid" src="~/images/common/valid.png" class="valid" />
-                    <img alt="invalid" src="~/images/common/invalid.png" class="invalid" />
-                </div>
-            </div>
-        </div>*@
+            </div>*@
     </div>
 
 

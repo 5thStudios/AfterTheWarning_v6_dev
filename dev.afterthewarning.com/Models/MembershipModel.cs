@@ -58,7 +58,12 @@ namespace Models
         public bool ValidPassword { get; set; }
 
 
-        
+
+        [Display(Name = "Receive Latest Update Notifications?")]
+        public bool Subscribed { get; set; }
+
+
+
         public int memberId { get; set; }
     }
 }
