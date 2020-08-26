@@ -49,6 +49,10 @@ namespace Controllers
         }
         #endregion
 
+
+
+
+
         #region "HttpPosts"
         //Submit form to create a new account
         [HttpPost]
@@ -142,6 +146,7 @@ namespace Controllers
                         // Update the member properties
                         member.SetValue(Common.NodeProperties.firstName, model.FirstName);
                         member.SetValue(Common.NodeProperties.lastName, model.LastName.ToUpper());
+                        member.SetValue(Common.NodeProperties.subscribed, model.Subscribed);
 
                         // Save the object
                         memberService.Save(member);
@@ -172,6 +177,10 @@ namespace Controllers
             }
         }
         #endregion
+
+
+
+
 
         #region "Methods"
         public static Dictionary<string, int> SendUpdatesByEmail()
@@ -376,15 +385,19 @@ namespace Controllers
                     {
                         try
                         {
-                            //Clear email list and add new member email
-                            Msg.To.Clear();
-                            Msg.To.Add(new MailAddress(member.Email));
+                            //
+                            if (member.GetValue<Boolean>(Common.NodeProperties.subscribed) == true)
+                            {
+                                //Clear email list and add new member email
+                                Msg.To.Clear();
+                                Msg.To.Add(new MailAddress(member.Email));
 
-                            // Send email
-                            smtp.Send(Msg);
+                                // Send email
+                                smtp.Send(Msg);
 
-                            //Increment successful tally
-                            totalSuccessful++;
+                                //Increment successful tally
+                                totalSuccessful++;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -418,8 +431,6 @@ namespace Controllers
             dict.Add("failed", totalFailed);
             return dict;
         }
-
-
         private void SendVerificationEmail(MembershipModel model, int memberId)
         {
             try

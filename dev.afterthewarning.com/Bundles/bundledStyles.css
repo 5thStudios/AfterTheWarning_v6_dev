@@ -58,6 +58,7 @@ address {font-family: 'Ubuntu', sans-serif; font-style: normal; font-weight: 400
 select {font-family: 'Ubuntu', sans-serif; font-style: normal; font-weight: 400;/*font-size:14px;*/color:#74040a;margin: 0 0 1rem;border-radius:0;padding: 0px 46px 2px 8px;border: 1px solid #74040a;height: 26px;-webkit-appearance: none;-moz-appearance: none;appearance: none;background: url('/images/common/ddl-btn.jpg') 100% / 11% no-repeat rgba(116, 1, 10, 0.05);font-size:18px;height:32px;background-size: 15%;}
 select::-ms-expand {display: none; /* remove default arrow on ie10 and ie11 */}
 form {/*display: inline-block;*/display: inline;}
+[type="checkbox"] {width:18px;height:18px;opacity:.7;}
 
 
 

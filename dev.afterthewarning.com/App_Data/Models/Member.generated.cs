@@ -163,6 +163,15 @@ namespace Umbraco.Web.PublishedContentModels
 		}
 
 		///<summary>
+		/// Subscribed: *If selected, emails of latest updates will be sent to member.
+		///</summary>
+		[ImplementPropertyType("subscribed")]
+		public bool Subscribed
+		{
+			get { return this.GetPropertyValue<bool>("subscribed"); }
+		}
+
+		///<summary>
 		/// Is Approved
 		///</summary>
 		[ImplementPropertyType("umbracoMemberApproved")]

@@ -105,6 +105,7 @@ namespace Models
                 membership.ConfirmPassword = string.Empty;
                 membership.ValidPassword = false;
                 membership.memberId = member.Id;
+                membership.Subscribed = member.GetValue<Boolean>(Common.NodeProperties.subscribed);
 
                 return membership;
             }
