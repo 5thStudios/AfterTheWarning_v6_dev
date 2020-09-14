@@ -2,10 +2,14 @@
 @{ Layout = "IlluminationStatistics.cshtml"; }
 
 
+@{ 
+    //Obtain a list of stats
+    Models.StatsByExperienceTypes stats = Controllers.IlluminationController.ObtainStatistics_byExperienceType(Model);
+}
+
 
 <h3 class="text-center">By Experience Type</h3>
-
-@{ Html.RenderPartial("Partials/Charts/PieChart"); }
+@{ Html.RenderPartial("Partials/Charts/PieChart", stats); }
 
 
 @section Footer { }

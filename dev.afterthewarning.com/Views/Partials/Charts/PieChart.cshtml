@@ -1,4 +1,39 @@
-﻿@inherits UmbracoViewPage
+﻿@inherits UmbracoViewPage<Models.StatsByExperienceTypes>
+
+
+
+@{
+//List<string> lstLabels = new List<string>();
+//lstLabels.Add("Heavenly");
+//lstLabels.Add("Purgatorial");
+//lstLabels.Add("Hellish");
+//lstLabels.Add("Unknown/Unsure");
+
+//List<int> lstValues = new List<int>();
+//lstValues.Add(25);
+//lstValues.Add(15);
+//lstValues.Add(35);
+//lstValues.Add(25);
+
+//List<string> lstBgColors = new List<string>(); 
+//lstBgColors.Add("#4f81bc");
+//lstBgColors.Add("#9bbb57");
+//lstBgColors.Add("#bf4b49");
+//lstBgColors.Add("#21bea6");
+
+//List<string> lstHoverBgColors = new List<string>(); 
+//lstHoverBgColors.Add("#8CACD3");
+//lstHoverBgColors.Add("#BDD391");
+//lstHoverBgColors.Add("#D58987");
+//lstHoverBgColors.Add("#6DD4C4");
+
+
+//string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+//string jsonValues = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
+//string jsonBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
+//string jsonHoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
+
+}
 
 
 
@@ -12,19 +47,25 @@
 </div>
 
 
-
-
 <script>
     $(document).ready(function () {
+        //Convert data into variables usable by chart
+        var labels = JSON.parse(@Html.Raw(Json.Encode(Model.Labels)));
+        var values = JSON.parse(@Html.Raw(Json.Encode(Model.Values)));
+        var bgColors = JSON.parse(@Html.Raw(Json.Encode(Model.BgColors)));
+        var hoverBgColors = JSON.parse(@Html.Raw(Json.Encode(Model.HoverBgColors)));
+
+
+        //Create chart
         new Chart(document.getElementById("chartjs-4"), {
             "type": "pie",
             "data": {
-                "labels": ["Heavenly", "Purgatorial", "Hellish", "Unknown/Unsure"],
+                "labels": labels,
                 "datasets": [{
                     "label": "Experience Type",
-                    "data": [20, 40, 30, 10],
-                    "backgroundColor": ["#4f81bc", "#9bbb57", "#bf4b49", "#21bea6"],
-                    "hoverBackgroundColor": ["#8CACD3", "#BDD391", "#D58987", "#6DD4C4"]
+                    "data": values,
+                    "backgroundColor": bgColors,
+                    "hoverBackgroundColor": hoverBgColors
                 }]
             },
             options: {

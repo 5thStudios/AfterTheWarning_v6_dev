@@ -2906,6 +2906,8 @@
     <Compile Include="Models\addressRecord.cs" />
     <Compile Include="Models\ChartDataset.cs" />
     <Compile Include="Models\LatestUpdateList.cs" />
+    <Compile Include="Models\StatsByExperienceTypes.cs" />
+    <Compile Include="Models\Stat_Age.cs" />
     <Compile Include="Models\ScriptureLink.cs" />
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\illuminationStory.cs" />
@@ -2926,7 +2928,6 @@
     <Compile Include="Models\PrayerLink.cs" />
     <Compile Include="Models\PrayerRequestModel.cs" />
     <Compile Include="Models\Scriptures.cs" />
-    <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\StatsByAge.cs" />
     <Compile Include="Models\TableOfContent.cs" />
     <Compile Include="Models\TempResults.cs" />

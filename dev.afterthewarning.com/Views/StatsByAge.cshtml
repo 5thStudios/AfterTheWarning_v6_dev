@@ -5,37 +5,38 @@
 
 
 @{
-    Statistics stats = new Statistics();
-    //Statistics stats = new Statistics(true);
+    //
+    Models.StatsByAge stats = Controllers.IlluminationController.ObtainStatistics_byAge(Model);
 }
 
 
 <h3 class="text-right">By Age</h3>
-<h4 class="text-right">Total of <strong>@stats.statsByAge.TotalEntries</strong> entries.</h4>
-
-
-
-@*//SHOW TOTAL NUMBER FOR HEAVEN/HELL/PURG/OTHER*@
+<h4 class="text-right">Total of <strong>@stats.TotalEntries</strong> entries.</h4>
 
 
 
 
 
-@{ Html.RenderPartial("Partials/Charts/LineChart", stats.statsByAge); }
+
+
+@{ Html.RenderPartial("Partials/Charts/LineChart", stats); }
+
+
 @*@{ Html.RenderPartial("Partials/Charts/PolarAreaChart"); }*@
+
 
 <div class="grid-x grid-padding-x grid-padding-y">
     <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats.statsByAge, new ViewDataDictionary(this.ViewData) { { "index", 0 } }); }
+        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary(this.ViewData) { { "index", 0 } }); }
     </div>
     <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats.statsByAge, new ViewDataDictionary { { "index", 1 } }); }
+        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 1 } }); }
     </div>
     <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats.statsByAge, new ViewDataDictionary { { "index", 2 } }); }
+        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 2 } }); }
     </div>
     <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats.statsByAge, new ViewDataDictionary { { "index", 3 } }); }
+        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 3 } }); }
     </div>
 </div>
 
@@ -44,10 +45,10 @@
 
 
 @section Footer {
-    <script>
-        $(window).on("load", function () {
-            //Show the duration it took to generate statistics.
-            console.log('@stats.statsByAge.Duration');
-        });
-    </script>
+    @*<script>
+            $(window).on("load", function () {
+                //Show the duration it took to generate statistics.
+                console.log('@stats.Duration');
+            });
+        </script>*@
 }

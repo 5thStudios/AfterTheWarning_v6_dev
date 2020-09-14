@@ -22,6 +22,7 @@ using UmbracoExamine;
 using Examine.Providers;
 using Examine.SearchCriteria;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Controllers
 {
@@ -71,7 +72,7 @@ namespace Controllers
                 sb.AppendLine("model:" + Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStory));
                 sb.AppendLine("member:" + Newtonsoft.Json.JsonConvert.SerializeObject(member));
                 Common.SaveErrorMessage(ex, sb, typeof(IlluminationController));
-                
+
                 ModelState.AddModelError("", "*An error occured while retrieving your story.");
                 return PartialView("~/Views/Partials/IlluminationStories/_showIlluminationStory.cshtml", illuminationStory);
             }
@@ -704,6 +705,113 @@ namespace Controllers
 
 
 
+        #region "Methods"
+        public static Models.StatsByAge ObtainStatistics_byAge(IPublishedContent ipByAge)
+        {
+            //Initialize variables.
+            Models.StatsByAge statsByAge = new Models.StatsByAge();
+            statsByAge.LstChartData = new List<ChartDataset>();
+            statsByAge.LstAgeRange = new List<string>();
+            ChartDataset HeavenlyDataset = new ChartDataset("Heavenly", "Heavenly", "#4f81bc");
+            ChartDataset HellishDataset = new ChartDataset("Hellish", "Hellish", "#bf4b49");
+            ChartDataset PurgatorialDataset = new ChartDataset("Purgatorial", "Purgatorial", "#9bbb57");
+            ChartDataset UnknownDataset = new ChartDataset("Unknown", "Unknown/Unsure", "#21bea6");
+            statsByAge.TotalEntries = 0;
+
+            //Obtain data from node
+            statsByAge.LstAgeStats_Heavenly = JsonConvert.DeserializeObject<List<Stat_AgeRange>>(ipByAge.GetPropertyValue<string>(Common.NodeProperties.statsHeavenly));
+            statsByAge.LstAgeStats_Hellish = JsonConvert.DeserializeObject<List<Stat_AgeRange>>(ipByAge.GetPropertyValue<string>(Common.NodeProperties.statsHellish));
+            statsByAge.LstAgeStats_Purgatorial = JsonConvert.DeserializeObject<List<Stat_AgeRange>>(ipByAge.GetPropertyValue<string>(Common.NodeProperties.statsPurgatorial));
+            statsByAge.LstAgeStats_Unknown = JsonConvert.DeserializeObject<List<Stat_AgeRange>>(ipByAge.GetPropertyValue<string>(Common.NodeProperties.statsUnknown));
+
+            //Add data to proper datasets
+            foreach (Stat_AgeRange stat in statsByAge.LstAgeStats_Heavenly)
+            {
+                HeavenlyDataset.LstData.Add(stat.Count); //Add data to list
+                statsByAge.TotalEntries += stat.Count; //Increment total entries
+
+                statsByAge.LstAgeRange.Add(stat.AgeRange); //Add text range [all are the same so only need to do this once.]
+            }
+            foreach (Stat_AgeRange stat in statsByAge.LstAgeStats_Hellish)
+            {
+                HellishDataset.LstData.Add(stat.Count);
+                statsByAge.TotalEntries += stat.Count;
+            }
+            foreach (Stat_AgeRange stat in statsByAge.LstAgeStats_Purgatorial)
+            {
+                PurgatorialDataset.LstData.Add(stat.Count);
+                statsByAge.TotalEntries += stat.Count;
+            }
+            foreach (Stat_AgeRange stat in statsByAge.LstAgeStats_Unknown)
+            {
+                UnknownDataset.LstData.Add(stat.Count);
+                statsByAge.TotalEntries += stat.Count;
+            }
+
+            //Stringify lists
+            statsByAge.jsonAgeRange = Newtonsoft.Json.JsonConvert.SerializeObject(statsByAge.LstAgeRange);
+            HeavenlyDataset.JsonData = Newtonsoft.Json.JsonConvert.SerializeObject(HeavenlyDataset.LstData);
+            HellishDataset.JsonData = Newtonsoft.Json.JsonConvert.SerializeObject(HellishDataset.LstData);
+            PurgatorialDataset.JsonData = Newtonsoft.Json.JsonConvert.SerializeObject(PurgatorialDataset.LstData);
+            UnknownDataset.JsonData = Newtonsoft.Json.JsonConvert.SerializeObject(UnknownDataset.LstData);
+
+            //Add Charts to list.
+            statsByAge.LstChartData.Add(HeavenlyDataset);
+            statsByAge.LstChartData.Add(HellishDataset);
+            statsByAge.LstChartData.Add(PurgatorialDataset);
+            statsByAge.LstChartData.Add(UnknownDataset);
+
+            //Return stats
+            return statsByAge;
+        }
+
+        public static StatsByExperienceTypes ObtainStatistics_byExperienceType(IPublishedContent ip)
+        {
+            List<string> lstLabels = new List<string>();
+            lstLabels.Add("Heavenly");
+            lstLabels.Add("Purgatorial");
+            lstLabels.Add("Hellish");
+            lstLabels.Add("Unknown/Unsure");
+
+            List<int> lstValues = new List<int>();
+            lstValues.Add(25);
+            lstValues.Add(15);
+            lstValues.Add(35);
+            lstValues.Add(25);
+
+            List<string> lstBgColors = new List<string>();
+            lstBgColors.Add("#4f81bc");
+            lstBgColors.Add("#9bbb57");
+            lstBgColors.Add("#bf4b49");
+            lstBgColors.Add("#21bea6");
+
+            List<string> lstHoverBgColors = new List<string>();
+            lstHoverBgColors.Add("#8CACD3");
+            lstHoverBgColors.Add("#BDD391");
+            lstHoverBgColors.Add("#D58987");
+            lstHoverBgColors.Add("#6DD4C4");
+
+
+            string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+            string jsonValues = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
+            string jsonBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
+            string jsonHoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
+
+
+            StatsByExperienceTypes stats = new StatsByExperienceTypes();
+            stats.BgColors = jsonBgColors;
+            stats.HoverBgColors = jsonHoverBgColors;
+            stats.Labels = jsonLabels;
+            stats.Values = jsonValues;
+
+
+            //Return stats
+            return stats;
+        }
+        #endregion
+
+
+
         #region "Test Stories"
         public static string GenerateTestStories()
         {
@@ -862,6 +970,34 @@ namespace Controllers
             char let = (char)('a' + num);
             return let.ToString().ToUpper();
         }
+
+        //private void IncrementAgeLst(ref List<int> LstAge, int Age)
+        //{
+        //    //Ensure a max age
+        //    if (Age > 100) Age = 100;
+
+        //    //Determine the age index to increment
+        //    int ageGrp = 5 * (int)Math.Round(Age / 5.0);
+        //    int index = ageGrp / 5;
+
+        //    LstAge[index] += 1;
+        //}
+        //private void GetAgeAvg(ref List<int> LstAge_Heavenly, ref List<int> LstAge_Hellish, ref List<int> LstAge_Purgatorial, ref List<int> LstAge_Unknown, int index)
+        //{
+        //    //
+        //    int Heavenly = LstAge_Heavenly[index];
+        //    int Hellish = LstAge_Hellish[index];
+        //    int Purgatorial = LstAge_Purgatorial[index];
+        //    int Unknown = LstAge_Unknown[index];
+
+        //    int total = Heavenly + Hellish + Purgatorial + Unknown;
+
+        //    LstAge_Heavenly[index] = (int)(((double)Heavenly / total) * 100);
+        //    LstAge_Hellish[index] = (int)(((double)Hellish / total) * 100);
+        //    LstAge_Purgatorial[index] = (int)(((double)Purgatorial / total) * 100);
+        //    LstAge_Unknown[index] = (int)(((double)Unknown / total) * 100);
+        //}
+
         #endregion
     }
 }

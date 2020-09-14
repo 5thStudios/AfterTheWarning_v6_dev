@@ -10,14 +10,14 @@ namespace Models
         public string Id { get; set; } //No spaces!!! Each Id MUST be unique.
         public string Label { get; set; }
         public string Color { get; set; }
-        public List<int> LstData { get; set; }
+        public List<uint> LstData { get; set; }
         public string JsonData { get; set; }
 
 
         public ChartDataset(string _id, string _label, string _color)
         {
             //Instantiate variables
-            LstData = new List<int>();
+            LstData = new List<uint>();
 
             //Set values
             Id = _id;

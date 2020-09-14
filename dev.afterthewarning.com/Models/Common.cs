@@ -310,6 +310,10 @@ namespace Models
 
             public const string SaveErrorMessage = "saveErrorMessage";
             public const string showInMinorNavigation = "showInMinorNavigation";
+            public const string statsHeavenly = "statsHeavenly";
+            public const string statsHellish = "statsHellish";
+            public const string statsPurgatorial = "statsPurgatorial";
+            public const string statsUnknown = "statsUnknown";
             public const string story = "story";
             public const string subscribed = "subscribed";
             public const string subtitle = "subtitle";
