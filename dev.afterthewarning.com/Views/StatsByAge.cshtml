@@ -1,31 +1,28 @@
 ﻿@using Models;
 @inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
+@{ Models.LineCharts stats = Controllers.IlluminationController.ObtainStatistics_byAge(Model); }
 
 
 
-@{
-    //
-    Models.StatsByAge stats = Controllers.IlluminationController.ObtainStatistics_byAge(Model);
-}
-
-
-<h3 class="text-right">By Age</h3>
-<h4 class="text-right">Total of <strong>@stats.TotalEntries</strong> entries.</h4>
-
-
-
-
-
-
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell text-center">
+        <h4>Experience Types by Age</h4>
+        <br />
+    </div>
+</div>
 
 @{ Html.RenderPartial("Partials/Charts/LineChart", stats); }
 
 
+@section Footer {}
+
+
+
+
+
 @*@{ Html.RenderPartial("Partials/Charts/PolarAreaChart"); }*@
-
-
-<div class="grid-x grid-padding-x grid-padding-y">
+@*<div class="grid-x grid-padding-x grid-padding-y">
     <div class="cell large-12">
         @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary(this.ViewData) { { "index", 0 } }); }
     </div>
@@ -38,17 +35,4 @@
     <div class="cell large-12">
         @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 3 } }); }
     </div>
-</div>
-
-
-
-
-
-@section Footer {
-    @*<script>
-            $(window).on("load", function () {
-                //Show the duration it took to generate statistics.
-                console.log('@stats.Duration');
-            });
-        </script>*@
-}
+</div>*@

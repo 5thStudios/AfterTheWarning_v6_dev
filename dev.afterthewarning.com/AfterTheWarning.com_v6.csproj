@@ -2904,10 +2904,12 @@
     <Compile Include="Controllers\PrayerController.cs" />
     <Compile Include="Helpers\HtmlExtensions.cs" />
     <Compile Include="Models\addressRecord.cs" />
+    <Compile Include="Models\BarChart.cs" />
     <Compile Include="Models\ChartDataset.cs" />
     <Compile Include="Models\LatestUpdateList.cs" />
-    <Compile Include="Models\StatsByExperienceTypes.cs" />
-    <Compile Include="Models\Stat_Age.cs" />
+    <Compile Include="Models\StackedBarChart.cs" />
+    <Compile Include="Models\PieChart.cs" />
+    <Compile Include="Models\LineChart.cs" />
     <Compile Include="Models\ScriptureLink.cs" />
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\illuminationStory.cs" />
@@ -2928,7 +2930,7 @@
     <Compile Include="Models\PrayerLink.cs" />
     <Compile Include="Models\PrayerRequestModel.cs" />
     <Compile Include="Models\Scriptures.cs" />
-    <Compile Include="Models\StatsByAge.cs" />
+    <Compile Include="Models\LineCharts.cs" />
     <Compile Include="Models\TableOfContent.cs" />
     <Compile Include="Models\TempResults.cs" />
     <Compile Include="Models\_memberships.cs" />

@@ -715,6 +715,15 @@ a.breadcrumb:hover {color: #74010a;text-decoration:underline;}
 
 
 
+/* Illumination Statistics
+----------------------------------------------------------*/
+.illuminationStatistics h2, .illuminationStatistics h3, 
+.illuminationStatistics h4, .illuminationStatistics h5, 
+.illuminationStatistics h6 {margin-top:0;}
+
+
+
+
 
 /* Animations
 ----------------------------------------------------------*//*-webkit-; -moz-; -o-; */

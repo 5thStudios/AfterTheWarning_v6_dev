@@ -190,13 +190,13 @@ namespace Models
         }
         public enum Races
         {
-            [Display(Name = "American Indian or Native American")] AmericanIndianOrNativeAmerican,
             [Display(Name = "Arabic")] Arabic,
             [Display(Name = "Asian")] Asian,
             [Display(Name = "Black or African")] BlackOrAfrican,
             [Display(Name = "Indian")] Indian,
-            [Display(Name = "Latin or Hispanic")] LatinOrHispanic,
             [Display(Name = "Jewish")] Jewish,
+            [Display(Name = "Latin or Hispanic")] LatinOrHispanic,
+            [Display(Name = "Native American")] NativeAmerican,
             [Display(Name = "Pacific Islander")] PacificIslander,
             [Display(Name = "White or Caucasian")] WhiteOrCaucasian,
             [Display(Name = "Other or Keep Private")] OtherOrKeepPrivate

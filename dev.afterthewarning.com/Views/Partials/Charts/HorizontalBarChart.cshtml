@@ -1,122 +1,181 @@
-﻿@inherits UmbracoViewPage
+﻿@inherits UmbracoViewPage<Models.BarChart>
 
 
-
-<div class="grid-x grid-margin-x grid-margin-y">
-    <div class="cell">
-        <h4>Horizontal Bar Chart</h4>
-        <img alt="" src="~/images/temp/horizontalBarChart.jpg" />
-
-        <br />
-        <br />
-        <canvas id="Chart1"></canvas>
+<div id="filterExperienceTypes" class="grid-x grid-padding-x">
+    <div class="cell large-6 text-center">
+        <ul class="filters">
+            <li class="active" data-show="chart-heavenly"><h5>Heavenly</h5></li>
+        </ul>
+    </div>
+    <div class="cell large-6 text-center">
+        <ul class="filters">
+            <li class="" data-show="chart-hellish"><h5>Hellish</h5></li>
+        </ul>
+    </div>
+    <div class="cell large-6 text-center">
+        <ul class="filters">
+            <li class="" data-show="chart-purgatorial"><h5>Purgatorial</h5></li>
+        </ul>
+    </div>
+    <div class="cell large-6 text-center">
+        <ul class="filters">
+            <li class="" data-show="chart-other"><h5>Other/Unsure</h5></li>
+        </ul>
     </div>
 </div>
 
 
 
+<br />
+<div id="canvasList" class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell">
+        <canvas class="" id="chart-heavenly"></canvas>
+        <canvas class="hide" id="chart-hellish"></canvas>
+        <canvas class="hide" id="chart-purgatorial"></canvas>
+        <canvas class="hide" id="chart-other"></canvas>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
-        var barOptions_stacked = {
-            tooltips: {
-                enabled: false,
-                callbacks: {
-                    //label: function (tooltipItems, data) {
-                    //    return ' ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' %';
-                    //}
-                }
-            },
-            hover: {
-                animationDuration: 0
-            },
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        beginAtZero: false,
-                        fontFamily: "'Open Sans Bold', sans-serif",
-                        fontSize: 12,
-                        callback: function (tick) {
-                            return tick.toString();
-                        }
-                    },
-                    scaleLabel: { display: true },
-                    gridLines: {},
-                    stacked: true
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display: false,
-                        color: "#fff",
-                        zeroLineColor: "#fff",
-                        zeroLineWidth: 0
-                    },
-                    ticks: {
-                        fontFamily: "'Open Sans Bold', sans-serif",
-                        fontSize: 12
-                    },
-                    stacked: true
-                }]
-            },
-            legend: {
-                display: false
-            },
-            animation: {
-                onComplete: function () {
-                    var chartInstance = this.chart;
-                    var ctx = chartInstance.ctx;
-                    ctx.textAlign = "left";
-                    ctx.font = "12px Open Sans";
-                    ctx.fillStyle = "#fff";
+        //Variables
+        var colorMale = "rgba(55,111,148,.7)";
+        var colorFemale = "rgba(116,1,10,.7)";
 
-                    //Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
-                    //    var meta = chartInstance.controller.getDatasetMeta(i);
-                    //    Chart.helpers.each(meta.data.forEach(function (bar, index) {
-                    //        data = dataset.data[index];
-                    //        ctx.fillText(data + ' %', bar._model.x - 35, bar._model.y + 4);
-                    //    }), this)
-                    //}), this);
-                }
-            },
-            pointLabelFontFamily: "Quadon Extra Bold",
-            scaleFontFamily: "Quadon Extra Bold",
-        };
+        //Convert data into variables usable by chart
+        var labels = JSON.parse(@Html.Raw(Json.Encode(Model.jsonLabels)));
+        var values_Heavenly_Males = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Heavenly_Males)));
+        var values_Heavenly_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Heavenly_Females)));
+        var values_Hellish_Males = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Hellish_Males)));
+        var values_Hellish_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Hellish_Females)));
+        var values_Purgatorial_Males = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Purgatorial_Males)));
+        var values_Purgatorial_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Purgatorial_Females)));
+        var values_Other_Males = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Other_Males)));
+        var values_Other_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Other_Females)));
 
 
-        var ctx = document.getElementById("Chart1");
-        var myChart = new Chart(ctx, {
+        //Create charts
+        new Chart(document.getElementById("chart-heavenly"), {
             type: 'horizontalBar',
             data: {
-                labels: ["100+","95","90","85","80"],
-
-                datasets: [{
-                    label: "",
-                    barThickness: 15,
-                    data: [45 ,35 ,25 ,15 ,5 ],
-                    backgroundColor: "transparent",
-                    hoverBackgroundColor: "transparent"
-                }, {
-                    label: "XY [Male]",
-                    barThickness: 15,
-                    data: [ 5, 15, 25, 35,45 ],
-                    backgroundColor: "#4f81bc",
-                    hoverBackgroundColor: "#8CACD3"
-                }, {
-                    label: "XX [Female]",
-                    barThickness: 15,
-                    data: [ 5, 15, 25, 35,45 ],
-                    backgroundColor: "#bf4b49",
-                    hoverBackgroundColor: "#D58987"
-                }, {
-                    label: "",
-                    barThickness: 15,
-                    data: [45 ,35 ,25 ,15 ,5 ],
-                    backgroundColor: "transparent",
-                    hoverBackgroundColor: "transparent"
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Male",
+                        backgroundColor: colorMale,
+                        data: values_Heavenly_Males
+                    }, {
+                        label: "Female",
+                        backgroundColor: colorFemale,
+                        data: values_Heavenly_Females
+                    }
+                ]
             },
-
-            options: barOptions_stacked,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Heavenly Experiences'
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
         });
+        new Chart(document.getElementById("chart-hellish"), {
+            type: 'horizontalBar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Male",
+                        backgroundColor: colorMale,
+                        data: values_Heavenly_Males
+                    }, {
+                        label: "Female",
+                        backgroundColor: colorFemale,
+                        data: values_Hellish_Females
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Hellish Experiences'
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        new Chart(document.getElementById("chart-purgatorial"), {
+            type: 'horizontalBar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Male",
+                        backgroundColor: colorMale,
+                        data: values_Heavenly_Males
+                    }, {
+                        label: "Female",
+                        backgroundColor: colorFemale,
+                        data: values_Purgatorial_Females
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Purgatorial Experiences'
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        new Chart(document.getElementById("chart-other"), {
+            type: 'horizontalBar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Male",
+                        backgroundColor: colorMale,
+                        data: values_Heavenly_Males
+                    }, {
+                        label: "Female",
+                        backgroundColor: colorFemale,
+                        data: values_Other_Females
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Other Experiences'
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
     });
 </script>

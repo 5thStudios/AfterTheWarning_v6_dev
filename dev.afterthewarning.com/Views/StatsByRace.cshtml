@@ -1,11 +1,17 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
+@{ Models.StackedBarChart stats = Controllers.IlluminationController.ObtainStatistics_byRace(Model); }
 
 
 
-<h3 class="text-center">By Race</h3>
-@{ Html.RenderPartial("Partials/Charts/StackedBarChart"); }
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell text-center">
+        <h4>Percentage of Experience Types by Race</h4>
+        <br />
+    </div>
+</div>
 
+@{ Html.RenderPartial("Partials/Charts/StackedBarChart", stats); }
 
 
 @section Footer { }

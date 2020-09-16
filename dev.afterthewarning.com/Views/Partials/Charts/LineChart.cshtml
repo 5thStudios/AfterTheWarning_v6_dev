@@ -1,18 +1,12 @@
 ﻿@using Models;
-@inherits UmbracoViewPage<Models.StatsByAge>
+@inherits UmbracoViewPage<Models.LineCharts>
 
 
-
-<div class="grid-x grid-margin-x grid-margin-y">
+<div class="grid-x">
     <div class="cell text-center">
-        <h4>Average Experience Type by Age</h4>
-        <h5 style="margin-top:0;">Values are percentages from 0 - 100%</h5>
-        <br />
-        @*<img alt="" src="~/images/temp/lineChart.jpg" />*@
-        <canvas id="canvasAvgExpByAge"></canvas>
+        <canvas id="canvasExpByAge"></canvas>
     </div>
 </div>
-
 
 
 <script>
@@ -67,7 +61,7 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Average Percentage'
+                            labelString: 'Experience Type Count'
                         }
                     }]
                 }
@@ -75,7 +69,7 @@
         };
 
         //Run canvas chart
-        var ctx = document.getElementById('canvasAvgExpByAge').getContext('2d');
+        var ctx = document.getElementById('canvasExpByAge').getContext('2d');
         window.myLine = new Chart(ctx, config);
     });
 </script>

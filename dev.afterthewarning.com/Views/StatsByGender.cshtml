@@ -1,15 +1,39 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
+@{ Models.BarChart stats = Controllers.IlluminationController.ObtainStatistics_byGender(Model); }
 
 
 
-<h3 class="text-center">By Gender</h3>
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell text-center">
+        <h4>Experience Comparison by Gender</h4>
+        <br />
+    </div>
+</div>
 
-@{ Html.RenderPartial("Partials/Charts/HorizontalBarChart"); }
-@*@{ Html.RenderPartial("Partials/Charts/HorizontalBarChart"); }
-@{ Html.RenderPartial("Partials/Charts/HorizontalBarChart"); }
-@{ Html.RenderPartial("Partials/Charts/HorizontalBarChart"); }*@
+@{ Html.RenderPartial("Partials/Charts/HorizontalBarChart", stats); }
 
 
+@section Footer {
+    <script>
+        //Experience Filter Button Controls
+        $(document).ready(function () {
+            //Instantiate variables
+            var btnExperienceFilters = $('#filterExperienceTypes li')
+            var canvasList = $('#canvasList canvas');
 
-@section Footer { }
+
+            //Handles
+            $(btnExperienceFilters).click(function () {
+                //Make selected button active
+                $(btnExperienceFilters).removeClass('active');
+                $(this).addClass('active');
+                //Obtain canvas to show
+                var canvas = $(this).data("show");
+                //Show only selected canvas
+                canvasList.addClass('hide');
+                $('#' + canvas).removeClass('hide');
+            });
+        });
+    </script>
+}

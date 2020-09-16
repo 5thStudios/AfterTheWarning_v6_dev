@@ -18,8 +18,6 @@
     }
 }
 
-
-
 @section Header {
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
 }
@@ -43,9 +41,8 @@
             </ul>
         </div>
         <div class="cell large-18">
-            <p><a href="https://www.chartjs.org/docs/latest/charts/" target="_blank">https://www.chartjs.org/docs/latest/charts/</a>
-            <br />
-            <a href="https://www.chartjs.org/samples/latest/" target="_blank">https://www.chartjs.org/samples/latest/</a></p>
+            <h2 class="text-center">Illumination Statistics</h2>
+            <hr />
             @RenderBody()
         </div>
     </div>
@@ -55,6 +52,5 @@
 
 @section Footer {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
-    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>*@
     @RenderSection("Footer", false)
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class Stat_AgeRange
+    public class LineChart
     {
         [JsonProperty("ageRange")]
         public string AgeRange { get; set; }

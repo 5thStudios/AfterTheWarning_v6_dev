@@ -12,7 +12,7 @@ using ContentModels = Umbraco.Web.PublishedContentModels;
 
 namespace Models
 {
-    public class StatsByExperienceTypes
+    public class PieChart
     {
         public string Labels { get; set; }
         public string Values { get; set; }

@@ -1,0 +1,251 @@
+﻿@inherits UmbracoViewPage
+
+
+
+<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell">
+        <h4>Horizontal Bar Chart</h4>
+        <canvas id="Chart1"></canvas>
+
+        <br />
+        <br />
+        <img alt="" src="~/images/temp/horizontalBarChart.jpg" />
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var barOptions_stacked = {
+            tooltips: {
+                enabled: false,
+                callbacks: {
+                    //label: function (tooltipItems, data) {
+                    //    return ' ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' %';
+                    //}
+                }
+            },
+            hover: {
+                animationDuration: 0
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: false,
+                        fontFamily: "'Open Sans Bold', sans-serif",
+                        fontSize: 12,
+                        callback: function (tick) {
+                            return tick.toString();
+                        }
+                    },
+                    scaleLabel: { display: true },
+                    gridLines: {},
+                    stacked: true
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        color: "#fff",
+                        zeroLineColor: "#fff",
+                        zeroLineWidth: 0
+                    },
+                    ticks: {
+                        fontFamily: "'Open Sans Bold', sans-serif",
+                        fontSize: 12
+                    },
+                    stacked: true
+                }]
+            },
+            legend: {
+                display: false
+            },
+            animation: {
+                onComplete: function () {
+                    var chartInstance = this.chart;
+                    var ctx = chartInstance.ctx;
+                    ctx.textAlign = "left";
+                    ctx.font = "12px Open Sans";
+                    ctx.fillStyle = "#fff";
+
+                    //Chart.helpers.each(this.data.datasets.forEach(function (dataset, i) {
+                    //    var meta = chartInstance.controller.getDatasetMeta(i);
+                    //    Chart.helpers.each(meta.data.forEach(function (bar, index) {
+                    //        data = dataset.data[index];
+                    //        ctx.fillText(data + ' %', bar._model.x - 35, bar._model.y + 4);
+                    //    }), this)
+                    //}), this);
+                }
+            },
+            pointLabelFontFamily: "Quadon Extra Bold",
+            scaleFontFamily: "Quadon Extra Bold",
+        };
+
+
+        var ctx = document.getElementById("Chart1");
+        var myChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ["100+", "95", "90", "85", "80"],
+
+                datasets: [{
+                    label: "",
+                    barThickness: 15,
+                    data: [45, 35, 25, 15, 5],
+                    backgroundColor: "transparent",
+                    hoverBackgroundColor: "transparent"
+                }, {
+                    label: "XY [Male]",
+                    barThickness: 15,
+                    data: [5, 15, 25, 35, 45],
+                    backgroundColor: "#4f81bc",
+                    hoverBackgroundColor: "#8CACD3"
+                }, {
+                    label: "XX [Female]",
+                    barThickness: 15,
+                    data: [5, 15, 25, 35, 45],
+                    backgroundColor: "#bf4b49",
+                    hoverBackgroundColor: "#D58987"
+                }, {
+                    label: "",
+                    barThickness: 15,
+                    data: [45, 35, 25, 15, 5],
+                    backgroundColor: "transparent",
+                    hoverBackgroundColor: "transparent"
+                }]
+            },
+
+            options: barOptions_stacked,
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="grid-x">
+    <div class="cell large-12">
+        <h6 class="text-left">Male</h6>
+    </div>
+    <div class="cell large-12">
+        <h6 class="text-right">Female</h6>
+    </div>
+</div>*@
+
+
+@*<div class="grid-x">
+    <div class="cell large-12">
+        <canvas id="chartjs-1" class="chartjs"></canvas>
+    </div>*@
+    @*<div class="cell large-2">
+        <div class="text-center" style="font-size:13px;line-height: 19px;">
+            100+<br />
+            95-99<br />
+            90-94<br />
+            85-89<br />
+            80-84<br />
+            75-79<br />
+            70-74
+        </div>
+    </div>*@
+    @*<div class="cell large-12">
+        <canvas id="chartjs-2" class="chartjs"></canvas>
+    </div>
+</div>*@
+
+
+
+@*<div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell ">
+        <br />
+        <br />
+        <img alt="" src="~/images/temp/horizontalBarChart.jpg" />
+    </div>
+</div>*@
+
+
+
+@*
+<script>
+       // $(document).ready(function () {
+            //Chart.defaults.global.legend.display = false;
+
+
+            //new Chart(document.getElementById("chartjs-1"), {
+            //    type: "horizontalBar",
+            //    data: {
+            //        labels: ["100+", "95-99", "90-94", "85-89", "80-84", "75-79", "70-74"],
+            //        datasets: [
+            //            {
+            //                label: "Males",
+            //                data: [-65, -59, -80, -81, -56, -55, -40],
+            //                fill: false,
+            //                backgroundColor: ["rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)"],
+            //                hoverBackgroundColor: ["rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)"],
+            //                borderWidth: 0,
+            //            },
+            //        ],
+            //    },
+            //    options: {
+            //        legend: { display: false },
+            //        scales: {
+            //            xAxes: [{
+            //                ticks: { beginAtZero: true }
+            //            }],
+            //            yAxes: [{
+            //                ticks: { display: true, fontColor:'#fff' },
+            //                position: 'right',
+            //                barThickness: 19
+            //            }]
+            //        }
+            //    },
+            //});
+
+            //new Chart(document.getElementById("chartjs-2"), {
+            //    type: "horizontalBar",
+            //    data: {
+            //        labels: ["100+", "95-99", "90-94", "85-89", "80-84", "75-79", "70-74"],
+            //        datasets: [
+            //            {
+            //                label: "Females",
+            //                data: [65, 59, 80, 81, 56, 55, 40],
+            //                fill: false,
+            //                backgroundColor: ["rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)"],
+            //                hoverBackgroundColor: ["rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)", "rgb(206 166 169)", "rgb(116 1 10)"],
+            //                borderWidth: 0,
+            //            },
+            //        ],
+            //    },
+            //    options: {
+            //        legend: { display: false },
+            //        scales: {
+            //            xAxes: [{
+            //                ticks: { beginAtZero: true }
+            //            }],
+            //            yAxes: [{
+            //                ticks: { display: true },
+            //                barThickness: 19
+            //            }]
+            //        }
+            //    },
+            //});
+
+        //});
+</script>*@

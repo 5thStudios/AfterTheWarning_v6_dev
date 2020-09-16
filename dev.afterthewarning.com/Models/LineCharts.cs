@@ -12,17 +12,17 @@ using ContentModels = Umbraco.Web.PublishedContentModels;
 
 namespace Models
 {
-    public class StatsByAge
+    public class LineCharts
     {
         public List<string> LstAgeRange { get; set; }
         public string jsonAgeRange { get; set; }
         public List<ChartDataset> LstChartData { get; set; }
         public uint TotalEntries { get; set; }
 
-        public List<Stat_AgeRange> LstAgeStats_Heavenly { get; set; }
-        public List<Stat_AgeRange> LstAgeStats_Hellish { get; set; }
-        public List<Stat_AgeRange> LstAgeStats_Purgatorial { get; set; }
-        public List<Stat_AgeRange> LstAgeStats_Unknown { get; set; }
+        public List<LineChart> LstAgeStats_Heavenly { get; set; }
+        public List<LineChart> LstAgeStats_Hellish { get; set; }
+        public List<LineChart> LstAgeStats_Purgatorial { get; set; }
+        public List<LineChart> LstAgeStats_Unknown { get; set; }
 
 
 

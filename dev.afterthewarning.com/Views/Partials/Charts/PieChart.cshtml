@@ -1,47 +1,8 @@
-﻿@inherits UmbracoViewPage<Models.StatsByExperienceTypes>
-
-
-
-@{
-//List<string> lstLabels = new List<string>();
-//lstLabels.Add("Heavenly");
-//lstLabels.Add("Purgatorial");
-//lstLabels.Add("Hellish");
-//lstLabels.Add("Unknown/Unsure");
-
-//List<int> lstValues = new List<int>();
-//lstValues.Add(25);
-//lstValues.Add(15);
-//lstValues.Add(35);
-//lstValues.Add(25);
-
-//List<string> lstBgColors = new List<string>(); 
-//lstBgColors.Add("#4f81bc");
-//lstBgColors.Add("#9bbb57");
-//lstBgColors.Add("#bf4b49");
-//lstBgColors.Add("#21bea6");
-
-//List<string> lstHoverBgColors = new List<string>(); 
-//lstHoverBgColors.Add("#8CACD3");
-//lstHoverBgColors.Add("#BDD391");
-//lstHoverBgColors.Add("#D58987");
-//lstHoverBgColors.Add("#6DD4C4");
-
-
-//string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-//string jsonValues = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
-//string jsonBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
-//string jsonHoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
-
-}
-
+﻿@inherits UmbracoViewPage<Models.PieChart>
 
 
 <div class="grid-x grid-margin-x grid-margin-y">
     <div class="cell">
-        <h4>Pie Chart</h4>
-        @*<img alt="" src="~/images/temp/pieChart.jpg" />
-            <br /><br />*@
         <canvas id="chartjs-4" class="chartjs"></canvas>
     </div>
 </div>
@@ -58,7 +19,7 @@
 
         //Create chart
         new Chart(document.getElementById("chartjs-4"), {
-            "type": "pie",
+            "type": "doughnut",
             "data": {
                 "labels": labels,
                 "datasets": [{
