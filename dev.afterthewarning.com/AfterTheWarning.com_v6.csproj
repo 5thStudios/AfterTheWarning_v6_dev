@@ -2882,7 +2882,6 @@
     <Content Include="Views\Partials\Charts\LineChart.cshtml" />
     <Content Include="Views\Partials\Charts\HorizontalBarChart.cshtml" />
     <Content Include="Views\Partials\Charts\PieChart.cshtml" />
-    <Content Include="Views\Partials\Charts\PolarAreaChart.cshtml" />
     <Content Include="Views\Partials\Charts\StackedBarChart.cshtml" />
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>

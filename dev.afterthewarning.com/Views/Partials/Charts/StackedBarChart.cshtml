@@ -1,9 +1,12 @@
 ﻿@inherits UmbracoViewPage<Models.StackedBarChart>
 
 
+@{ string heightPx = Model.Height.ToString() + "px"; }
+
+
 <div class="grid-x">
     <div class="cell">
-        <canvas id="Chart1"></canvas>
+        <canvas id="Chart1" height="@Model.Height" style="height:@heightPx"></canvas>
     </div>
 </div>
 
@@ -73,11 +76,8 @@
                         var meta = chartInstance.controller.getDatasetMeta(i);
                         Chart.helpers.each(meta.data.forEach(function (bar, index) {
                             data = dataset.data[index];
-                            //if (i == 0) {
-                            //    ctx.fillText(data, 50, bar._model.y + 4);
-                            //} else {
-                            ctx.fillText(data + ' %', bar._model.x - 35, bar._model.y + 4);
-                            //}
+                            //ctx.fillText(data + ' %', bar._model.x - 35, bar._model.y + 4);
+                            ctx.fillText('', bar._model.x - 35, bar._model.y + 4);
                         }), this)
                     }), this);
                 }
@@ -103,16 +103,16 @@
                     data: values_Hellish,
                     backgroundColor: "#bf4b49",
                     hoverBackgroundColor: "#D58987"
-                }, {
+                    }, {
                     label: "Purgatorial",
                     data: values_Purgatorial,
                     backgroundColor: "#9bbb57",
                     hoverBackgroundColor: "#BDD391"
-                }, {
+                    }, {
                     label: "Unknown/Unsure",
                     data: values_Unknown,
-                    backgroundColor: "#21bea6",
-                    hoverBackgroundColor: "#6DD4C4"
+                    backgroundColor: "#7f7f7f",
+                    hoverBackgroundColor: "#b9b9b9"
                 }]
             },
 

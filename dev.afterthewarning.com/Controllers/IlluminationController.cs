@@ -715,7 +715,7 @@ namespace Controllers
             ChartDataset HeavenlyDataset = new ChartDataset("Heavenly", "Heavenly", "#4f81bc");
             ChartDataset HellishDataset = new ChartDataset("Hellish", "Hellish", "#bf4b49");
             ChartDataset PurgatorialDataset = new ChartDataset("Purgatorial", "Purgatorial", "#9bbb57");
-            ChartDataset UnknownDataset = new ChartDataset("Unknown", "Unknown/Unsure", "#21bea6");
+            ChartDataset UnknownDataset = new ChartDataset("Unknown", "Unknown/Unsure", "#7f7f7f");
             statsByAge.TotalEntries = 0;
 
             //Obtain data from node
@@ -773,22 +773,22 @@ namespace Controllers
             lstLabels.Add("Unknown/Unsure");
 
             List<int> lstValues = new List<int>();
-            lstValues.Add(25);
-            lstValues.Add(15);
-            lstValues.Add(35);
-            lstValues.Add(25);
+            lstValues.Add(250);
+            lstValues.Add(150);
+            lstValues.Add(350);
+            lstValues.Add(205);
 
             List<string> lstBgColors = new List<string>();
             lstBgColors.Add("#4f81bc");
             lstBgColors.Add("#9bbb57");
             lstBgColors.Add("#bf4b49");
-            lstBgColors.Add("#21bea6");
+            lstBgColors.Add("#7f7f7f");
 
             List<string> lstHoverBgColors = new List<string>();
             lstHoverBgColors.Add("#8CACD3");
             lstHoverBgColors.Add("#BDD391");
             lstHoverBgColors.Add("#D58987");
-            lstHoverBgColors.Add("#6DD4C4");
+            lstHoverBgColors.Add("#b9b9b9");
 
 
             string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
@@ -883,6 +883,7 @@ namespace Controllers
             stats.Values_Hellish = jsonValues_Hellish;
             stats.Values_Purgatorial = jsonValues_Purgatorial;
             stats.Values_Unknown = jsonValues_Unknown;
+            stats.Height = lstLabels.Count * 20;
 
             //Return stats
             return stats;
@@ -890,18 +891,26 @@ namespace Controllers
         public static Models.StackedBarChart ObtainStatistics_byReligion(IPublishedContent ip)
         {
             List<string> lstLabels = new List<string>();
-            lstLabels.Add("Arabic");
-            lstLabels.Add("Asian");
-            lstLabels.Add("Black or African");
-            lstLabels.Add("Indian");
-            lstLabels.Add("Jewish");
-            lstLabels.Add("Latin or Hispanic");
-            lstLabels.Add("Native American");
-            lstLabels.Add("Pacific Islander");
-            lstLabels.Add("White or Caucasian");
+            lstLabels.Add("Agnostic");
+            lstLabels.Add("Atheist");
+            lstLabels.Add("Baptist");
+            lstLabels.Add("Buddhist");
+            lstLabels.Add("Catholic");
+            lstLabels.Add("Evangelical");
+            lstLabels.Add("Lutheran");
+            lstLabels.Add("Hindu");
+            lstLabels.Add("Muslim");
+            lstLabels.Add("Other Christian");
+            lstLabels.Add("Protestant");
+            lstLabels.Add("Satinism");
+            lstLabels.Add("Wiccan or New Age");
             lstLabels.Add("Other or Keep Private");
 
             List<int> lstValues_Heavenly = new List<int>();
+            lstValues_Heavenly.Add(40);
+            lstValues_Heavenly.Add(40);
+            lstValues_Heavenly.Add(40);
+            lstValues_Heavenly.Add(40);
             lstValues_Heavenly.Add(40);
             lstValues_Heavenly.Add(40);
             lstValues_Heavenly.Add(40);
@@ -924,6 +933,10 @@ namespace Controllers
             lstValues_Hellish.Add(20);
             lstValues_Hellish.Add(20);
             lstValues_Hellish.Add(20);
+            lstValues_Hellish.Add(20);
+            lstValues_Hellish.Add(20);
+            lstValues_Hellish.Add(20);
+            lstValues_Hellish.Add(20);
 
             List<int> lstValues_Purgatorial = new List<int>();
             lstValues_Purgatorial.Add(20);
@@ -936,8 +949,16 @@ namespace Controllers
             lstValues_Purgatorial.Add(20);
             lstValues_Purgatorial.Add(20);
             lstValues_Purgatorial.Add(20);
+            lstValues_Purgatorial.Add(20);
+            lstValues_Purgatorial.Add(20);
+            lstValues_Purgatorial.Add(20);
+            lstValues_Purgatorial.Add(20);
 
             List<int> lstValues_Unknown = new List<int>();
+            lstValues_Unknown.Add(20);
+            lstValues_Unknown.Add(20);
+            lstValues_Unknown.Add(20);
+            lstValues_Unknown.Add(20);
             lstValues_Unknown.Add(20);
             lstValues_Unknown.Add(20);
             lstValues_Unknown.Add(20);
@@ -963,6 +984,7 @@ namespace Controllers
             stats.Values_Hellish = jsonValues_Hellish;
             stats.Values_Purgatorial = jsonValues_Purgatorial;
             stats.Values_Unknown = jsonValues_Unknown;
+            stats.Height = lstLabels.Count * 20;
 
             //Return stats
             return stats;
@@ -1043,6 +1065,7 @@ namespace Controllers
             stats.Values_Hellish = jsonValues_Hellish;
             stats.Values_Purgatorial = jsonValues_Purgatorial;
             stats.Values_Unknown = jsonValues_Unknown;
+            stats.Height = lstLabels.Count * 20;
 
             //Return stats
             return stats;
