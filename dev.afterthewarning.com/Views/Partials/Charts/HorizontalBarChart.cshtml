@@ -1,32 +1,7 @@
 ﻿@inherits UmbracoViewPage<Models.BarChart>
 
 
-<div id="filterExperienceTypes" class="grid-x grid-padding-x">
-    <div class="cell large-6 text-center">
-        <ul class="filters">
-            <li class="active" data-show="chart-heavenly"><h5>Heavenly</h5></li>
-        </ul>
-    </div>
-    <div class="cell large-6 text-center">
-        <ul class="filters">
-            <li class="" data-show="chart-hellish"><h5>Hellish</h5></li>
-        </ul>
-    </div>
-    <div class="cell large-6 text-center">
-        <ul class="filters">
-            <li class="" data-show="chart-purgatorial"><h5>Purgatorial</h5></li>
-        </ul>
-    </div>
-    <div class="cell large-6 text-center">
-        <ul class="filters">
-            <li class="" data-show="chart-other"><h5>Other/Unsure</h5></li>
-        </ul>
-    </div>
-</div>
 
-
-
-<br />
 <div id="canvasList" class="grid-x grid-margin-x grid-margin-y">
     <div class="cell">
         <canvas class="" id="chart-heavenly"></canvas>
@@ -53,7 +28,6 @@
         var values_Purgatorial_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Purgatorial_Females)));
         var values_Other_Males = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Other_Males)));
         var values_Other_Females = JSON.parse(@Html.Raw(Json.Encode(Model.jsonValues_Other_Females)));
-
 
         //Create charts
         new Chart(document.getElementById("chart-heavenly"), {
@@ -94,7 +68,7 @@
                     {
                         label: "Male",
                         backgroundColor: colorMale,
-                        data: values_Heavenly_Males
+                        data: values_Hellish_Males
                     }, {
                         label: "Female",
                         backgroundColor: colorFemale,
@@ -124,7 +98,7 @@
                     {
                         label: "Male",
                         backgroundColor: colorMale,
-                        data: values_Heavenly_Males
+                        data: values_Purgatorial_Males
                     }, {
                         label: "Female",
                         backgroundColor: colorFemale,
@@ -154,7 +128,7 @@
                     {
                         label: "Male",
                         backgroundColor: colorMale,
-                        data: values_Heavenly_Males
+                        data: values_Other_Males
                     }, {
                         label: "Female",
                         backgroundColor: colorFemale,

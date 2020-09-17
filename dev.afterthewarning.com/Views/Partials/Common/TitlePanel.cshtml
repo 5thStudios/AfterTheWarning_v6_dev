@@ -68,7 +68,7 @@
         //Obtain visionary's name
         visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).GetPropertyValue<String>(Common.NodeProperties.visionarysName);
     }
-    
+
     if (docType == Common.docType.WebmasterMessage)
     {
         //Obtain list of all dates
@@ -138,7 +138,7 @@
     if (docType == Common.docType.PrayerRequest)
     {
         strH1 = ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.prayerTitle);
-        
+
         //Generate user's name
         var CmMember = new ContentModels.Member(Umbraco.TypedMember(ipCurrentPg.GetPropertyValue<int>(Common.NodeProperties.prayerRequestMember)));
         StringBuilder sbAuthor = new StringBuilder();
@@ -154,6 +154,11 @@
     {
         heightClass = "tall";
     }
+
+    if (ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.IlluminationStatistics)
+    {
+        docType = ipCurrentPg.Parent.DocumentTypeAlias;
+    }
 }
 
 @*ORIGINAL*@
@@ -166,6 +171,14 @@
                 case Common.docType.Home:
                     <br />
                     @ipCurrentPg.GetPropertyValue(Common.NodeProperties.topBanner);
+                    <br />
+                    break;
+                case Common.docType.IlluminationStatistics:
+                    <br class="hide-for-small-only" />
+                    <br />
+                    <h1>@ipCurrentPg.Parent.Name</h1>
+                    <h3>@ipCurrentPg.Name</h3>
+                    <br />
                     <br />
                     break;
                 case Common.docType.Search:

@@ -2905,6 +2905,10 @@
     <Compile Include="Models\addressRecord.cs" />
     <Compile Include="Models\BarChart.cs" />
     <Compile Include="Models\ChartDataset.cs" />
+    <Compile Include="Models\ExperienceByReligion.cs" />
+    <Compile Include="Models\ExperienceByRace.cs" />
+    <Compile Include="Models\ExperienceByCountry.cs" />
+    <Compile Include="Models\ExperienceByGender.cs" />
     <Compile Include="Models\LatestUpdateList.cs" />
     <Compile Include="Models\StackedBarChart.cs" />
     <Compile Include="Models\PieChart.cs" />

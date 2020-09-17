@@ -20,5 +20,7 @@ namespace Models
         public string Values_Purgatorial { get; set; }
         public string Values_Unknown { get; set; }
         public int Height { get; set; }
+
+        //public string jsonData { get; set; }
     }
 }

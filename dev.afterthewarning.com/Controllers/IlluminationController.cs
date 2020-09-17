@@ -764,19 +764,77 @@ namespace Controllers
             //Return stats
             return statsByAge;
         }
+        public static Models.StackedBarChart ObtainStatistics_byCountry(IPublishedContent ip)
+        {
+            //Instantiate variables
+            Models.StackedBarChart stats = new Models.StackedBarChart();
+            List<string> lstLabels = new List<string>();
+            List<int> lstValues_Heavenly = new List<int>();
+            List<int> lstValues_Hellish = new List<int>();
+            List<int> lstValues_Purgatorial = new List<int>();
+            List<int> lstValues_Unknown = new List<int>();
+            int totalExperiences = 0;
+            int totalPercentage = 0;
+            int heavenly = 0;
+            int hellish = 0;
+            int purgatorial = 0;
+            int unknown = 0;
+
+            //Obtain data from ip
+            List<Models.ExperienceByCountry> lstExperiences = JsonConvert.DeserializeObject<List<Models.ExperienceByCountry>>(ip.GetPropertyValue<string>(Common.NodeProperties.experiencesByCountry));
+
+            //Extract data
+            foreach (Models.ExperienceByCountry experience in lstExperiences)
+            {
+                //Add label to list
+                lstLabels.Add(experience.Label);
+
+                //get total
+                totalExperiences = experience.Heavenly + experience.Hellish + experience.Purgatorial + experience.Other;
+
+                //get total percentages
+                heavenly = Convert.ToInt32(Math.Round(((decimal)experience.Heavenly / totalExperiences) * 100, 0));
+                hellish = Convert.ToInt32(Math.Round(((decimal)experience.Hellish / totalExperiences) * 100, 0));
+                purgatorial = Convert.ToInt32(Math.Round(((decimal)experience.Purgatorial / totalExperiences) * 100, 0));
+                unknown = Convert.ToInt32(Math.Round(((decimal)experience.Other / totalExperiences) * 100, 0));
+
+                totalPercentage = heavenly + hellish + purgatorial + unknown;
+
+                //Add percentages to list
+                lstValues_Heavenly.Add(heavenly);
+                lstValues_Hellish.Add(hellish);
+                lstValues_Purgatorial.Add(purgatorial);
+                lstValues_Unknown.Add(unknown + (100 - totalPercentage)); //Add remainder to ensure total = 100%
+            }
+
+            //Convert extracted data to json
+            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+            stats.Values_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
+            stats.Values_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
+            stats.Values_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
+            stats.Values_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
+
+            //sets the canvas height to increase bar heights
+            stats.Height = lstLabels.Count * 20;
+
+            //Return stats
+            return stats;
+        }
         public static Models.PieChart ObtainStatistics_byExperienceType(IPublishedContent ip)
         {
+            //Extractor data from ip
+            List<int> lstValues = new List<int>();
+            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.heavenly));
+            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.hellish));
+            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.purgatorial));
+            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.other));
+
+            //Static data
             List<string> lstLabels = new List<string>();
             lstLabels.Add("Heavenly");
             lstLabels.Add("Purgatorial");
             lstLabels.Add("Hellish");
             lstLabels.Add("Unknown/Unsure");
-
-            List<int> lstValues = new List<int>();
-            lstValues.Add(250);
-            lstValues.Add(150);
-            lstValues.Add(350);
-            lstValues.Add(205);
 
             List<string> lstBgColors = new List<string>();
             lstBgColors.Add("#4f81bc");
@@ -790,99 +848,130 @@ namespace Controllers
             lstHoverBgColors.Add("#D58987");
             lstHoverBgColors.Add("#b9b9b9");
 
-
-            string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-            string jsonValues = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
-            string jsonBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
-            string jsonHoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
-
-
+            //Convert extracted data to json
             PieChart stats = new PieChart();
-            stats.BgColors = jsonBgColors;
-            stats.HoverBgColors = jsonHoverBgColors;
-            stats.Labels = jsonLabels;
-            stats.Values = jsonValues;
-
+            stats.BgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
+            stats.HoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
+            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+            stats.Values = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
 
             //Return stats
             return stats;
         }
+        public static Models.BarChart ObtainStatistics_byGender(IPublishedContent ip)
+        {
+            //Instantiate variables
+            Models.BarChart stats = new Models.BarChart();
+            List<Models.ExperienceByGender> lstHeavenly;
+            List<Models.ExperienceByGender> lstHellish;
+            List<Models.ExperienceByGender> lstPurgatorial;
+            List<Models.ExperienceByGender> lstUnknown;
+
+            //Obtain data from ip
+            lstHeavenly = JsonConvert.DeserializeObject<List<Models.ExperienceByGender>>(ip.GetPropertyValue<string>(Common.NodeProperties.statsHeavenly));
+            lstHellish = JsonConvert.DeserializeObject<List<Models.ExperienceByGender>>(ip.GetPropertyValue<string>(Common.NodeProperties.statsHellish));
+            lstPurgatorial = JsonConvert.DeserializeObject<List<Models.ExperienceByGender>>(ip.GetPropertyValue<string>(Common.NodeProperties.statsPurgatorial));
+            lstUnknown = JsonConvert.DeserializeObject<List<Models.ExperienceByGender>>(ip.GetPropertyValue<string>(Common.NodeProperties.statsUnknown));
+
+            //Extract data | Labels
+            foreach (var stat in lstHeavenly)
+            {
+                stats.lstLabels.Add(stat.AgeRange);
+            }
+
+            //Extract data | Heavenly
+            foreach (var stat in lstHeavenly)
+            {
+                stats.lstValues_Heavenly_Males.Add(stat.Males);
+                stats.lstValues_Heavenly_Females.Add(stat.Females);
+            }
+
+            //Extract data | Hellish
+            foreach (var stat in lstHellish)
+            {
+                stats.lstValues_Hellish_Males.Add(stat.Males);
+                stats.lstValues_Hellish_Females.Add(stat.Females);
+            }
+
+            //Extract data | Purgatorial
+            foreach (var stat in lstPurgatorial)
+            {
+                stats.lstValues_Purgatorial_Males.Add(stat.Males);
+                stats.lstValues_Purgatorial_Females.Add(stat.Females);
+            }
+
+            //Extract data | Unknown
+            foreach (var stat in lstUnknown)
+            {
+                stats.lstValues_Other_Males.Add(stat.Males);
+                stats.lstValues_Other_Females.Add(stat.Females);
+            }
+
+            //Convert to json
+            stats.jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstLabels);
+            stats.jsonValues_Heavenly_Males = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Heavenly_Males);
+            stats.jsonValues_Heavenly_Females = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Heavenly_Females);
+            stats.jsonValues_Hellish_Males = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Hellish_Males);
+            stats.jsonValues_Hellish_Females = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Hellish_Females);
+            stats.jsonValues_Purgatorial_Males = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Purgatorial_Males);
+            stats.jsonValues_Purgatorial_Females = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Purgatorial_Females);
+            stats.jsonValues_Other_Males = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Other_Males);
+            stats.jsonValues_Other_Females = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Other_Females);
+
+
+            return stats;
+        }
         public static Models.StackedBarChart ObtainStatistics_byRace(IPublishedContent ip)
         {
+            //Instantiate variables
             List<string> lstLabels = new List<string>();
-            lstLabels.Add("Arabic");
-            lstLabels.Add("Asian");
-            lstLabels.Add("Black or African");
-            lstLabels.Add("Indian");
-            lstLabels.Add("Jewish");
-            lstLabels.Add("Latin or Hispanic");
-            lstLabels.Add("Native American");
-            lstLabels.Add("Pacific Islander");
-            lstLabels.Add("White or Caucasian");
-            lstLabels.Add("Other or Keep Private");
-
             List<int> lstValues_Heavenly = new List<int>();
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-
             List<int> lstValues_Hellish = new List<int>();
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-
             List<int> lstValues_Purgatorial = new List<int>();
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-
             List<int> lstValues_Unknown = new List<int>();
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
+            int totalExperiences = 0;
+            int totalPercentage = 0;
+            int heavenly = 0;
+            int hellish = 0;
+            int purgatorial = 0;
+            int unknown = 0;
 
+            //Obtain data from ip
+            List<Models.ExperienceByRace> lstExperiences = JsonConvert.DeserializeObject<List<Models.ExperienceByRace>>(ip.GetPropertyValue<string>(Common.NodeProperties.experiencesByRace));
 
-            string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-            string jsonValues_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
-            string jsonValues_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
-            string jsonValues_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
-            string jsonValues_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
+            //Extract data
+            foreach (Models.ExperienceByRace experience in lstExperiences)
+            {
+                //Add label to list
+                lstLabels.Add(experience.Label);
 
+                //get total
+                totalExperiences = experience.Heavenly + experience.Hellish + experience.Purgatorial + experience.Other;
 
+                //get total percentages
+                heavenly = Convert.ToInt32(Math.Round(((decimal)experience.Heavenly / totalExperiences) * 100, 0));
+                hellish = Convert.ToInt32(Math.Round(((decimal)experience.Hellish / totalExperiences) * 100, 0));
+                purgatorial = Convert.ToInt32(Math.Round(((decimal)experience.Purgatorial / totalExperiences) * 100, 0));
+                unknown = Convert.ToInt32(Math.Round(((decimal)experience.Other / totalExperiences) * 100, 0));
+
+                totalPercentage = heavenly + hellish + purgatorial + unknown;
+
+                //Add percentages to list
+                lstValues_Heavenly.Add(heavenly);
+                lstValues_Hellish.Add(hellish);
+                lstValues_Purgatorial.Add(purgatorial);
+                lstValues_Unknown.Add(unknown + (100 - totalPercentage)); //Add remainder to ensure total = 100%
+            }
+
+            //Convert extracted data to json
             Models.StackedBarChart stats = new Models.StackedBarChart();
-            stats.Labels = jsonLabels;
-            stats.Values_Heavenly = jsonValues_Heavenly;
-            stats.Values_Hellish = jsonValues_Hellish;
-            stats.Values_Purgatorial = jsonValues_Purgatorial;
-            stats.Values_Unknown = jsonValues_Unknown;
+            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+            stats.Values_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
+            stats.Values_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
+            stats.Values_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
+            stats.Values_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
+            
+            //sets the canvas height to increase bar heights
             stats.Height = lstLabels.Count * 20;
 
             //Return stats
@@ -890,262 +979,59 @@ namespace Controllers
         }
         public static Models.StackedBarChart ObtainStatistics_byReligion(IPublishedContent ip)
         {
+            //Instantiate variables
             List<string> lstLabels = new List<string>();
-            lstLabels.Add("Agnostic");
-            lstLabels.Add("Atheist");
-            lstLabels.Add("Baptist");
-            lstLabels.Add("Buddhist");
-            lstLabels.Add("Catholic");
-            lstLabels.Add("Evangelical");
-            lstLabels.Add("Lutheran");
-            lstLabels.Add("Hindu");
-            lstLabels.Add("Muslim");
-            lstLabels.Add("Other Christian");
-            lstLabels.Add("Protestant");
-            lstLabels.Add("Satinism");
-            lstLabels.Add("Wiccan or New Age");
-            lstLabels.Add("Other or Keep Private");
-
             List<int> lstValues_Heavenly = new List<int>();
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-
             List<int> lstValues_Hellish = new List<int>();
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-
             List<int> lstValues_Purgatorial = new List<int>();
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-
             List<int> lstValues_Unknown = new List<int>();
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
+            int totalExperiences = 0;
+            int totalPercentage = 0;
+            int heavenly = 0;
+            int hellish = 0;
+            int purgatorial = 0;
+            int unknown = 0;
 
+            //Obtain data from ip
+            List<Models.ExperienceByReligion> lstExperiences = JsonConvert.DeserializeObject<List<Models.ExperienceByReligion>>(ip.GetPropertyValue<string>(Common.NodeProperties.experiencesByReligion));
 
-            string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-            string jsonValues_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
-            string jsonValues_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
-            string jsonValues_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
-            string jsonValues_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
+            //Extract data
+            foreach (Models.ExperienceByReligion experience in lstExperiences)
+            {
+                //Add label to list
+                lstLabels.Add(experience.Label);
 
+                //get total
+                totalExperiences = experience.Heavenly + experience.Hellish + experience.Purgatorial + experience.Other;
 
+                //get total percentages
+                heavenly = Convert.ToInt32(Math.Round(((decimal)experience.Heavenly / totalExperiences) * 100, 0));
+                hellish = Convert.ToInt32(Math.Round(((decimal)experience.Hellish / totalExperiences) * 100, 0));
+                purgatorial = Convert.ToInt32(Math.Round(((decimal)experience.Purgatorial / totalExperiences) * 100, 0));
+                unknown = Convert.ToInt32(Math.Round(((decimal)experience.Other / totalExperiences) * 100, 0));
+
+                totalPercentage = heavenly + hellish + purgatorial + unknown;
+
+                //Add percentages to list
+                lstValues_Heavenly.Add(heavenly);
+                lstValues_Hellish.Add(hellish);
+                lstValues_Purgatorial.Add(purgatorial);
+                lstValues_Unknown.Add(unknown + (100 - totalPercentage)); //Add remainder to ensure total = 100%
+            }
+
+            //Convert extracted data to json
             Models.StackedBarChart stats = new Models.StackedBarChart();
-            stats.Labels = jsonLabels;
-            stats.Values_Heavenly = jsonValues_Heavenly;
-            stats.Values_Hellish = jsonValues_Hellish;
-            stats.Values_Purgatorial = jsonValues_Purgatorial;
-            stats.Values_Unknown = jsonValues_Unknown;
+            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
+            stats.Values_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
+            stats.Values_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
+            stats.Values_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
+            stats.Values_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
+
+            //sets the canvas height to increase bar heights
             stats.Height = lstLabels.Count * 20;
 
             //Return stats
             return stats;
-        }
-        public static Models.StackedBarChart ObtainStatistics_byCountry(IPublishedContent ip)
-        {
-            List<string> lstLabels = new List<string>();
-            lstLabels.Add("Country 01");
-            lstLabels.Add("Country 02");
-            lstLabels.Add("Country 03");
-            lstLabels.Add("Country 04");
-            lstLabels.Add("Country 05");
-            lstLabels.Add("Country 06");
-            lstLabels.Add("Country 07");
-            lstLabels.Add("Country 08");
-            lstLabels.Add("Country 09");
-            lstLabels.Add("Country 10");
-
-            List<int> lstValues_Heavenly = new List<int>();
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-            lstValues_Heavenly.Add(40);
-
-            List<int> lstValues_Hellish = new List<int>();
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-            lstValues_Hellish.Add(20);
-
-            List<int> lstValues_Purgatorial = new List<int>();
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-            lstValues_Purgatorial.Add(20);
-
-            List<int> lstValues_Unknown = new List<int>();
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-            lstValues_Unknown.Add(20);
-
-
-            string jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-            string jsonValues_Heavenly = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Heavenly);
-            string jsonValues_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
-            string jsonValues_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
-            string jsonValues_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
-
-
-            Models.StackedBarChart stats = new Models.StackedBarChart();
-            stats.Labels = jsonLabels;
-            stats.Values_Heavenly = jsonValues_Heavenly;
-            stats.Values_Hellish = jsonValues_Hellish;
-            stats.Values_Purgatorial = jsonValues_Purgatorial;
-            stats.Values_Unknown = jsonValues_Unknown;
-            stats.Height = lstLabels.Count * 20;
-
-            //Return stats
-            return stats;
-        }
-        public static Models.BarChart ObtainStatistics_byGender(IPublishedContent ip)
-        {
-            //Instantiaate variables
-            Models.BarChart barChart = new Models.BarChart();
-
-            //Create labels
-            barChart.lstLabels.Add("0-5");
-            barChart.lstLabels.Add("6-10");
-            barChart.lstLabels.Add("11-15");
-            barChart.lstLabels.Add("16-20");
-            barChart.lstLabels.Add("21-25");
-
-            //Heavenly Values
-            barChart.lstValues_Heavenly_Males.Add(25);
-            barChart.lstValues_Heavenly_Males.Add(15);
-            barChart.lstValues_Heavenly_Males.Add(35);
-            barChart.lstValues_Heavenly_Males.Add(25);
-            barChart.lstValues_Heavenly_Males.Add(25);
-
-            barChart.lstValues_Heavenly_Females.Add(25);
-            barChart.lstValues_Heavenly_Females.Add(15);
-            barChart.lstValues_Heavenly_Females.Add(35);
-            barChart.lstValues_Heavenly_Females.Add(25);
-            barChart.lstValues_Heavenly_Females.Add(25);
-
-            //Hellish Values
-            barChart.lstValues_Hellish_Males.Add(25);
-            barChart.lstValues_Hellish_Males.Add(15);
-            barChart.lstValues_Hellish_Males.Add(35);
-            barChart.lstValues_Hellish_Males.Add(25);
-            barChart.lstValues_Hellish_Males.Add(25);
-
-            barChart.lstValues_Hellish_Females.Add(25);
-            barChart.lstValues_Hellish_Females.Add(15);
-            barChart.lstValues_Hellish_Females.Add(35);
-            barChart.lstValues_Hellish_Females.Add(25);
-            barChart.lstValues_Hellish_Females.Add(25);
-
-            //Purgatorial Values
-            barChart.lstValues_Purgatorial_Males.Add(25);
-            barChart.lstValues_Purgatorial_Males.Add(15);
-            barChart.lstValues_Purgatorial_Males.Add(35);
-            barChart.lstValues_Purgatorial_Males.Add(25);
-            barChart.lstValues_Purgatorial_Males.Add(25);
-
-            barChart.lstValues_Purgatorial_Females.Add(25);
-            barChart.lstValues_Purgatorial_Females.Add(15);
-            barChart.lstValues_Purgatorial_Females.Add(35);
-            barChart.lstValues_Purgatorial_Females.Add(25);
-            barChart.lstValues_Purgatorial_Females.Add(25);
-
-            //Other Values
-            barChart.lstValues_Other_Males.Add(25);
-            barChart.lstValues_Other_Males.Add(15);
-            barChart.lstValues_Other_Males.Add(35);
-            barChart.lstValues_Other_Males.Add(25);
-            barChart.lstValues_Other_Males.Add(25);
-
-            barChart.lstValues_Other_Females.Add(25);
-            barChart.lstValues_Other_Females.Add(15);
-            barChart.lstValues_Other_Females.Add(35);
-            barChart.lstValues_Other_Females.Add(25);
-            barChart.lstValues_Other_Females.Add(25);
-
-            //Convert to json
-            barChart.jsonLabels = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstLabels);
-            barChart.jsonValues_Heavenly_Males = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Heavenly_Males);
-            barChart.jsonValues_Heavenly_Females = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Heavenly_Females);
-            barChart.jsonValues_Hellish_Males = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Hellish_Males);
-            barChart.jsonValues_Hellish_Females = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Hellish_Females);
-            barChart.jsonValues_Purgatorial_Males = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Purgatorial_Males);
-            barChart.jsonValues_Purgatorial_Females = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Purgatorial_Females);
-            barChart.jsonValues_Other_Males = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Other_Males);
-            barChart.jsonValues_Other_Females = Newtonsoft.Json.JsonConvert.SerializeObject(barChart.lstValues_Other_Females);
-
-            return barChart;
         }
         #endregion
 

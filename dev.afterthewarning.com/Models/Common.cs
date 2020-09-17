@@ -262,6 +262,9 @@ namespace Models
 
             public const string email = "email";
             public const string exceptionMessage = "exceptionMessage";
+            public const string experiencesByCountry = "experiencesByCountry";
+            public const string experiencesByRace = "experiencesByRace";
+            public const string experiencesByReligion = "experiencesByReligion";
             public const string experienceType = "experienceType";
 
             public const string facebookUrl = "facebookUrl";
@@ -273,12 +276,15 @@ namespace Models
             public const string generalInfo = "generalInfo";
             public const string googleWalletUrl = "googleWalletUrl";
 
+            public const string heavenly = "heavenly";
+            public const string hellish = "hellish";
             public const string hideChildrenFromNavigation = "hideChildrenFromNavigation";
 
             public const string id = "id";
             public const string illuminationStory = "illuminationStory";
             public const string indexType = "__IndexType";
 
+            public const string label = "label";
             public const string lastName = "lastName";
 
             public const string mailingAddress = "mailingAddress";
@@ -291,6 +297,7 @@ namespace Models
             public const string originalSource = "originalSource";
             public const string originallyPostedBy = "originallyPostedBy";
             public const string originalPostUrl = "originalPostUrl";
+            public const string other = "other";
 
             public const string pageImage = "pageImage";
             public const string paypalUrl = "paypalUrl";
@@ -303,6 +310,7 @@ namespace Models
             public const string prayerRequests = "prayerRequests";
             public const string prayerTitle = "prayerTitle";
             public const string publishDate = "publishDate";
+            public const string purgatorial = "purgatorial";
 
             public const string race = "race";
             public const string religion = "religion";
