@@ -22,6 +22,12 @@ namespace Models
         {
             AddEditIlluminationStory = 1123,
             AddEditPrayer = 1122,
+            ByAge = 38982,
+            ByCountry = 38985,
+            ByExperienceType = 38988,
+            ByGender = 38991,
+            ByRace = 38994,
+            ByReligion = 38997,
             ContactUs = 1118,
             CreateAccount = 1120,
             Donate = 1116,
@@ -390,7 +396,12 @@ namespace Models
         public struct crop
         {
             public const string Portrait_300x400 = "Portrait_300x400";
-            public const string Square_500x500 = "Square_500x500"; 
+            public const string Square_500x500 = "Square_500x500";
+        }
+        public struct Gender
+        {
+            public const string Male = "XY [Male]";
+            public const string Female = "XX [Female]";
         }
         public struct miscellaneous
         {
@@ -474,29 +485,6 @@ namespace Models
             }
             return text;
         }
-        //public static void saveErrorMessage(string _exceptionMsg, string _generalInfo)
-        //{
-        //    try
-        //    {
-        //        // Create a new node
-        //        IContentService cs = ApplicationContext.Current.Services.ContentService;
-        //        IContent siteErrors = cs.GetById((int)siteNode.SiteErrors);
-        //        DateTime timeStamp = DateTime.Now;
-        //        IContent errorMsg = cs.CreateContentWithIdentity(timeStamp.ToString(), siteErrors, docType.ErrorMessage);
-
-        //        // Set values
-        //        errorMsg.SetValue(NodeProperties.exceptionMessage, _exceptionMsg);
-        //        errorMsg.SetValue(NodeProperties.generalInfo, _generalInfo);
-
-        //        // Save values
-        //        cs.SaveAndPublishWithStatus(errorMsg);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
         public static void SaveErrorMessage(Exception ex, StringBuilder sb, Type type, bool saveAsWarning = false)
         {
             StringBuilder sbGeneralInfo = new StringBuilder();
@@ -547,8 +535,6 @@ namespace Models
                 LogHelper.Error(typeof(Common), "Error Saving Exception Message.  Original Data: " + sbGeneralInfo.ToString() + " ||| " + ex.ToString(), error);
             }
         }
-
-
         public static int? getPrevalueId(string dataTypeName, string dataTypeValue)
         {
             // Instantiate datatype service
@@ -618,48 +604,3 @@ namespace Models
         #endregion
     }
 }
-
-
-
-//public static int? GetPrevalueIdForIPublished(IPublishedContent ip, string propertyAlias, string propertyValue)
-//{
-//    //find the property on the content node by its alias
-//    Property prop = ip.Properties.FirstOrDefault(a => a.PropertyTypeAlias == propertyAlias);
-//    var j = ip.Properties.FirstOrDefault(a => a.PropertyTypeAlias == "");
-//    j.prop
-
-//    if (prop != null)
-//    {
-//        //get data type from the property
-//        IDataTypeService dtService = ApplicationContext.Current.Services.DataTypeService;
-//        IDataTypeDefinition dtDefinition = dtService.GetDataTypeDefinitionById(prop.PropertyType.DataTypeDefinitionId);
-
-//        //Return property value Id
-//        return dtService.GetPreValuesCollectionByDataTypeId(dtDefinition.Id).PreValuesAsDictionary.Where(d => d.Value.Value == propertyValue).Select(f => f.Value.Id).First();
-//    }
-
-//    //Return nothing
-//    return null;
-//}
-//public static int GetDataTypeId(string dataTypeName)
-//{
-//    var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
-//    var allTypes = dataTypeService.GetAllDataTypeDefinitions();
-//    return allTypes.First(x => dataTypeName.InvariantEquals(x.Name)).Id;
-//}
-//public static PreValueCollection GetPreValues(string dataTypeName)
-//{
-//    int dataTypeId = GetDataTypeId(dataTypeName);
-//    var dts = ApplicationContext.Current.Services.DataTypeService;
-//    var preValues = dts.GetPreValuesCollectionByDataTypeId(dataTypeId);
-//    return preValues;
-//}
-//public static List<SelectListItem> PreValuesToSelectList(string dataTypeName)
-//{
-//    return (from x in GetPreValues(dataTypeName).PreValuesAsDictionary
-//            select new SelectListItem
-//            {
-//                Text = x.Value.Value,
-//                Value = x.Value.Id.ToString()
-//            }).ToList();
-//}

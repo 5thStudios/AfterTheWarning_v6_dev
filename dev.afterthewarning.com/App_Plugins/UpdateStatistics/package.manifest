@@ -1,0 +1,19 @@
+﻿{
+	//https://www.youtube.com/watch?v=dd-gQ6KFEUw&list=PLLYO0Qmbv5pvGjpI6Cyg3mVBoYtG_LK63&index=18
+	//https://umbraco.github.io/Belle/#/api
+
+    propertyEditors: [      
+        {
+			alias: "UpdateStatisticsController",
+            name: "Update Illumination Statistics",
+            editor: {
+                view: "~/App_Plugins/UpdateStatistics/UpdateStatistics.editor.html",
+                valueType: "JSON"
+            }
+        }
+    ]
+    ,
+    javascript: [
+        '~/App_Plugins/UpdateStatistics/UpdateStatistics.controller.js'
+    ]
+}

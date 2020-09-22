@@ -1,0 +1,71 @@
+﻿<style>
+.UpdateStatisticsController h4{color:#666}
+.UpdateStatisticsController input[type=text]{font-weight:700;color:#8d869c;border-width:0;background-color:transparent;width:100%;cursor:text}
+.UpdateStatisticsController a{color:#549dd8;text-decoration:underline}
+.UpdateStatisticsController a:hover{color:#2573B1}
+.UpdateStatisticsController button{color:#fff;background-color:#41365a;border:1px solid #2e2247;font-size:20px;font-weight:400;padding:12px 24px}
+.UpdateStatisticsController button:hover{background-color:#8d869c}
+.UpdateStatisticsController button.disabled{background-color:#8d869c;opacity:.3}
+.UpdateStatisticsController button.btnExportToExcel{background:url(/App_Plugins/UpdateStatistics/exportAsExcel.jpg);height:48px;width:119px;border-width:0}
+.UpdateStatisticsController .alertMsg{color:#B91800}
+.UpdateStatisticsController table.paleBlueRows{font-family:"Trebuchet MS",Helvetica,sans-serif;width:100%;text-align:left;border-collapse:collapse}
+.UpdateStatisticsController table.paleBlueRows td,table.paleBlueRows th{padding:6px 12px}
+.UpdateStatisticsController table.paleBlueRows tbody td{font-size:16px;color:#333}
+.UpdateStatisticsController table.paleBlueRows tr:nth-child(even){background:#D0E4F5}
+.UpdateStatisticsController table.paleBlueRows thead tr{background:#1C6EA4}
+.UpdateStatisticsController table.paleBlueRows thead th{font-size:17px;font-weight:700;color:#FFF;text-align:left;border-left:2px solid #D0E4F5}
+.UpdateStatisticsController table.paleBlueRows thead th:first-child{border-left:none}
+pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+</style>
+
+
+<div class="UpdateStatisticsController" ng-controller="UpdateStatisticsController">
+    <button class="btnUpdateStatistics">Update All Statistics</button>
+
+    <br />
+    <br />
+    <br />
+    <div>
+        <div class="alertMsg hide">
+            <strong>The following errors occured:</strong><br />
+            <span class="errorMsg"></span>
+        </div>
+
+        <div class="msg hide">
+            <br />
+            <br />
+
+            <!--<table class="paleBlueRows" id="tblVideoCompletionData">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td valign="top">Successful emails</td>
+                        <td valign="top">
+                            <strong>
+                                <label id="lblSuccessfulEmails"></label>
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Failed emails</td>
+                        <td valign="top">
+                            <strong>
+                                <label id="lblFailedEmails"></label>
+                            </strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>-->
+        </div>
+    </div>
+</div>

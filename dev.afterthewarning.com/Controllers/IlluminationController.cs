@@ -527,6 +527,9 @@ namespace Controllers
                             Services.MemberService.Save(member);
                         }
 
+                        //Update all statistical data
+                        UpdateAllStatistics();
+
                         //Return to page
                         TempData["IlluminationStoryAddedSuccessfully"] = true;
                         return RedirectToUmbracoPage((int)(Models.Common.siteNode.AddEditIlluminationStory));
@@ -594,7 +597,7 @@ namespace Controllers
                         Common.GetPrevalueIdForIContent(icIllumStory, ContentModels.IlluminationStory.GetModelPropertyType(x => x.ExperienceType).PropertyTypeAlias, experienceType));
 
 
-                    //Save new Illumination story
+                    //Save  Illumination story
                     var result = contentService.SaveAndPublishWithStatus(icIllumStory);
 
 
@@ -661,6 +664,9 @@ namespace Controllers
                             //Save all changes
                             Services.MemberService.Save(member);
                         }
+
+                        //Update all statistical data
+                        UpdateAllStatistics();
 
                         //Return to page
                         TempData["IlluminationStoryUpdatedSuccessfully"] = true;
@@ -918,6 +924,8 @@ namespace Controllers
             stats.jsonValues_Other_Males = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Other_Males);
             stats.jsonValues_Other_Females = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues_Other_Females);
 
+            //sets the canvas height to increase bar heights
+            stats.Height = lstHeavenly.Count * 20;
 
             return stats;
         }
@@ -970,7 +978,7 @@ namespace Controllers
             stats.Values_Hellish = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Hellish);
             stats.Values_Purgatorial = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Purgatorial);
             stats.Values_Unknown = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues_Unknown);
-            
+
             //sets the canvas height to increase bar heights
             stats.Height = lstLabels.Count * 20;
 
@@ -1033,7 +1041,422 @@ namespace Controllers
             //Return stats
             return stats;
         }
+
+
+        public static string UpdateAllStatistics()
+        {
+            //Instantiate variables
+            Models.IlluminationStats illuminationStats = new Models.IlluminationStats();
+            UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            IMemberService memberService = ApplicationContext.Current.Services.MemberService;
+            IPublishedContent ipIlluminationStories = umbracoHelper.TypedContent((int)Common.siteNode.IlluminationStories);
+
+
+            //Loop through all stories
+            foreach (IPublishedContent ip in ipIlluminationStories.Children.ToList())
+            {
+                if (ip.HasValue(Common.NodeProperties.member))
+                {
+                    //Instantiate variables
+                    IPublishedContent ipMember = ip.GetPropertyValue<IPublishedContent>(Common.NodeProperties.member);
+
+                    //Obtain user's experience type
+                    illuminationStats.experienceType = ip.GetPropertyValue<string>(Common.NodeProperties.experienceType);
+
+                    //Obtain data for experience types
+                    ObtainUpdateStats_forExperienceType(ref illuminationStats);
+
+                    //Consolidate Info: by Country
+                    ObtainUpdateStats_forCountry(ref ipMember, ref illuminationStats);
+
+
+                    //Consolidate Info: by Age
+                    ObtainUpdateStats_forAge(ref ipMember, ref illuminationStats);
+
+
+                    //Consolidate Info: by Gender
+                    ObtainUpdateStats_forGender(ref ipMember, ref illuminationStats);
+
+
+                    //Consolidate Info: by Religion
+                    ObtainUpdateStats_forReligion(ref ipMember, ref illuminationStats);
+
+
+                    //Consolidate Info: by Race
+                    ObtainUpdateStats_forRace(ref ipMember, ref illuminationStats);
+                }
+            }
+
+            //Sort lists
+            illuminationStats.LstExperiences_byCountry = illuminationStats.LstExperiences_byCountry.OrderBy(x => x.Label).ToList();
+
+            //Update nodes with new data
+            UpdateStatData_byNode(ref illuminationStats);
+
+            return JsonConvert.SerializeObject(illuminationStats);
+        }
+
+
+
+        private static void ObtainUpdateStats_forExperienceType(ref Models.IlluminationStats illuminationStats)
+        {
+            //Consolidate Info: by Experience Type
+            switch (illuminationStats.experienceType)
+            {
+                case Common.ExperienceType.Heavenly:
+                    illuminationStats.experienceType_Heavenly++;
+                    break;
+                case Common.ExperienceType.Hellish:
+                    illuminationStats.experienceType_Hellish++;
+                    break;
+                case Common.ExperienceType.Purgatorial:
+                    illuminationStats.experienceType_Purgatorial++;
+                    break;
+                case Common.ExperienceType.Other:
+                    illuminationStats.experienceType_Other++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        private static void ObtainUpdateStats_forCountry(ref IPublishedContent ipMember, ref Models.IlluminationStats illuminationStats)
+        {
+            //
+            illuminationStats.hasCountry = ipMember.HasValue(Common.NodeProperties.country); ;
+
+            //
+            if (illuminationStats.hasCountry)
+            {
+                Models.ExperienceByCountry experienceByCountry = new ExperienceByCountry();
+                string _country = ipMember.GetPropertyValue<string>(Common.NodeProperties.country);
+
+                if (illuminationStats.LstExperiences_byCountry.Any(x => x.Label == _country))
+                {
+                    experienceByCountry = illuminationStats.LstExperiences_byCountry.Where(x => x.Label == _country).FirstOrDefault();
+                }
+                else
+                {
+                    illuminationStats.LstExperiences_byCountry.Add(experienceByCountry);
+                    experienceByCountry.Label = _country;
+                }
+
+
+                //Consolidate Info: by Experience Type
+                switch (illuminationStats.experienceType)
+                {
+                    case Common.ExperienceType.Heavenly:
+                        experienceByCountry.Heavenly++;
+                        break;
+                    case Common.ExperienceType.Hellish:
+                        experienceByCountry.Hellish++;
+                        break;
+                    case Common.ExperienceType.Purgatorial:
+                        experienceByCountry.Purgatorial++;
+                        break;
+                    case Common.ExperienceType.Other:
+                        experienceByCountry.Other++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private static void ObtainUpdateStats_forAge(ref IPublishedContent ipMember, ref Models.IlluminationStats illuminationStats)
+        {
+            illuminationStats.hasAge = ipMember.HasValue(Common.NodeProperties.age);
+            if (illuminationStats.hasAge)
+            {
+                //
+                Models.LineChart experienceByAge = new LineChart();
+                illuminationStats.age = ipMember.GetPropertyValue<int>(Common.NodeProperties.age);
+                string _ageRange = "";
+
+                //
+                if (illuminationStats.age >= 0 && illuminationStats.age <= 4) { _ageRange = "0"; }
+                else if (illuminationStats.age >= 5 && illuminationStats.age <= 9) { _ageRange = "5"; }
+                else if (illuminationStats.age >= 10 && illuminationStats.age <= 14) { _ageRange = "10"; }
+                else if (illuminationStats.age >= 15 && illuminationStats.age <= 19) { _ageRange = "15"; }
+                else if (illuminationStats.age >= 20 && illuminationStats.age <= 24) { _ageRange = "20"; }
+                else if (illuminationStats.age >= 25 && illuminationStats.age <= 29) { _ageRange = "25"; }
+                else if (illuminationStats.age >= 30 && illuminationStats.age <= 34) { _ageRange = "30"; }
+                else if (illuminationStats.age >= 35 && illuminationStats.age <= 39) { _ageRange = "35"; }
+                else if (illuminationStats.age >= 40 && illuminationStats.age <= 44) { _ageRange = "40"; }
+                else if (illuminationStats.age >= 45 && illuminationStats.age <= 49) { _ageRange = "45"; }
+                else if (illuminationStats.age >= 50 && illuminationStats.age <= 54) { _ageRange = "50"; }
+                else if (illuminationStats.age >= 55 && illuminationStats.age <= 59) { _ageRange = "55"; }
+                else if (illuminationStats.age >= 60 && illuminationStats.age <= 64) { _ageRange = "60"; }
+                else if (illuminationStats.age >= 65 && illuminationStats.age <= 69) { _ageRange = "65"; }
+                else if (illuminationStats.age >= 70 && illuminationStats.age <= 74) { _ageRange = "70"; }
+                else if (illuminationStats.age >= 75 && illuminationStats.age <= 79) { _ageRange = "75"; }
+                else if (illuminationStats.age >= 80 && illuminationStats.age <= 84) { _ageRange = "80"; }
+                else if (illuminationStats.age >= 85 && illuminationStats.age <= 89) { _ageRange = "85"; }
+                else if (illuminationStats.age >= 90 && illuminationStats.age <= 94) { _ageRange = "90"; }
+                else if (illuminationStats.age >= 95 && illuminationStats.age <= 99) { _ageRange = "95"; }
+                else if (illuminationStats.age >= 100) { _ageRange = "100+"; }
+
+                //Consolidate Info: by Experience Type
+                switch (illuminationStats.experienceType)
+                {
+                    case Common.ExperienceType.Heavenly:
+                        //
+                        experienceByAge = illuminationStats.lstAge_Heavenly.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+                        experienceByAge.Count++;
+                        break;
+                    case Common.ExperienceType.Hellish:
+                        //
+                        experienceByAge = illuminationStats.lstAge_Hellish.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+                        experienceByAge.Count++;
+                        break;
+                    case Common.ExperienceType.Purgatorial:
+                        //
+                        experienceByAge = illuminationStats.lstAge_Purgatorial.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+                        experienceByAge.Count++;
+                        break;
+                    case Common.ExperienceType.Other:
+                        //
+                        experienceByAge = illuminationStats.lstAge_Unknown.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+                        experienceByAge.Count++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private static void ObtainUpdateStats_forGender(ref IPublishedContent ipMember, ref Models.IlluminationStats illuminationStats)
+        {
+            //
+            if (illuminationStats.hasAge)
+            {
+                illuminationStats.hasGender = ipMember.HasValue(Common.NodeProperties.gender);
+                if (illuminationStats.hasGender)
+                {
+                    //
+                    ExperienceByGender experienceByGender = new ExperienceByGender();
+                    string gender = Common.GetPreValueString(ipMember.GetPropertyValue<string>(Common.NodeProperties.gender));
+                    string _ageRange = "";
+
+                    //
+                    if (illuminationStats.age >= 0 && illuminationStats.age <= 4) { _ageRange = "0-5"; }
+                    else if (illuminationStats.age >= 5 && illuminationStats.age <= 9) { _ageRange = "6-10"; }
+                    else if (illuminationStats.age >= 10 && illuminationStats.age <= 14) { _ageRange = "11-15"; }
+                    else if (illuminationStats.age >= 15 && illuminationStats.age <= 19) { _ageRange = "16-20"; }
+                    else if (illuminationStats.age >= 20 && illuminationStats.age <= 24) { _ageRange = "21-25"; }
+                    else if (illuminationStats.age >= 25 && illuminationStats.age <= 29) { _ageRange = "26-30"; }
+                    else if (illuminationStats.age >= 30 && illuminationStats.age <= 34) { _ageRange = "31-35"; }
+                    else if (illuminationStats.age >= 35 && illuminationStats.age <= 39) { _ageRange = "36-40"; }
+                    else if (illuminationStats.age >= 40 && illuminationStats.age <= 44) { _ageRange = "41-45"; }
+                    else if (illuminationStats.age >= 45 && illuminationStats.age <= 49) { _ageRange = "46-50"; }
+                    else if (illuminationStats.age >= 50 && illuminationStats.age <= 54) { _ageRange = "51-55"; }
+                    else if (illuminationStats.age >= 55 && illuminationStats.age <= 59) { _ageRange = "56-60"; }
+                    else if (illuminationStats.age >= 60 && illuminationStats.age <= 64) { _ageRange = "61-65"; }
+                    else if (illuminationStats.age >= 65 && illuminationStats.age <= 69) { _ageRange = "66-70"; }
+                    else if (illuminationStats.age >= 70 && illuminationStats.age <= 74) { _ageRange = "71-75"; }
+                    else if (illuminationStats.age >= 75 && illuminationStats.age <= 79) { _ageRange = "76-80"; }
+                    else if (illuminationStats.age >= 80 && illuminationStats.age <= 84) { _ageRange = "81-85"; }
+                    else if (illuminationStats.age >= 85 && illuminationStats.age <= 89) { _ageRange = "86-90"; }
+                    else if (illuminationStats.age >= 90 && illuminationStats.age <= 94) { _ageRange = "91-95"; }
+                    else if (illuminationStats.age >= 95) { _ageRange = "96-100+"; }
+
+                    //Consolidate Info: by Experience Type
+                    switch (illuminationStats.experienceType)
+                    {
+                        case Common.ExperienceType.Heavenly:
+                            //
+                            experienceByGender = illuminationStats.lstGender_Heavenly.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+
+                            //Increment gender
+                            if (gender == Common.Gender.Male)
+                            {
+                                experienceByGender.Males++;
+                            }
+                            else
+                            {
+                                experienceByGender.Females++;
+                            }
+
+                            break;
+                        case Common.ExperienceType.Hellish:
+                            //
+                            experienceByGender = illuminationStats.lstGender_Hellish.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+
+                            //Increment gender
+                            if (gender == Common.Gender.Male)
+                            {
+                                experienceByGender.Males++;
+                            }
+                            else
+                            {
+                                experienceByGender.Females++;
+                            }
+
+                            break;
+                        case Common.ExperienceType.Purgatorial:
+                            //
+                            experienceByGender = illuminationStats.lstGender_Purgatorial.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+
+                            //Increment gender
+                            if (gender == Common.Gender.Male)
+                            {
+                                experienceByGender.Males++;
+                            }
+                            else
+                            {
+                                experienceByGender.Females++;
+                            }
+
+                            break;
+                        case Common.ExperienceType.Other:
+                            //
+                            experienceByGender = illuminationStats.lstGender_Unknown.Where(x => x.AgeRange == _ageRange).FirstOrDefault();
+
+                            //Increment gender
+                            if (gender == Common.Gender.Male)
+                            {
+                                experienceByGender.Males++;
+                            }
+                            else
+                            {
+                                experienceByGender.Females++;
+                            }
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        private static void ObtainUpdateStats_forRace(ref IPublishedContent ipMember, ref Models.IlluminationStats illuminationStats)
+        {
+            //
+            illuminationStats.hasRace = ipMember.HasValue(Common.NodeProperties.race); ;
+
+            //
+            if (illuminationStats.hasRace)
+            {
+                //
+                Models.ExperienceByRace experienceByRace;
+                illuminationStats.lstRace = ipMember.GetPropertyValue<IEnumerable<string>>(Common.NodeProperties.race).ToList();
+
+                //Consolidate Info: by Race
+                foreach (var race in illuminationStats.lstRace)
+                {
+                    //
+                    experienceByRace = illuminationStats.lstRaces.Where(x => x.Label == race).FirstOrDefault();
+
+                    switch (illuminationStats.experienceType)
+                    {
+                        case Common.ExperienceType.Heavenly:
+                            experienceByRace.Heavenly++;
+                            break;
+                        case Common.ExperienceType.Hellish:
+                            experienceByRace.Hellish++;
+                            break;
+                        case Common.ExperienceType.Purgatorial:
+                            experienceByRace.Purgatorial++;
+                            break;
+                        case Common.ExperienceType.Other:
+                            experienceByRace.Other++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }
+        private static void ObtainUpdateStats_forReligion(ref IPublishedContent ipMember, ref Models.IlluminationStats illuminationStats)
+        {
+            //
+            illuminationStats.hasReligion = ipMember.HasValue(Common.NodeProperties.religion); ;
+
+            //
+            if (illuminationStats.hasReligion)
+            {
+                //
+                Models.ExperienceByReligion experienceByReligion = new ExperienceByReligion();
+                string _religion = ipMember.GetPropertyValue<string>(Common.NodeProperties.religion);
+
+
+                experienceByReligion = illuminationStats.lstReligions.Where(x => x.Label == _religion).FirstOrDefault();
+
+
+                //Consolidate Info: by Experience Type
+                switch (illuminationStats.experienceType)
+                {
+                    case Common.ExperienceType.Heavenly:
+                        experienceByReligion.Heavenly++;
+                        break;
+                    case Common.ExperienceType.Hellish:
+                        experienceByReligion.Hellish++;
+                        break;
+                    case Common.ExperienceType.Purgatorial:
+                        experienceByReligion.Purgatorial++;
+                        break;
+                    case Common.ExperienceType.Other:
+                        experienceByReligion.Other++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private static void UpdateStatData_byNode(ref Models.IlluminationStats illuminationStats)
+        {
+            //Instantiate variables
+            IContentService contentService = ApplicationContext.Current.Services.ContentService;
+            IContent icByAge = contentService.GetById((int)Common.siteNode.ByAge);
+            IContent icByCountry = contentService.GetById((int)Common.siteNode.ByCountry);
+            IContent icByExperienceType = contentService.GetById((int)Common.siteNode.ByExperienceType);
+            IContent icByGender = contentService.GetById((int)Common.siteNode.ByGender);
+            IContent icByRace = contentService.GetById((int)Common.siteNode.ByRace);
+            IContent icByReligion = contentService.GetById((int)Common.siteNode.ByReligion);
+
+
+            //Update Age stats
+            icByAge.SetValue(Common.NodeProperties.statsHeavenly, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstAge_Heavenly));
+            icByAge.SetValue(Common.NodeProperties.statsHellish, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstAge_Hellish));
+            icByAge.SetValue(Common.NodeProperties.statsPurgatorial, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstAge_Purgatorial));
+            icByAge.SetValue(Common.NodeProperties.statsUnknown, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstAge_Unknown));
+            var result = contentService.SaveAndPublishWithStatus(icByAge);
+
+
+            //Update Country stats
+            icByCountry.SetValue(Common.NodeProperties.experiencesByCountry, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.LstExperiences_byCountry));
+            result = contentService.SaveAndPublishWithStatus(icByCountry);
+
+
+            //Update Age stats
+            icByExperienceType.SetValue(Common.NodeProperties.heavenly, illuminationStats.experienceType_Heavenly);
+            icByExperienceType.SetValue(Common.NodeProperties.hellish, illuminationStats.experienceType_Hellish);
+            icByExperienceType.SetValue(Common.NodeProperties.purgatorial, illuminationStats.experienceType_Purgatorial);
+            icByExperienceType.SetValue(Common.NodeProperties.other, illuminationStats.experienceType_Other);
+            result = contentService.SaveAndPublishWithStatus(icByExperienceType);
+
+
+            //Update Age stats
+            icByGender.SetValue(Common.NodeProperties.statsHeavenly, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstGender_Heavenly));
+            icByGender.SetValue(Common.NodeProperties.statsHellish, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstGender_Hellish));
+            icByGender.SetValue(Common.NodeProperties.statsPurgatorial, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstGender_Purgatorial));
+            icByGender.SetValue(Common.NodeProperties.statsUnknown, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstGender_Unknown));
+            result = contentService.SaveAndPublishWithStatus(icByGender);
+
+
+            //Update Country stats
+            icByRace.SetValue(Common.NodeProperties.experiencesByRace, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstRaces));
+            result = contentService.SaveAndPublishWithStatus(icByRace);
+
+
+            //Update Country stats
+            icByReligion.SetValue(Common.NodeProperties.experiencesByReligion, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstReligions));
+            result = contentService.SaveAndPublishWithStatus(icByReligion);
+        }
         #endregion
+
+
+
+
+
 
 
 
@@ -1195,6 +1618,7 @@ namespace Controllers
             char let = (char)('a' + num);
             return let.ToString().ToUpper();
         }
+
 
         //private void IncrementAgeLst(ref List<int> LstAge, int Age)
         //{

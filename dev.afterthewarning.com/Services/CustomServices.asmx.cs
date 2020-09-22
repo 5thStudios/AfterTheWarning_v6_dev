@@ -23,6 +23,14 @@ namespace Services
             Dictionary<string, int> dict = Controllers.MembershipController.SendUpdatesByEmail();
             return JsonConvert.SerializeObject(dict);
         }
+
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public string UpdateStats()
+        {
+            return Controllers.IlluminationController.UpdateAllStatistics();
+        }
     }
 }
 

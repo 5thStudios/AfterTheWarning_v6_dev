@@ -13,5 +13,15 @@ namespace Models
 
         [JsonProperty("count")]
         public uint Count { get; set; }
-    }
+
+
+
+        public LineChart() { }
+        public LineChart(string _ageRange)
+        {
+            AgeRange = _ageRange;
+            Count = 0;
+        }
+}
+
 }

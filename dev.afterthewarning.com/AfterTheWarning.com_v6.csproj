@@ -337,6 +337,8 @@
     <Content Include="App_Plugins\BelleIconPack\ReadMe.txt" />
     <Content Include="App_Plugins\DocTypeInspection\js\docTypeInspection.js" />
     <Content Include="App_Plugins\DocTypeInspection\views\ContextMenuView.html" />
+    <Content Include="App_Plugins\UpdateStatistics\UpdateStatistics.controller.js" />
+    <Content Include="App_Plugins\UpdateStatistics\UpdateStatistics.editor.html" />
     <Content Include="App_Plugins\EmailUpdates\EmailUpdates.controller.js" />
     <Content Include="App_Plugins\EmailUpdates\EmailUpdates.editor.html" />
     <Content Include="App_Plugins\FALM\backoffice\housekeeping\controller\cache.controller.js" />
@@ -1435,6 +1437,7 @@
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="config\BackOfficeTours\getting-started.json" />
     <Content Include="config\404handlers.config" />
+    <Content Include="App_Plugins\UpdateStatistics\package.manifest" />
     <None Include="Properties\PublishProfiles\Publish to Live.pubxml" />
     <None Include="Properties\PublishProfiles\Publish to Staging.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -2909,6 +2912,7 @@
     <Compile Include="Models\ExperienceByRace.cs" />
     <Compile Include="Models\ExperienceByCountry.cs" />
     <Compile Include="Models\ExperienceByGender.cs" />
+    <Compile Include="Models\IlluminationStats.cs" />
     <Compile Include="Models\LatestUpdateList.cs" />
     <Compile Include="Models\StackedBarChart.cs" />
     <Compile Include="Models\PieChart.cs" />

@@ -22,5 +22,13 @@ namespace Models
 
         [JsonProperty("other")]
         public int Other { get; set; }
+
+        public ExperienceByCountry()
+        {
+            Heavenly = 0;
+            Hellish = 0;
+            Purgatorial = 0;
+            Other = 0;
+        }
     }
 }

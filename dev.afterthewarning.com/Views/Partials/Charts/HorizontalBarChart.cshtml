@@ -1,13 +1,14 @@
 ﻿@inherits UmbracoViewPage<Models.BarChart>
 
 
+@{ string heightPx = Model.Height.ToString() + "px"; }
 
 <div id="canvasList" class="grid-x grid-margin-x grid-margin-y">
     <div class="cell">
-        <canvas class="" id="chart-heavenly"></canvas>
-        <canvas class="hide" id="chart-hellish"></canvas>
-        <canvas class="hide" id="chart-purgatorial"></canvas>
-        <canvas class="hide" id="chart-other"></canvas>
+        <canvas class="" id="chart-heavenly" height="@Model.Height" style="height:@heightPx"></canvas>
+        <canvas class="hide" id="chart-hellish" height="@Model.Height" style="height:@heightPx"></canvas>
+        <canvas class="hide" id="chart-purgatorial" height="@Model.Height" style="height:@heightPx"></canvas>
+        <canvas class="hide" id="chart-other" height="@Model.Height" style="height:@heightPx"></canvas>
     </div>
 </div>
 

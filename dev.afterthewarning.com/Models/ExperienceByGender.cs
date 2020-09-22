@@ -16,5 +16,14 @@ namespace Models
 
         [JsonProperty("females")]
         public int Females { get; set; }
+
+
+        public ExperienceByGender() { }
+        public ExperienceByGender(string _ageRange)
+        {
+            AgeRange = _ageRange;
+            Males = 0;
+            Females = 0;
+        }
     }
 }

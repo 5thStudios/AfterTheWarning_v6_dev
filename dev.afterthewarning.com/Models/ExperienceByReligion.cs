@@ -22,5 +22,17 @@ namespace Models
 
         [JsonProperty("other")]
         public int Other { get; set; }
+
+
+
+        public ExperienceByReligion() { }
+        public ExperienceByReligion(string _label)
+        {
+            Label = _label;
+            Heavenly = 0;
+            Hellish = 0;
+            Purgatorial = 0;
+            Other = 0;
+        }
     }
 }

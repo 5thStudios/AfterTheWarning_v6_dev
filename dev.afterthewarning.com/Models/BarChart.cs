@@ -29,6 +29,8 @@ namespace Models
         public string jsonValues_Other_Males { get; set; }
         public string jsonValues_Other_Females { get; set; }
 
+        public int Height { get; set; }
+
 
         public BarChart()
         {
