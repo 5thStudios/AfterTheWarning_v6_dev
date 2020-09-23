@@ -3,6 +3,10 @@
 @{ Models.PieChart stats = Controllers.IlluminationController.ObtainStatistics_byExperienceType(Model); }
 
 
+@{
+    int count = stats.lstLabels.Count;
+    int index = 0;
+}
 
 <div class="grid-x grid-margin-x grid-margin-y">
     <div class="cell text-center">
@@ -12,6 +16,25 @@
 </div>
 
 @{ Html.RenderPartial("Partials/Charts/PieChart", stats); }
+
+
+<br />
+<br />
+
+<h4>Total Entries: <strong>@stats.TotalEntries.ToString("N0")</strong></h4>
+<hr />
+<div class="grid-x">
+    @{
+        while (index < count)
+        {
+            <div class="cell medium-12">
+                <h5>@stats.lstLabels[index]: <strong>@stats.lstValues[index].ToString("N0")</strong></h5>
+            </div>
+            index++;
+        }
+    }
+</div>
+
 
 
 @section Footer { }

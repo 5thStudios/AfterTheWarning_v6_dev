@@ -18,5 +18,18 @@ namespace Models
         public string Values { get; set; }
         public string BgColors { get; set; }
         public string HoverBgColors { get; set; }
+        public int TotalEntries { get; set; }
+
+        public List<string> lstLabels { get; set; }
+        public List<int> lstValues { get; set; }
+
+
+
+        public PieChart()
+        {
+            lstLabels = new List<string>();
+            lstValues = new List<int>();
+            TotalEntries = 0;
+        }
     }
 }

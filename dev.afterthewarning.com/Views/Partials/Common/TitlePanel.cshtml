@@ -8,7 +8,6 @@
 @{
     //Obtain current page as strongly typed ip
     int? currentPageId = UmbracoContext.Current.PageId;
-    //UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
     IPublishedContent ipCurrentPg = Umbraco.TypedContent(currentPageId);
 
 
@@ -18,148 +17,122 @@
     StringBuilder sbCite = new StringBuilder();
     String heightClass = "narrow";
     String visionaryName = String.Empty;
+    List<DateTime> lstDateRange;
+    StringBuilder sbDateRange = new StringBuilder();
 
 
     //Obtain page's doctype
     String docType = ipCurrentPg.DocumentTypeAlias;
 
 
-    //If the page is under the manage acct section then the doctype is to be the parent.
-    if (ipCurrentPg.DocumentTypeAlias != Common.docType.Home && ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.ManageAccount)
+    //Check if the parent doctype should be used instead.
+    if (docType != Common.docType.Home && ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.ManageAccount)
     {
         docType = Common.docType.ManageAccount;
     }
-
-
-    //Obtain the daterange if applicable
-    //String dateRange = String.Empty;
-    StringBuilder sbDateRange = new StringBuilder();
-    if (docType == Common.docType.Message)
-    {
-        //Obtain list of all dates
-        List<DateTime> lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
-
-        //Determine proper date range for messages
-        if (lstDateRange != null)
-        {
-            switch (lstDateRange.Count)
-            {
-                case 0: //Leave blank
-                    break;
-
-                case 1:
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    break;
-
-                case 2:
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    sbDateRange.Append(" and ");
-                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-                    break;
-
-                default: //More than 2 dates in list
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    sbDateRange.Append(" thru ");
-                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-                    break;
-            }
-        }
-
-        //Obtain visionary's name
-        visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).GetPropertyValue<String>(Common.NodeProperties.visionarysName);
-    }
-
-    if (docType == Common.docType.WebmasterMessage)
-    {
-        //Obtain list of all dates
-        List<DateTime> lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
-
-        //Determine proper date range for messages
-        if (lstDateRange != null)
-        {
-            switch (lstDateRange.Count)
-            {
-                case 0: //Leave blank
-                    break;
-
-                case 1:
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    break;
-
-                case 2:
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    sbDateRange.Append(" and ");
-                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-                    break;
-
-                default: //More than 2 dates in list
-                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-                    sbDateRange.Append(" thru ");
-                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-                    break;
-            }
-        }
-
-        //Obtain name
-        visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList).Name;
-    }
-
-    //Under title add author and/or original url source
-    if (docType == Common.docType.Standard)
-    {
-        if (ipCurrentPg.HasValue(Common.NodeProperties.originalSource))
-        {
-            String strOriginalSrc = ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.originalSource);
-            List<originalSource> lstOriginalSource = new JavaScriptSerializer().Deserialize<List<originalSource>>(strOriginalSrc);
-
-            bool addBr = false;
-            if (lstOriginalSource.Any())
-            {
-                originalSource src = lstOriginalSource.FirstOrDefault();
-
-                if (!String.IsNullOrEmpty(src.author))
-                {
-                    addBr = true;
-                    sbCite.Append("By " + src.author);
-                }
-
-                if (!String.IsNullOrEmpty(src.originalUrl))
-                {
-                    if (addBr) { sbCite.Append("<br />"); }
-
-                    sbCite.Append("<a href='" + src.originalUrl + "' target='_blank'>" + src.urlName + "</a>");
-                }
-            }
-
-        }
-    }
-
-    //
-    if (docType == Common.docType.PrayerRequest)
-    {
-        strH1 = ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.prayerTitle);
-
-        //Generate user's name
-        var CmMember = new ContentModels.Member(Umbraco.TypedMember(ipCurrentPg.GetPropertyValue<int>(Common.NodeProperties.prayerRequestMember)));
-        StringBuilder sbAuthor = new StringBuilder();
-        sbAuthor.Append(CmMember.FirstName);
-        sbAuthor.Append("&nbsp;&nbsp;");
-        sbAuthor.Append(CmMember.LastName);
-        sbAuthor.Append(".");
-        strH3 = sbAuthor.ToString();
-    }
-
-    //
-    if (docType == Common.docType.Home)
-    {
-        heightClass = "tall";
-    }
-
-    if (ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.IlluminationStatistics)
+    else if (docType != Common.docType.Home && ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.IlluminationStatistics)
     {
         docType = ipCurrentPg.Parent.DocumentTypeAlias;
     }
+
+
+    //
+    switch (docType)
+    {
+        case Common.docType.Message:
+            //Obtain list of all dates
+            lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+            //Determine proper date range for messages
+            if (lstDateRange != null)
+            {
+                switch (lstDateRange.Count)
+                {
+                    case 0: //Leave blank
+                        break;
+
+                    case 1:
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        break;
+
+                    case 2:
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        sbDateRange.Append(" and ");
+                        sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                        break;
+
+                    default: //More than 2 dates in list
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        sbDateRange.Append(" thru ");
+                        sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                        break;
+                }
+            }
+
+            //Obtain visionary's name
+            visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).GetPropertyValue<String>(Common.NodeProperties.visionarysName);
+            break;
+
+
+        case Common.docType.WebmasterMessage:
+            //Obtain list of all dates
+            lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+            //Determine proper date range for messages
+            if (lstDateRange != null)
+            {
+                switch (lstDateRange.Count)
+                {
+                    case 0: //Leave blank
+                        break;
+
+                    case 1:
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        break;
+
+                    case 2:
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        sbDateRange.Append(" and ");
+                        sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                        break;
+
+                    default: //More than 2 dates in list
+                        sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                        sbDateRange.Append(" thru ");
+                        sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                        break;
+                }
+            }
+
+            //Obtain name
+            visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList).Name;
+            break;
+
+
+        case Common.docType.PrayerRequest:
+            strH1 = ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.prayerTitle);
+
+            //Generate user's name
+            var CmMember = new ContentModels.Member(Umbraco.TypedMember(ipCurrentPg.GetPropertyValue<int>(Common.NodeProperties.prayerRequestMember)));
+            StringBuilder sbAuthor = new StringBuilder();
+            sbAuthor.Append(CmMember.FirstName);
+            sbAuthor.Append("&nbsp;&nbsp;");
+            sbAuthor.Append(CmMember.LastName);
+            sbAuthor.Append(".");
+            strH3 = sbAuthor.ToString();
+            break;
+
+
+        case Common.docType.Home:
+            heightClass = "tall";
+            break;
+
+
+        default:
+            break;
+    }
 }
+
 
 @*ORIGINAL*@
 <div class="grid-container titleSectionPnl">

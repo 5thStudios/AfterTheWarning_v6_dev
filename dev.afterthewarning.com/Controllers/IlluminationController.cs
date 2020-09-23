@@ -828,19 +828,20 @@ namespace Controllers
         }
         public static Models.PieChart ObtainStatistics_byExperienceType(IPublishedContent ip)
         {
+            //Instantiate stat object
+            PieChart stats = new PieChart();
+
             //Extractor data from ip
-            List<int> lstValues = new List<int>();
-            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.heavenly));
-            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.hellish));
-            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.purgatorial));
-            lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.other));
+            stats.lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.heavenly));
+            stats.lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.hellish));
+            stats.lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.purgatorial));
+            stats.lstValues.Add(ip.GetPropertyValue<int>(Common.NodeProperties.other));
 
             //Static data
-            List<string> lstLabels = new List<string>();
-            lstLabels.Add("Heavenly");
-            lstLabels.Add("Purgatorial");
-            lstLabels.Add("Hellish");
-            lstLabels.Add("Unknown/Unsure");
+            stats.lstLabels.Add("Heavenly");
+            stats.lstLabels.Add("Purgatorial");
+            stats.lstLabels.Add("Hellish");
+            stats.lstLabels.Add("Unknown/Unsure");
 
             List<string> lstBgColors = new List<string>();
             lstBgColors.Add("#4f81bc");
@@ -855,11 +856,16 @@ namespace Controllers
             lstHoverBgColors.Add("#b9b9b9");
 
             //Convert extracted data to json
-            PieChart stats = new PieChart();
             stats.BgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstBgColors);
             stats.HoverBgColors = Newtonsoft.Json.JsonConvert.SerializeObject(lstHoverBgColors);
-            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(lstLabels);
-            stats.Values = Newtonsoft.Json.JsonConvert.SerializeObject(lstValues);
+            stats.Labels = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstLabels);
+            stats.Values = Newtonsoft.Json.JsonConvert.SerializeObject(stats.lstValues);
+
+            //
+            foreach (int value in stats.lstValues)
+            {
+                stats.TotalEntries += value;
+            }
 
             //Return stats
             return stats;
