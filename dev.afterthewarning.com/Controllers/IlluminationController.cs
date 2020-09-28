@@ -24,6 +24,12 @@ using Examine.SearchCriteria;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
+using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Shapes;
+using MigraDoc.Rendering;
+
+
+
 namespace Controllers
 {
     public class IlluminationController : SurfaceController
@@ -1053,6 +1059,7 @@ namespace Controllers
         {
             //Instantiate variables
             Models.IlluminationStats illuminationStats = new Models.IlluminationStats();
+
             UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             IMemberService memberService = ApplicationContext.Current.Services.MemberService;
             IPublishedContent ipIlluminationStories = umbracoHelper.TypedContent((int)Common.siteNode.IlluminationStories);
@@ -1091,6 +1098,7 @@ namespace Controllers
                     //Consolidate Info: by Race
                     ObtainUpdateStats_forRace(ref ipMember, ref illuminationStats);
                 }
+
             }
 
             //Sort lists
@@ -1099,11 +1107,12 @@ namespace Controllers
             //Update nodes with new data
             UpdateStatData_byNode(ref illuminationStats);
 
+
+            //Generate a pdf version of the stories
+            GeneratePdf();
+
             return JsonConvert.SerializeObject(illuminationStats);
         }
-
-
-
         private static void ObtainUpdateStats_forExperienceType(ref Models.IlluminationStats illuminationStats)
         {
             //Consolidate Info: by Experience Type
@@ -1457,202 +1466,430 @@ namespace Controllers
             icByReligion.SetValue(Common.NodeProperties.experiencesByReligion, Newtonsoft.Json.JsonConvert.SerializeObject(illuminationStats.lstReligions));
             result = contentService.SaveAndPublishWithStatus(icByReligion);
         }
-        #endregion
 
 
+        public static void GeneratePdf()
+        {
+            //Obtain the file name and location from Umbraco
+            UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            IPublishedContent ipIlluminationStories = umbracoHelper.TypedContent((int)Common.siteNode.IlluminationStories);
+            string fileLocation = HttpRuntime.AppDomainAppPath + ipIlluminationStories.GetPropertyValue<IPublishedContent>(Common.NodeProperties.compiledStories).Url.TrimStart('/');
+            fileLocation = fileLocation.Replace(@"/", @"\");
+
+            //Create the document
+            Document document = CreateDocument();
+
+            //Convert to pdf and save
+            PdfDocumentRenderer renderer = new PdfDocumentRenderer(true);
+            renderer.Document = document;
+            renderer.RenderDocument();
+            renderer.PdfDocument.Save(fileLocation);
+        }
+        private static Document CreateDocument()
+        {
+            // Create a new MigraDoc document
+            Document document = new Document();
+            document.Info.Title = "The Illumination of Conscience";
+            document.Info.Subject = "Testimonials of the Warning";
+            document.Info.Author = @"Jim Fifth | AfterTheWarning.com";
+
+            DefineStyles(document);
+            DefineCover(document);
+            DefineContentSection(document);
+            AddContent(document);
+
+            return document;
+        }
+        private static void DefineStyles(Document document)
+        {
+            // Get the predefined style Normal.
+            Style style = document.Styles["Normal"];
+            // Because all styles are derived from Normal, the next line changes the 
+            // font of the whole document. Or, more exactly, it changes the font of
+            // all styles and paragraphs that do not redefine the font.
+            style.Font.Name = "Times New Roman";
+            style.ParagraphFormat.SpaceAfter = 3;
 
 
+            style = document.Styles["Heading1"];
+            style.Font.Name = "Tahoma";
+            style.Font.Size = 24;
+            style.Font.Bold = true;
+            style.Font.Color = Colors.Black;
+            style.ParagraphFormat.PageBreakBefore = false;
+            style.ParagraphFormat.SpaceAfter = 6;
 
 
+            style = document.Styles["Heading2"];
+            style.Font.Size = 18;
+            style.Font.Bold = false;
+            style.Font.Color = Colors.DarkOrange;
+            style.ParagraphFormat.PageBreakBefore = false;
+            style.ParagraphFormat.SpaceBefore = 6;
+            style.ParagraphFormat.SpaceAfter = 6;
 
 
-        #region "Test Stories"
-        public static string GenerateTestStories()
+            style = document.Styles["Heading3"];
+            style.Font.Size = 10;
+            style.Font.Bold = true;
+            style.Font.Italic = true;
+            style.ParagraphFormat.SpaceBefore = 6;
+            style.ParagraphFormat.SpaceAfter = 3;
+
+
+            style = document.Styles["Heading4"];
+            style.Font.Size = 9;
+            style.Font.Bold = false;
+            style.Font.Italic = false;
+            style.Font.Color = Colors.Gray;
+            style.ParagraphFormat.SpaceBefore = 6;
+            style.ParagraphFormat.SpaceAfter = 6;
+            style.ParagraphFormat.Alignment = ParagraphAlignment.Left;
+
+
+            style = document.Styles[StyleNames.Header];
+            style.ParagraphFormat.AddTabStop("16cm", TabAlignment.Right);
+
+
+            style = document.Styles[StyleNames.Footer];
+            style.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
+
+            // Create a new style called TOC based on style Normal
+            style = document.Styles.AddStyle("TOC", "Normal");
+            style.ParagraphFormat.AddTabStop("16cm", TabAlignment.Right, TabLeader.Dots);
+            style.ParagraphFormat.Font.Color = Colors.Blue;
+        }
+        private static void DefineCover(Document document)
+        {
+            MigraDoc.DocumentObjectModel.Section section = document.AddSection();
+            section.PageSetup.PageFormat = PageFormat.Letter;
+
+            MigraDoc.DocumentObjectModel.Shapes.Image image = section.AddImage(HttpRuntime.AppDomainAppPath + @"images\PdfCover.jpg");
+            image.Width = "8.5in";
+            image.Height = "11in";
+            image.RelativeHorizontal = RelativeHorizontal.Page;
+            image.RelativeVertical = RelativeVertical.Page;
+
+        }
+        private static void DefineContentSection(Document document)
+        {
+            MigraDoc.DocumentObjectModel.Section section = document.AddSection();
+            section.PageSetup.StartingNumber = 1;
+
+            // Add paragraph to footer
+            Paragraph paragraph = new Paragraph();
+            section.Footers.Primary.Add(paragraph);
+            section.Footers.EvenPage.Add(paragraph.Clone());
+
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            paragraph.AddFormattedText(@"AfterTheWarning.com  |  ", TextFormat.Bold | TextFormat.Italic);
+            paragraph.AddPageField();
+        }
+        private static void AddContent(Document document)
         {
             //Instantiate variables
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            TempResults results = new TempResults();
+            List<IlluminationPdfStat> lstIlluminationPdfStats = ObtainPdfStats();
+            string ExperienceType = "";
+            Paragraph paragraph;
+            Boolean isFirst = true;
 
-            try
+
+            //Add all stories to pdf
+            foreach (IlluminationPdfStat stat in lstIlluminationPdfStats)
             {
-                int entryCount = 15000;
-                _memberships membership = new _memberships();
-                IMemberService memberService = ApplicationContext.Current.Services.MemberService;
-
-                Array lstCountries = Enum.GetValues(typeof(Common.Countries));
-                Array lstGenders = Enum.GetValues(typeof(Common.Genders));
-                Array lstRaces = Enum.GetValues(typeof(Common.Races));
-                Array lstReligions = Enum.GetValues(typeof(Common.Religions));
-                Array lstExperienceTypes = Enum.GetValues(typeof(Common.ExperienceTypes));
-
-                List<MembershipModel> lstMembers = new List<MembershipModel>();
-                List<illuminationStory> lstIlluminationStories = new List<illuminationStory>();
-
-
-                //Create story array
-                List<string> lstStory = new List<string>();
-                lstStory.Add("Acid effects antimagic bonus cold domain cure spell fire subtype glamer subschool melee move action strength domain suffocation.");
-                lstStory.Add("Ability damage character dying energy damage inherent bonus portal domain ranged attack roll scrying subschool speed suffocation water dangers. Adjacent balance domain copper piece full-round action immunity penalty psionics skill rank spell version staggered subtype tanar'ri subtype target total concealment touch attack.");
-                lstStory.Add("Aberration type calling subschool coup de grace domain spell entangled ethereal plane fear cone improved grab initiative count light weapon living luck domain melee mentalism domain monstrous humanoid type morale bonus orc domain paladin petrified ranged attack rounding scribe shield bonus spell level square subtype threaten tyranny domain.");
-                lstStory.Add("Abjuration acid effects antimagic archon subtype change shape cowering damage reduction evil domain experience points extraplanar immunity lava effects law domain luck domain pinned player character size modifier spell resistance spell trigger item stable trade domain transmutation.");
-                lstStory.Add("5-foot step arcane spell failure automatic hit base save bonus command undead conjuration enhancement bonus evasion extraplanar subtype fatigued force damage gold piece incorporeal mundane nauseated plant domain ranged attack roll rogue size modifier special quality spell preparation tanar'ri subtype threat threatened square turning damage water subtype.");
-                lstStory.Add("Charm climb critical hit dazed disabled earth domain energy drain fear effect grapple check grappling hit points immediate action incorporeal subtype manufactured weapons medium natural reach paralyzed planning domain prerequisite profane bonus psionics reflex save stack strength summoning subschool swim tanar'ri subtype teleportation subschool treasure unarmed strike.");
-                lstStory.Add("Abjuration action cantrip catching on fire character compulsion subschool darkness domain fate domain fine giant type knocked down modifier mundane negative level nonlethal damage paralyzed pounce spell descriptor spell resistance suffering domain summoning subschool undeath domain water dangers.");
-                lstStory.Add("Animal domain attack attack roll base attack bonus charm domain checked critical roll cure spell death attack difficult terrain disease elf domain evocation falling fear aura force damage gnome domain good domain magic domain melee attack natural weapon one-handed weapon panicked party plant domain retribution domain shaken water domain.");
-                lstStory.Add("Ability damaged angel subtype copper piece creation subschool creature type drow domain flight hardness natural reach negative energy pounce reaction rebuke undead rend subschool transmutation turning check.");
-                lstStory.Add("Abjuration acid effects antimagic archon subtype change shape cowering damage reduction evil domain experience points extraplanar immunity lava effects law domain luck domain pinned player character size modifier spell resistance spell trigger item stable trade domain transmutation.");
-
-
-
-                //Create all test members and stories
-                for (int i = 0; i < entryCount; i++)
+                //Determine if a new section is to be created
+                if (ExperienceType != stat.ExperienceType)
                 {
-                    //Create a test member
-                    MembershipModel memberModel = new MembershipModel();
-                    memberModel.FirstName = GetRandomLetter(i);
-                    memberModel.LastName = GetRandomLetter(i + 1);
-                    memberModel.Password = "Pa55word";
-                    memberModel.Email = "JF_" + String.Format("{0:00000}", i) + "@noemail.com";
-                    lstMembers.Add(memberModel);
-
-
-                    //Create a test story
-                    illuminationStory story = new illuminationStory();
-                    story.Age = _random.Next(1, 121);
-                    story.Country = (Common.Countries)lstCountries.GetValue(_random.Next(lstCountries.Length));
-                    story.ExperienceType = (Common.ExperienceTypes)lstExperienceTypes.GetValue(_random.Next(lstExperienceTypes.Length));
-                    story.Gender = (Common.Genders)lstGenders.GetValue(_random.Next(lstGenders.Length));
-                    story.Race = (Common.Races)lstRaces.GetValue(_random.Next(lstRaces.Length));
-                    story.Religion = (Common.Religions)lstReligions.GetValue(_random.Next(lstReligions.Length));
-                    story.Author = memberModel.FirstName + " " + memberModel.LastName;
-                    story.Title = "Illumination Sample " + String.Format("{0:00000}", i);
-                    int length = _random.Next(5, 10);
-                    StringBuilder sbStory = new StringBuilder();
-                    for (int j = 0; j < length; j++)
+                    //Add page break between sections
+                    if (isFirst)
                     {
-                        sbStory.AppendLine(lstStory[j]);
+                        isFirst = false;
                     }
-                    story.Story = sbStory.ToString();
-                    lstIlluminationStories.Add(story);
+                    else
+                    {
+                        document.LastSection.AddPageBreak();
+                    }
+
+                    //Add experience type as title
+                    ExperienceType = stat.ExperienceType;
+                    paragraph = document.LastSection.AddParagraph(ExperienceType + " Stories", "Heading1");
                 }
 
+                //Add story
+                document.LastSection.AddParagraph(stat.Title, "Heading2");
+                document.LastSection.AddParagraph("By " + stat.Author, "Heading3");
 
-                //Add each member and story 
-                for (int k = 0; k < entryCount; k++)
+                //Add statistics
+                document.LastSection.AddParagraph("[", "Heading4");
+                if (!string.IsNullOrEmpty(stat.ExperienceType))
                 {
-                    //Create membership
-                    int memberId = membership.CreateMember(lstMembers[k].FirstName, lstMembers[k].LastName, lstMembers[k].Email, lstMembers[k].Password);
-                    lstIlluminationStories[k].memberId = memberId;
-
-                    membership.MakeAcctActive(memberId);
-
-                    // Expose the custom properties for the member
-                    IMember member = memberService.GetById(memberId);
-
-                    //Add data to member and save
-                    member.SetValue(Common.NodeProperties.age, lstIlluminationStories[k].Age);
-                    member.SetValue(Common.NodeProperties.country, lstIlluminationStories[k].Country.GetType().GetMember(lstIlluminationStories[k].Country.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName());
-                    member.SetValue(Common.NodeProperties.gender, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.gender, lstIlluminationStories[k].Gender.GetType().GetMember(lstIlluminationStories[k].Gender.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
-                    member.SetValue(Common.NodeProperties.religion, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.religion, lstIlluminationStories[k].Religion.GetType().GetMember(lstIlluminationStories[k].Religion.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
-                    member.SetValue(Common.NodeProperties.race, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.race, lstIlluminationStories[k].Race.GetType().GetMember(lstIlluminationStories[k].Race.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
-
-                    //Save all changes
-                    memberService.Save(member);
-
-
-                    //Instantiate variables
-                    IContentService contentService = ApplicationContext.Current.Services.ContentService;
-                    IContent icIllumStory = contentService.CreateContent(name: lstIlluminationStories[k].Title.Substring(0, 1).ToUpper() + lstIlluminationStories[k].Title.Substring(1).ToLower(), parentId: (int)Common.siteNode.IlluminationStories, contentTypeAlias: Common.docType.IlluminationStory);
-
-                    icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Title).PropertyTypeAlias, lstIlluminationStories[k].Title.Substring(0, 1).ToUpper() + lstIlluminationStories[k].Title.Substring(1).ToLower());
-                    icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Story).PropertyTypeAlias, lstIlluminationStories[k].Story);
-                    icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Member).PropertyTypeAlias, memberId);
-
-                    string experienceType = lstIlluminationStories[k].ExperienceType.Value.ToString();
-                    var enumExperienceType = (Common.ExperienceTypes)System.Enum.Parse(typeof(Common.ExperienceTypes), experienceType);
-                    if ((Common.ExperienceTypes)System.Enum.Parse(typeof(Common.ExperienceTypes), experienceType) == Common.ExperienceTypes.OtherorUnsure) { experienceType = "Other or Unsure"; }
-                    icIllumStory.SetValue(
-                        ContentModels.IlluminationStory.GetModelPropertyType(x => x.ExperienceType).PropertyTypeAlias,
-                        Common.GetPrevalueIdForIContent(icIllumStory, ContentModels.IlluminationStory.GetModelPropertyType(x => x.ExperienceType).PropertyTypeAlias, experienceType));
-
-
-                    //Save new Illumination story
-                    var result = contentService.SaveAndPublishWithStatus(icIllumStory);
-
-
-                    if (result.Success)
+                    document.LastSection.LastParagraph.AddFormattedText("Experience: ", TextFormat.Bold);
+                    document.LastSection.LastParagraph.AddText(stat.ExperienceType + " | ");
+                }
+                if (stat.Age > 0)
+                {
+                    document.LastSection.LastParagraph.AddFormattedText("Age: ", TextFormat.Bold);
+                    document.LastSection.LastParagraph.AddText(stat.Age.ToString() + " | ");
+                }
+                if (!string.IsNullOrEmpty(stat.Gender))
+                {
+                    document.LastSection.LastParagraph.AddFormattedText("Gender: ", TextFormat.Bold);
+                    document.LastSection.LastParagraph.AddText(stat.Gender + " | ");
+                }
+                if (!string.IsNullOrEmpty(stat.Religion))
+                {
+                    document.LastSection.LastParagraph.AddFormattedText("Religion: ", TextFormat.Bold);
+                    document.LastSection.LastParagraph.AddText(stat.Religion + " | ");
+                }
+                if (stat.Races.Count > 0)
+                {
+                    document.LastSection.LastParagraph.AddFormattedText("Race: ", TextFormat.Bold);
+                    foreach (string race in stat.Races)
                     {
-                        //Save all changes
-                        member.SetValue(Common.NodeProperties.illuminationStory, new GuidUdi("document", icIllumStory.Key).ToString());
-                        memberService.Save(member);
-
+                        document.LastSection.LastParagraph.AddText(race + " ");
                     }
+                    document.LastSection.LastParagraph.AddText("| ");
+                }
+                if (!string.IsNullOrEmpty(stat.Country))
+                {
+                    document.LastSection.LastParagraph.AddFormattedText("Country: ", TextFormat.Bold);
+                    document.LastSection.LastParagraph.AddText(stat.Country + " | ");
                 }
 
+                document.LastSection.LastParagraph.AddFormattedText("Id: ", TextFormat.Bold);
+                document.LastSection.LastParagraph.AddText(stat.Id.ToString());
+                document.LastSection.LastParagraph.AddText("]");
 
-                results.memberCount = lstMembers.Count;
-                results.avgAge = Convert.ToInt32(lstIlluminationStories.Average(x => x.Age));
-                results.xx = lstIlluminationStories.Count(x => x.Gender.Value == Common.Genders.Male);
-                results.xy = lstIlluminationStories.Count(x => x.Gender.Value == Common.Genders.Female);
-                results.heavenly = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Heavenly);
-                results.hellish = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Hellish);
-                results.purgatorial = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Purgatorial);
-                results.other = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.OtherorUnsure);
-                results.american = lstIlluminationStories.Count(x => x.Country.Value == Common.Countries.UnitedStates);
-                results.catholic = lstIlluminationStories.Count(x => x.Religion.Value == Common.Religions.Catholic);
-                results.satanism = lstIlluminationStories.Count(x => x.Religion.Value == Common.Religions.Satinism);
-            }
-            catch (Exception ex)
-            {
-                //results.resultMsg = ex.ToString();
-                results.errorMsg = ex.ToString();
+
+                //Add Story
+                document.LastSection.AddParagraph(stat.Story, "Normal");
             }
 
-            //Display time lapsed
-            sw.Stop();
-            results.elapsedTime = sw.Elapsed.TotalSeconds.ToString();
-
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(results);
-            //return results;
         }
-        public static string GetRandomLetter(int seed)
+        private static List<IlluminationPdfStat> ObtainPdfStats()
         {
-            // This method returns a random letter between 'A' and 'Z'.
-            int num = _random.Next(0, 26); // Zero to 25
-            char let = (char)('a' + num);
-            return let.ToString().ToUpper();
+            //Instantiate variables
+            List<IlluminationPdfStat> lstIlluminationPdfStats = new List<IlluminationPdfStat>();
+            UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            IMemberService memberService = ApplicationContext.Current.Services.MemberService;
+            IPublishedContent ipIlluminationStories = umbracoHelper.TypedContent((int)Common.siteNode.IlluminationStories);
+
+
+            //Loop through all stories
+            foreach (IPublishedContent ip in ipIlluminationStories.Children.ToList())
+            {
+                if (ip.HasValue(Common.NodeProperties.member))
+                {
+                    //Instantiate variables
+                    IlluminationPdfStat stat = new IlluminationPdfStat();
+                    IPublishedContent ipMember = ip.GetPropertyValue<IPublishedContent>(Common.NodeProperties.member);
+
+                    //Obtain the content models
+                    var CmIlluminationStory = new ContentModels.IlluminationStory(ip);
+                    var CmMember = new ContentModels.Member(ip.GetPropertyValue<IPublishedContent>(Common.NodeProperties.member));
+
+                    //Obtain the member's name
+                    StringBuilder sbAuthor = new StringBuilder();
+                    sbAuthor.Append(CmMember.FirstName);
+                    sbAuthor.Append("  ");
+                    sbAuthor.Append(CmMember.LastName);
+                    sbAuthor.Append(".");
+                    stat.Author = sbAuthor.ToString();
+
+                    //Obtain the story data
+                    stat.Id = CmIlluminationStory.Id;
+                    stat.Title = CmIlluminationStory.Title;
+                    stat.ExperienceType = CmIlluminationStory.ExperienceType;
+                    stat.Story = CmIlluminationStory.Story.Replace("\r\n\r\n", "\r\n").Replace("\r\n\r\n", "\r\n").Replace("\r\n\r\n", "\r\n").Replace("\r\n", "\r\n\r\n");  //set newlines to x2
+
+                    if (CmMember.Age > 0) stat.Age = CmMember.Age;
+                    if (CmMember.Gender > 0) stat.Gender = Common.GetPreValueString(CmMember.Gender.ToString());
+                    stat.Religion = CmMember.Religion;
+                    stat.Races = CmMember.Race.ToList();
+                    stat.Country = CmMember.Country;
+
+
+                    //Add data to list
+                    lstIlluminationPdfStats.Add(stat);
+
+                    break;
+                }
+            }
+
+            //Sort list
+            lstIlluminationPdfStats = lstIlluminationPdfStats.OrderBy(x => x.ExperienceType).ThenBy(x => x.Author).ThenBy(x => x.Religion).ThenBy(x => x.Country).ToList();
+
+
+            return lstIlluminationPdfStats;
         }
-
-
-        //private void IncrementAgeLst(ref List<int> LstAge, int Age)
-        //{
-        //    //Ensure a max age
-        //    if (Age > 100) Age = 100;
-
-        //    //Determine the age index to increment
-        //    int ageGrp = 5 * (int)Math.Round(Age / 5.0);
-        //    int index = ageGrp / 5;
-
-        //    LstAge[index] += 1;
-        //}
-        //private void GetAgeAvg(ref List<int> LstAge_Heavenly, ref List<int> LstAge_Hellish, ref List<int> LstAge_Purgatorial, ref List<int> LstAge_Unknown, int index)
-        //{
-        //    //
-        //    int Heavenly = LstAge_Heavenly[index];
-        //    int Hellish = LstAge_Hellish[index];
-        //    int Purgatorial = LstAge_Purgatorial[index];
-        //    int Unknown = LstAge_Unknown[index];
-
-        //    int total = Heavenly + Hellish + Purgatorial + Unknown;
-
-        //    LstAge_Heavenly[index] = (int)(((double)Heavenly / total) * 100);
-        //    LstAge_Hellish[index] = (int)(((double)Hellish / total) * 100);
-        //    LstAge_Purgatorial[index] = (int)(((double)Purgatorial / total) * 100);
-        //    LstAge_Unknown[index] = (int)(((double)Unknown / total) * 100);
-        //}
 
         #endregion
     }
 }
+
+
+
+
+
+
+
+//#region "Test Stories"
+//public static string GenerateTestStories()
+//{
+//    //Instantiate variables
+//    Stopwatch sw = new Stopwatch();
+//    sw.Start();
+//    TempResults results = new TempResults();
+
+//    try
+//    {
+//        int entryCount = 15000;
+//        _memberships membership = new _memberships();
+//        IMemberService memberService = ApplicationContext.Current.Services.MemberService;
+
+//        Array lstCountries = Enum.GetValues(typeof(Common.Countries));
+//        Array lstGenders = Enum.GetValues(typeof(Common.Genders));
+//        Array lstRaces = Enum.GetValues(typeof(Common.Races));
+//        Array lstReligions = Enum.GetValues(typeof(Common.Religions));
+//        Array lstExperienceTypes = Enum.GetValues(typeof(Common.ExperienceTypes));
+
+//        List<MembershipModel> lstMembers = new List<MembershipModel>();
+//        List<illuminationStory> lstIlluminationStories = new List<illuminationStory>();
+
+
+//        //Create story array
+//        List<string> lstStory = new List<string>();
+//        lstStory.Add("Acid effects antimagic bonus cold domain cure spell fire subtype glamer subschool melee move action strength domain suffocation.");
+//        lstStory.Add("Ability damage character dying energy damage inherent bonus portal domain ranged attack roll scrying subschool speed suffocation water dangers. Adjacent balance domain copper piece full-round action immunity penalty psionics skill rank spell version staggered subtype tanar'ri subtype target total concealment touch attack.");
+//        lstStory.Add("Aberration type calling subschool coup de grace domain spell entangled ethereal plane fear cone improved grab initiative count light weapon living luck domain melee mentalism domain monstrous humanoid type morale bonus orc domain paladin petrified ranged attack rounding scribe shield bonus spell level square subtype threaten tyranny domain.");
+//        lstStory.Add("Abjuration acid effects antimagic archon subtype change shape cowering damage reduction evil domain experience points extraplanar immunity lava effects law domain luck domain pinned player character size modifier spell resistance spell trigger item stable trade domain transmutation.");
+//        lstStory.Add("5-foot step arcane spell failure automatic hit base save bonus command undead conjuration enhancement bonus evasion extraplanar subtype fatigued force damage gold piece incorporeal mundane nauseated plant domain ranged attack roll rogue size modifier special quality spell preparation tanar'ri subtype threat threatened square turning damage water subtype.");
+//        lstStory.Add("Charm climb critical hit dazed disabled earth domain energy drain fear effect grapple check grappling hit points immediate action incorporeal subtype manufactured weapons medium natural reach paralyzed planning domain prerequisite profane bonus psionics reflex save stack strength summoning subschool swim tanar'ri subtype teleportation subschool treasure unarmed strike.");
+//        lstStory.Add("Abjuration action cantrip catching on fire character compulsion subschool darkness domain fate domain fine giant type knocked down modifier mundane negative level nonlethal damage paralyzed pounce spell descriptor spell resistance suffering domain summoning subschool undeath domain water dangers.");
+//        lstStory.Add("Animal domain attack attack roll base attack bonus charm domain checked critical roll cure spell death attack difficult terrain disease elf domain evocation falling fear aura force damage gnome domain good domain magic domain melee attack natural weapon one-handed weapon panicked party plant domain retribution domain shaken water domain.");
+//        lstStory.Add("Ability damaged angel subtype copper piece creation subschool creature type drow domain flight hardness natural reach negative energy pounce reaction rebuke undead rend subschool transmutation turning check.");
+//        lstStory.Add("Abjuration acid effects antimagic archon subtype change shape cowering damage reduction evil domain experience points extraplanar immunity lava effects law domain luck domain pinned player character size modifier spell resistance spell trigger item stable trade domain transmutation.");
+
+
+
+//        //Create all test members and stories
+//        for (int i = 0; i < entryCount; i++)
+//        {
+//            //Create a test member
+//            MembershipModel memberModel = new MembershipModel();
+//            memberModel.FirstName = GetRandomLetter(i);
+//            memberModel.LastName = GetRandomLetter(i + 1);
+//            memberModel.Password = "Pa55word";
+//            memberModel.Email = "JF_" + String.Format("{0:00000}", i) + "@noemail.com";
+//            lstMembers.Add(memberModel);
+
+
+//            //Create a test story
+//            illuminationStory story = new illuminationStory();
+//            story.Age = _random.Next(1, 121);
+//            story.Country = (Common.Countries)lstCountries.GetValue(_random.Next(lstCountries.Length));
+//            story.ExperienceType = (Common.ExperienceTypes)lstExperienceTypes.GetValue(_random.Next(lstExperienceTypes.Length));
+//            story.Gender = (Common.Genders)lstGenders.GetValue(_random.Next(lstGenders.Length));
+//            story.Race = (Common.Races)lstRaces.GetValue(_random.Next(lstRaces.Length));
+//            story.Religion = (Common.Religions)lstReligions.GetValue(_random.Next(lstReligions.Length));
+//            story.Author = memberModel.FirstName + " " + memberModel.LastName;
+//            story.Title = "Illumination Sample " + String.Format("{0:00000}", i);
+//            int length = _random.Next(5, 10);
+//            StringBuilder sbStory = new StringBuilder();
+//            for (int j = 0; j < length; j++)
+//            {
+//                sbStory.AppendLine(lstStory[j]);
+//            }
+//            story.Story = sbStory.ToString();
+//            lstIlluminationStories.Add(story);
+//        }
+
+
+//        //Add each member and story 
+//        for (int k = 0; k < entryCount; k++)
+//        {
+//            //Create membership
+//            int memberId = membership.CreateMember(lstMembers[k].FirstName, lstMembers[k].LastName, lstMembers[k].Email, lstMembers[k].Password);
+//            lstIlluminationStories[k].memberId = memberId;
+
+//            membership.MakeAcctActive(memberId);
+
+//            // Expose the custom properties for the member
+//            IMember member = memberService.GetById(memberId);
+
+//            //Add data to member and save
+//            member.SetValue(Common.NodeProperties.age, lstIlluminationStories[k].Age);
+//            member.SetValue(Common.NodeProperties.country, lstIlluminationStories[k].Country.GetType().GetMember(lstIlluminationStories[k].Country.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName());
+//            member.SetValue(Common.NodeProperties.gender, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.gender, lstIlluminationStories[k].Gender.GetType().GetMember(lstIlluminationStories[k].Gender.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
+//            member.SetValue(Common.NodeProperties.religion, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.religion, lstIlluminationStories[k].Religion.GetType().GetMember(lstIlluminationStories[k].Religion.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
+//            member.SetValue(Common.NodeProperties.race, Common.GetPrevalueIdForIMember(member, Common.NodeProperties.race, lstIlluminationStories[k].Race.GetType().GetMember(lstIlluminationStories[k].Race.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName()));
+
+//            //Save all changes
+//            memberService.Save(member);
+
+
+//            //Instantiate variables
+//            IContentService contentService = ApplicationContext.Current.Services.ContentService;
+//            IContent icIllumStory = contentService.CreateContent(name: lstIlluminationStories[k].Title.Substring(0, 1).ToUpper() + lstIlluminationStories[k].Title.Substring(1).ToLower(), parentId: (int)Common.siteNode.IlluminationStories, contentTypeAlias: Common.docType.IlluminationStory);
+
+//            icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Title).PropertyTypeAlias, lstIlluminationStories[k].Title.Substring(0, 1).ToUpper() + lstIlluminationStories[k].Title.Substring(1).ToLower());
+//            icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Story).PropertyTypeAlias, lstIlluminationStories[k].Story);
+//            icIllumStory.SetValue(ContentModels.IlluminationStory.GetModelPropertyType(x => x.Member).PropertyTypeAlias, memberId);
+
+//            string experienceType = lstIlluminationStories[k].ExperienceType.Value.ToString();
+//            var enumExperienceType = (Common.ExperienceTypes)System.Enum.Parse(typeof(Common.ExperienceTypes), experienceType);
+//            if ((Common.ExperienceTypes)System.Enum.Parse(typeof(Common.ExperienceTypes), experienceType) == Common.ExperienceTypes.OtherorUnsure) { experienceType = "Other or Unsure"; }
+//            icIllumStory.SetValue(
+//                ContentModels.IlluminationStory.GetModelPropertyType(x => x.ExperienceType).PropertyTypeAlias,
+//                Common.GetPrevalueIdForIContent(icIllumStory, ContentModels.IlluminationStory.GetModelPropertyType(x => x.ExperienceType).PropertyTypeAlias, experienceType));
+
+
+//            //Save new Illumination story
+//            var result = contentService.SaveAndPublishWithStatus(icIllumStory);
+
+
+//            if (result.Success)
+//            {
+//                //Save all changes
+//                member.SetValue(Common.NodeProperties.illuminationStory, new GuidUdi("document", icIllumStory.Key).ToString());
+//                memberService.Save(member);
+
+//            }
+//        }
+
+
+//        results.memberCount = lstMembers.Count;
+//        results.avgAge = Convert.ToInt32(lstIlluminationStories.Average(x => x.Age));
+//        results.xx = lstIlluminationStories.Count(x => x.Gender.Value == Common.Genders.Male);
+//        results.xy = lstIlluminationStories.Count(x => x.Gender.Value == Common.Genders.Female);
+//        results.heavenly = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Heavenly);
+//        results.hellish = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Hellish);
+//        results.purgatorial = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.Purgatorial);
+//        results.other = lstIlluminationStories.Count(x => x.ExperienceType.Value == Common.ExperienceTypes.OtherorUnsure);
+//        results.american = lstIlluminationStories.Count(x => x.Country.Value == Common.Countries.UnitedStates);
+//        results.catholic = lstIlluminationStories.Count(x => x.Religion.Value == Common.Religions.Catholic);
+//        results.satanism = lstIlluminationStories.Count(x => x.Religion.Value == Common.Religions.Satinism);
+//    }
+//    catch (Exception ex)
+//    {
+//        //results.resultMsg = ex.ToString();
+//        results.errorMsg = ex.ToString();
+//    }
+
+//    //Display time lapsed
+//    sw.Stop();
+//    results.elapsedTime = sw.Elapsed.TotalSeconds.ToString();
+
+
+//    return Newtonsoft.Json.JsonConvert.SerializeObject(results);
+//    //return results;
+//}
+//public static string GetRandomLetter(int seed)
+//{
+//    // This method returns a random letter between 'A' and 'Z'.
+//    int num = _random.Next(0, 26); // Zero to 25
+//    char let = (char)('a' + num);
+//    return let.ToString().ToUpper();
+//}
+
+//#endregion

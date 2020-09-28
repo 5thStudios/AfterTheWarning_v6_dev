@@ -14,10 +14,7 @@ namespace Models
 
         public int age { get; set; }
         public string experienceType { get; set; }
-        //public string gender { get; set; }
         public List<string> lstRace { get; set; }
-        //public int raceId { get; set; }
-        //public string religion { get; set; }
 
 
         public bool hasCountry { get; set; }
