@@ -1,10 +1,9 @@
-﻿@using Models;
-@inherits UmbracoViewPage
-@{ Layout = "TopLevel.cshtml"; }
+﻿@inherits UmbracoViewPage
+@{ Layout = null; }
 
 
 
-@{ 
+@{
     //Redirect to parent node
     UmbracoHelper uHelper = new UmbracoHelper(UmbracoContext.Current);
     Response.Redirect(uHelper.TypedContent(UmbracoContext.Current.PageId).Parent.Url);

@@ -1,5 +1,4 @@
-﻿@using Models;
-@inherits Umbraco.Web.Mvc.UmbracoViewPage
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
 @{ Models.LineCharts stats = Controllers.IlluminationController.ObtainStatistics_byAge(Model); }
 
@@ -14,25 +13,4 @@
 
 @{ Html.RenderPartial("Partials/Charts/LineChart", stats); }
 
-
 @section Footer {}
-
-
-
-
-
-@*@{ Html.RenderPartial("Partials/Charts/PolarAreaChart"); }*@
-@*<div class="grid-x grid-padding-x grid-padding-y">
-    <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary(this.ViewData) { { "index", 0 } }); }
-    </div>
-    <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 1 } }); }
-    </div>
-    <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 2 } }); }
-    </div>
-    <div class="cell large-12">
-        @{ Html.RenderPartial("Partials/Charts/PolarAreaChart", stats, new ViewDataDictionary { { "index", 3 } }); }
-    </div>
-</div>*@

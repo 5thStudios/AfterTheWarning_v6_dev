@@ -21,6 +21,7 @@ using UmbracoExamine;
 using Examine.Providers;
 using Examine.SearchCriteria;
 using Examine.LuceneEngine.SearchCriteria;
+using System.Web.Script.Serialization;
 
 namespace Controllers
 {
@@ -475,7 +476,7 @@ namespace Controllers
 
 
 
-        #region "Renders"
+        #region "Methods"
         public static List<latestUpdates> ObtainLatestMessages()
         {
             //Instantiate variables
@@ -604,10 +605,6 @@ namespace Controllers
             //
             return lstLatestUpdates;
         }
-
-
-
-
         public static LatestUpdateList ObtainAllMessages(int pageNo = 1)
         {
 
@@ -758,6 +755,39 @@ namespace Controllers
 
             //Return data to partialview
             return lstLatestUpdates;
+        }
+        public static VisionaryContent ObtainVisionaryContent(ContentModels.Visionary cmVisionary)
+        {
+            VisionaryContent visionaryContent = new VisionaryContent();
+
+            visionaryContent.VisionarysName = cmVisionary.VisionarysName;
+            visionaryContent.PageImage = cmVisionary.PageImage.GetCropUrl(Common.crop.Portrait_300x400);
+            visionaryContent.Religion = cmVisionary.Religion;
+            visionaryContent.isOtherOrKeepPrivate = (visionaryContent.Religion == Common.miscellaneous.OtherOrKeepPrivate);
+            visionaryContent.Email = cmVisionary.Email;
+            visionaryContent.Phone = cmVisionary.Phone;
+            visionaryContent.phoneNo = new String(visionaryContent.Phone.Where(Char.IsDigit).ToArray());
+            visionaryContent.OriginalSiteUrl = cmVisionary.OriginalSiteUrl;
+            visionaryContent.OriginalSiteName = cmVisionary.OriginalSiteName;
+
+            //List<addressRecord> lstAddressRecord = new List<addressRecord>();
+            //StringBuilder strAddress = new StringBuilder();
+            visionaryContent.isAddressNull = (cmVisionary.Address == null);
+            if (!visionaryContent.isAddressNull)
+            {
+                //Build address
+                visionaryContent.lstAddressRecord = new JavaScriptSerializer().Deserialize<List<addressRecord>>(cmVisionary.Address.ToString());
+                foreach (var record in visionaryContent.lstAddressRecord)
+                {
+                    visionaryContent.strAddress.Append(record.address + "<br />");
+                    visionaryContent.strAddress.Append(record.city + ", ");
+                    visionaryContent.strAddress.Append(record.state + " ");
+                    visionaryContent.strAddress.Append(record.postal);
+                    break;
+                }
+            }
+
+            return visionaryContent;
         }
         #endregion
     }

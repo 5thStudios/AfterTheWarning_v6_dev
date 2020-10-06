@@ -1,30 +1,12 @@
-﻿@using ClientDependency.Core.Mvc;
-@using Umbraco.Web.PublishedContentModels;
-@using Umbraco.Core;
-@using Umbraco.Core.Models;
-@using Umbraco.Core.Services;
-@using Models;
-@using ContentModels = Umbraco.Web.PublishedContentModels;
-
+﻿@using ContentModels = Umbraco.Web.PublishedContentModels;
 @inherits UmbracoViewPage<ContentModels.AddEditIlluminationStory>
 @{ Layout = "ManageAccount.cshtml"; }
 
 
+
 @{
-    //Instantiate variables.
-    Boolean doesStoryExist = false;
-
-    //Obtain current page as strongly typed ip
-    UmbracoHelper umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-    int? currentPageId = UmbracoContext.Current.PageId;
-    IPublishedContent ipCurrentPg = umbracoHelper.TypedContent(currentPageId);
-
-    //Determine if user already submitted an illumination story
-    IMember member = ApplicationContext.Current.Services.MemberService.GetByUsername(User.Identity.Name);
-    if (member != null)
-    {
-        if (member.GetValue(Common.NodeProperties.illuminationStory) != null) { doesStoryExist = true; }
-    }
+    //Obtain page content
+    Models.AddEditIlluminationStoryContent PgContent = Controllers.IlluminationController.DoesStoryExist(User);
 }
 
 
@@ -42,15 +24,15 @@
             }
             else
             {
-                if (doesStoryExist)
+                if (PgContent.DoesStoryExist)
                 {
-                    Html.RenderAction("RenderStory", "Illumination", new { member = member });
-                    Html.RenderAction("RenderForm", "Illumination", new { member = member, editMode = true });
+                    Html.RenderAction("RenderStory", "Illumination", new { member = PgContent.Member });
+                    Html.RenderAction("RenderForm", "Illumination", new { member = PgContent.Member, editMode = true });
                 }
                 else
                 {
                     Html.RenderAction("RenderInstructions", "Illumination");
-                    Html.RenderAction("RenderForm", "Illumination", new { member = member });
+                    Html.RenderAction("RenderForm", "Illumination", new { member = PgContent.Member });
                 }
             }
 

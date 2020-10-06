@@ -1,20 +1,24 @@
 ﻿@using Models;
 @using System.Text;
-@using Newtonsoft.Json;@using ContentModels = Umbraco.Web.PublishedContentModels;
+@using Newtonsoft.Json;
+@using ContentModels = Umbraco.Web.PublishedContentModels;
 
 @inherits UmbracoViewPage<ContentModels.Scripture>
 @{ Layout = "TopLevel.cshtml"; }
 
 
 @{
-    //Obtain current chapter
-    int chapterCount = Model.Chapters;
-    int currentChapter = int.TryParse(Request.QueryString[Common.NodeProperties.chapter], out currentChapter) ? currentChapter : 1;
-    if ((currentChapter < 1) | (currentChapter > chapterCount)) { currentChapter = 1; }
+    var PgContent = Controllers.ScriptureController.ObtainScriptureData(Model, Request.QueryString[Common.NodeProperties.chapter]);
 
-    //Obtain chapter content to display on page.
-    IPublishedContent ipChapter = Model.Children.Skip(currentChapter - 1).FirstOrDefault();
-    dynamic verses = JsonConvert.DeserializeObject(ipChapter.GetPropertyValue<string>(Common.NodeProperties.verses));
+
+    ////Obtain current chapter
+    //int chapterCount = Model.Chapters;
+    //int currentChapter = int.TryParse(Request.QueryString[Common.NodeProperties.chapter], out currentChapter) ? currentChapter : 1;
+    //if ((currentChapter < 1) | (currentChapter > chapterCount)) { currentChapter = 1; }
+
+    ////Obtain chapter content to display on page.
+    //IPublishedContent ipChapter = Model.Children.Skip(currentChapter - 1).FirstOrDefault();
+    //dynamic verses = JsonConvert.DeserializeObject(ipChapter.GetPropertyValue<string>(Common.NodeProperties.verses));
 }
 
 
@@ -22,15 +26,15 @@
     <div class="grid-x">
         <div class="cell">
             <div>
-                <a href="@Umbraco.TypedContent((int)(Common.siteNode.TheDouayRheimsBible)).Url">« Table of Content</a>
+                <a href="@PgContent.bibleUrl">« Table of Content</a>
             </div>
             <br />
             <fieldset>
                 <legend>Chapters</legend>
                 <div class="grid-x grid-padding-x grid-padding-y small-up-6 medium-up-8 large-up-12 chapterGrid text-center">
-                    @for (int i = 1; i <= chapterCount; i++)
+                    @for (int i = 1; i <= PgContent.chapterCount; i++)
                     {
-                        if (i == currentChapter)
+                        if (i == PgContent.currentChapter)
                         {
                             <div class="cell active">
                                 <div>
@@ -52,9 +56,9 @@
             </fieldset>
             <br />
 
-            <h3>Chapter @currentChapter</h3>
+            <h3>Chapter @PgContent.currentChapter</h3>
             
-            @foreach (var verse in verses)
+            @foreach (var verse in PgContent.verses)
             {
                 <p>@verse.verse &nbsp;&nbsp;&nbsp;@verse.content</p>
             }

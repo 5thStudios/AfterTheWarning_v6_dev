@@ -3,16 +3,14 @@
 @{ Layout = null; }
 
 @{
-    //Show analytics code if not a dev site.
-    bool showAnalytics = true;
-    if (Request.Url.Host.Contains("dev.")) { showAnalytics = false; }
-    else if (Request.Url.Host.Contains("staging.")) { showAnalytics = false; }
+    //Obtain top-level data
+    TopLevelContent PgContent = Controllers.GeneralController.ObtainTopLevelData(Model, Request.Url.Host);
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    @if (showAnalytics)
+    @if (PgContent.ShowAnalytics)
     {
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-22206781-1"></script>
@@ -24,14 +22,9 @@
         </script>
     }
 
-    @{
-        IPublishedContent ipCurrentPage = Umbraco.AssignedContentItem;
-        var meta = ipCurrentPage.GetPropertyValue<SEOChecker.MVC.MetaData>("seoChecker");
-    }
-    @meta.AllTags
 
     <!-- META TAGS -->
-    <title>AfterTheWarning.com [DEV]</title>
+    @PgContent.Meta.AllTags
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">

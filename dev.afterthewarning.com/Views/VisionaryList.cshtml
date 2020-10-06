@@ -1,9 +1,12 @@
 ﻿@using Models;
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @inherits UmbracoViewPage<ContentModels.VisionaryList>
-@{
-    Layout = "TopLevel.cshtml";
+@{ Layout = "TopLevel.cshtml"; }
 
+
+
+
+@{
     //Instantiate variables
     var pageNo = 1;
     Boolean isFirst = true;
@@ -44,7 +47,6 @@
     </div>
 </div>
 
-
 <div id="pnlByVisionary" class="blockList">
     <br />
     <div class="grid-x small-up-1 medium-up-2 large-up-4">
@@ -72,7 +74,6 @@
         }
     </div>
 </div>
-
 
 <div id="pnlByDate" class="visionaryMsgList">
     <br />

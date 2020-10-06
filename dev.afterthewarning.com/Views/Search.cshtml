@@ -1,16 +1,10 @@
-﻿@using Models;
-@using System.Text;
-@using ContentModels = Umbraco.Web.PublishedContentModels;
-@using System.Web.Mvc;
-@inherits UmbracoViewPage
+﻿@inherits UmbracoViewPage
 @{ Layout = "TopLevel.cshtml";}
 
 
 @section Header {}
 
-
 @{Html.RenderAction("RenderForm", "Search");}
-
 
 @section Footer {
     <script type="text/javascript" src="~/Scripts/custom/searchControls.js?v=02"></script>

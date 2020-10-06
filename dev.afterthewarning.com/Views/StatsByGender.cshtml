@@ -1,7 +1,10 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
-@{ Models.BarChart stats = Controllers.IlluminationController.ObtainStatistics_byGender(Model); }
 
+
+@{
+    Models.BarChart stats = Controllers.IlluminationController.ObtainStatistics_byGender(Model);
+}
 
 
 <div class="grid-x grid-margin-x grid-margin-y">
@@ -34,9 +37,7 @@
 </div>
 <br />
 
-
 @{ Html.RenderPartial("Partials/Charts/HorizontalBarChart", stats); }
-
 
 @section Footer {
     <script>

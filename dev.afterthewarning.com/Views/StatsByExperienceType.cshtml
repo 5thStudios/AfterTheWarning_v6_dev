@@ -1,9 +1,11 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
-@{ Models.PieChart stats = Controllers.IlluminationController.ObtainStatistics_byExperienceType(Model); }
 
 
-@{
+
+@{ 
+    Models.PieChart stats = Controllers.IlluminationController.ObtainStatistics_byExperienceType(Model); 
+
     int count = stats.lstLabels.Count;
     int index = 0;
 }
@@ -14,13 +16,9 @@
         <br />
     </div>
 </div>
-
 @{ Html.RenderPartial("Partials/Charts/PieChart", stats); }
-
-
 <br />
 <br />
-
 <h4>Total Entries: <strong>@stats.TotalEntries.ToString("N0")</strong></h4>
 <hr />
 <div class="grid-x">
@@ -34,7 +32,6 @@
         }
     }
 </div>
-
 
 
 @section Footer { }

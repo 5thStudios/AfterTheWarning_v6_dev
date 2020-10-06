@@ -8,26 +8,8 @@
 
 
 @{
-    //Obtain page summary
-    IHtmlString contactSummary = Html.Raw(umbraco.library.ReplaceLineBreaks(Model.ContactSummary));
-
-    //Obtain the form and its view model
-    ConfiguredFormInfo pickedForm = Model.GetPropertyValue<ConfiguredFormInfo>("formPicker");
-    FormViewModel vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, Model);
-
-
-
-    ////Obtain current page as strongly typed ip
-    //int? currentPageId = UmbracoContext.Current.PageId;
-    //IPublishedContent ipCurrentPg = Umbraco.TypedContent(currentPageId);
-
-    ////Obtain page summary
-    //IHtmlString contactSummary = Html.Raw(umbraco.library.ReplaceLineBreaks(ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.contactSummary)));
-
-    ////Obtain the form and its view model
-    //ConfiguredFormInfo pickedForm = pickedForm = ipCurrentPg.GetPropertyValue<ConfiguredFormInfo>("formPicker");
-    //FormViewModel vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, ipCurrentPg);
-
+    //Obtain page data
+    Models.ContactUsContent PgContent = Controllers.GeneralController.ObtainContactUsContent(Model, Html);
 }
 
 
@@ -35,10 +17,10 @@
 <div class="form">
     <div class="grid-x grid-margin-x grid-padding-x">
         <div class="cell">
-            <p>@contactSummary</p>
+            <p>@PgContent.ContactSummary</p>
             <div class="formulate-wrapper">
                 <h2>Drop Us a Line</h2>
-                @Html.Partial("~/Views/Partials/Formulate/RenderForm.cshtml", vm)
+                @Html.Partial("~/Views/Partials/Formulate/RenderForm.cshtml", PgContent.Vm)
             </div>
         </div>
     </div>

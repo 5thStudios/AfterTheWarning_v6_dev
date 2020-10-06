@@ -192,6 +192,14 @@
     <Reference Include="Semver, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
     </Reference>
+    <Reference Include="SEOChecker, Version=2.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\staging.afterthewarning.com\AfterTheWarning_v6_staging\staging.afterthewarning.com\bin\SEOChecker.dll</HintPath>
+    </Reference>
+    <Reference Include="SEOChecker.MVC, Version=2.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\staging.afterthewarning.com\AfterTheWarning_v6_staging\staging.afterthewarning.com\bin\SEOChecker.MVC.dll</HintPath>
+    </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.7537.31672, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.6\lib\net452\SQLCE4Umbraco.dll</HintPath>
     </Reference>
@@ -2877,10 +2885,8 @@
     <Content Include="Umbraco_Client\Ui\knockout.mapping.js" />
     <Content Include="UserControls\SQLBackUp\SQLBackUp.ascx" />
     <Content Include="UserControls\UpdateMsgs.ascx" />
-    <Content Include="Views\AddEditPrayer.cshtml" />
     <Content Include="Views\IlluminationStoryList.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_illuminationStoryList.cshtml" />
-    <Content Include="Views\PrayerRequest.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
@@ -2890,7 +2896,6 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Views\Partials\Formulate\Responsive.ZurbFoundation.cshtml" />
-    <Content Include="Views\GenerateStories.cshtml" />
     <Content Include="Views\StatsByAge.cshtml" />
     <Content Include="Views\StatsByCountry.cshtml" />
     <Content Include="Views\StatsByExperienceType.cshtml" />
@@ -2912,6 +2917,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ScriptureController.cs" />
+    <Compile Include="Controllers\GeneralController.cs" />
     <Compile Include="Controllers\ForgotPasswordController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -2920,6 +2927,12 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\PrayerController.cs" />
     <Compile Include="Helpers\HtmlExtensions.cs" />
+    <Compile Include="Models\VisionaryContent.cs" />
+    <Compile Include="Models\TOCContent.cs" />
+    <Compile Include="Models\ScriptureContent.cs" />
+    <Compile Include="Models\ManageAcctContent.cs" />
+    <Compile Include="Models\IlluminationStoryContent.cs" />
+    <Compile Include="Models\ContactUsContent.cs" />
     <Compile Include="Models\addressRecord.cs" />
     <Compile Include="Models\BarChart.cs" />
     <Compile Include="Models\ChartDataset.cs" />
@@ -2956,6 +2969,8 @@
     <Compile Include="Models\LineCharts.cs" />
     <Compile Include="Models\TableOfContent.cs" />
     <Compile Include="Models\TempResults.cs" />
+    <Compile Include="Models\AddEditIlluminationStoryContent.cs" />
+    <Compile Include="Models\TopLevelContent.cs" />
     <Compile Include="Models\_memberships.cs" />
     <Compile Include="Models\_prayerRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -3197,7 +3212,6 @@
     <Content Include="Views\Login.cshtml" />
     <Content Include="Views\MaintenancePage.cshtml" />
     <Content Include="Views\Message.cshtml" />
-    <Content Include="Views\PrayerList.cshtml" />
     <Content Include="Views\RedirectFolder.cshtml" />
     <Content Include="Views\Scripture.cshtml" />
     <Content Include="Views\ContactUs.cshtml" />
@@ -3222,8 +3236,6 @@
     <Content Include="Views\Partials\PrayerCorner\_prayerPledges.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_showIlluminationStory.cshtml" />
     <Content Include="Views\EditAccount.cshtml" />
-    <Content Include="Views\PrayerPledges.cshtml" />
-    <Content Include="Views\PrayerRequests.cshtml" />
     <Content Include="Scripts\vendor\jquery.simplePagination.js" />
     <Content Include="Views\Partials\IlluminationStories\_editIlluminationStory.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_illuminationStoryInstructions.cshtml" />

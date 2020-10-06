@@ -1,7 +1,11 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ Layout = "IlluminationStatistics.cshtml"; }
-@{ Models.StackedBarChart stats = Controllers.IlluminationController.ObtainStatistics_byReligion(Model); }
 
+
+
+@{
+    Models.StackedBarChart stats = Controllers.IlluminationController.ObtainStatistics_byReligion(Model);
+}
 
 
 <div class="grid-x grid-margin-x grid-margin-y">
@@ -12,6 +16,5 @@
 </div>
 
 @{ Html.RenderPartial("Partials/Charts/StackedBarChart", stats); }
-
 
 @section Footer { }

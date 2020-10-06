@@ -27,17 +27,13 @@ using Newtonsoft.Json;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.Rendering;
-
-
+using formulate.app.Types;
+using formulate.core.Models;
 
 namespace Controllers
 {
     public class IlluminationController : SurfaceController
     {
-        //
-        private static Random _random = new Random();
-
-
         #region "Renders"
         public ActionResult RenderInstructions()
         {
@@ -718,6 +714,70 @@ namespace Controllers
 
 
         #region "Methods"
+        public static Models.IlluminationStoryContent ObtainIlluminationStoryContent(UmbracoHelper umbracoHelper, HtmlHelper Html, ContentModels.IlluminationStory cmModel)
+        {
+            //
+            Models.IlluminationStoryContent PgContent = new Models.IlluminationStoryContent();
+
+            //Redirect to home if illumination settings are not active.
+            IPublishedContent ipHome = umbracoHelper.TypedContent((int)(Common.siteNode.Home));
+            if (ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls) != true)
+            {
+                PgContent.RedirectHome = true;
+            }
+            else
+            {
+
+                //Obtain page data
+                PgContent.Title = cmModel.Title;
+                PgContent.ExperienceType = cmModel.ExperienceType;
+                PgContent.Story = Html.Raw(umbraco.library.ReplaceLineBreaks(cmModel.Story));
+
+                PgContent.CmMember = new ContentModels.Member(cmModel.Member);
+
+                //Add data to story model
+                StringBuilder sbAuthor = new StringBuilder();
+                sbAuthor.Append(PgContent.CmMember.FirstName);
+                sbAuthor.Append("&nbsp;&nbsp;&nbsp;");
+                sbAuthor.Append(PgContent.CmMember.LastName);
+                sbAuthor.Append(".");
+                PgContent.MemberName = sbAuthor.ToString();
+
+                PgContent.Gender = umbracoHelper.GetPreValueAsString(PgContent.CmMember.Gender);
+                PgContent.Religion = PgContent.CmMember.Religion;
+                PgContent.Country = PgContent.CmMember.Country;
+
+
+                //Obtain the form and its view model
+                ConfiguredFormInfo pickedForm = cmModel.Parent.GetPropertyValue<ConfiguredFormInfo>("formPicker");
+                FormViewModel vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, cmModel);
+
+            }
+
+
+            return PgContent;
+        }
+        public static Models.AddEditIlluminationStoryContent DoesStoryExist(System.Security.Principal.IPrincipal User)
+        {
+            //Instantiate variables.
+            Models.AddEditIlluminationStoryContent PgContent = new Models.AddEditIlluminationStoryContent();
+
+            //Determine if user already submitted an illumination story
+            PgContent.Member = ApplicationContext.Current.Services.MemberService.GetByUsername(User.Identity.Name);
+            if (PgContent.Member != null)
+            {
+                if (PgContent.Member.GetValue(Common.NodeProperties.illuminationStory) != null)
+                {
+                    PgContent.DoesStoryExist = true;
+                }
+            }
+
+
+            return PgContent;
+        }
+
+
+
         public static Models.LineCharts ObtainStatistics_byAge(IPublishedContent ipByAge)
         {
             //Initialize variables.

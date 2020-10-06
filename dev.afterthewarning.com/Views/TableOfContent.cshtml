@@ -1,55 +1,12 @@
 ﻿@using Models;
-@using System.Text;
-@using Newtonsoft.Json;
-@using ClientDependency.Core.Mvc
 @using ContentModels = Umbraco.Web.PublishedContentModels;
-
 @inherits UmbracoViewPage<ContentModels.TableOfContent>
-
 @{ Layout = "TopLevel.cshtml"; }
 
+
+
 @{
-    //Instantiate variables
-    string currentTestament = string.Empty;
-    string currentBookset = string.Empty;
-    tocBook book;
-    tocBookSet bookSet = new tocBookSet();
-    tocTestament testament = new tocTestament();
-    Models.TableOfContent toc = new Models.TableOfContent();
-    string prefaceUrl = Umbraco.TypedContent((int)Common.siteNode.Preface).Url;
-
-    //Loop thru all book and build ToC structure
-    //foreach (IPublishedContent ipBook in ipToC.Children.Where(x => x.DocumentTypeAlias == Common.docType.Scripture))
-    foreach (var ipBook in Model.Children<Scripture>().Where(x => x.DocumentTypeAlias == Common.docType.Scripture))
-    {
-        if (ipBook.Testament != currentTestament)
-        {
-            //Compare current testament with previous testament
-            currentTestament = ipBook.Testament;
-
-            //Add testament set
-            testament = new tocTestament();
-            testament.testament = currentTestament;
-            toc.lstTestaments.Add(testament);
-        }
-
-        if (ipBook.BookSet != currentBookset)
-        {
-            //Compare current book set with previous book set
-            currentBookset = ipBook.BookSet;
-
-            //Add book set
-            bookSet = new tocBookSet();
-            bookSet.bookSet = currentBookset;
-            testament.lstBookSets.Add(bookSet);
-        }
-
-        //Add book to proper set
-        book = new tocBook();
-        book.name = ipBook.FullName;
-        book.url = ipBook.Url();
-        bookSet.lstBooks.Add(book);
-    }
+    TOCContent tOCContent = Controllers.ScriptureController.ObtainTocContent(Umbraco, Model);
 }
 
 
@@ -57,10 +14,10 @@
     <div class="grid-x">
         <div class="cell">
             <div>
-                <a href="@prefaceUrl">« Preface</a>
+                <a href="@tOCContent.prefaceUrl">« Preface</a>
             </div>
             <div class="grid-x grid-padding-x">
-                @foreach (tocTestament tocTestament in toc.lstTestaments)
+                @foreach (tocTestament tocTestament in tOCContent.toc.lstTestaments)
                 {
                     <div class="cell medium-12">
                         <h3 class="text-center">@tocTestament.testament</h3>

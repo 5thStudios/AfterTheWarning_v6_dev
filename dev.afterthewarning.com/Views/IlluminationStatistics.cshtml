@@ -1,20 +1,17 @@
 ﻿@using Models;
-@using ClientDependency.Core.Mvc;
 @inherits UmbracoViewPage
 @{ Layout = "TopLevel.cshtml"; }
 
 
-
 @{
     //Instantiate variables
-    IPublishedContent ipModel = Model;
-    IPublishedContent ipParent = ipModel.Parent;
-    string docType = ipModel.DocumentTypeAlias;
+    IPublishedContent ipParent = Model.Parent;
+    string docType = Model.DocumentTypeAlias;
 
     //If root page, go to first child page.
     if (docType == Common.docType.IlluminationStatistics)
     {
-        Response.Redirect(ipModel.FirstChild().Url);
+        Response.Redirect(Model.FirstChild().Url);
     }
 }
 
@@ -41,8 +38,6 @@
             </ul>
         </div>
         <div class="cell large-18">
-            @*<h2 class="text-center">Illumination Statistics</h2>
-            <hr />*@
             @RenderBody()
         </div>
     </div>

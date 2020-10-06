@@ -54,7 +54,6 @@ C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\obj\Staging\AfterTheWarning.com_v6.csproj.CoreCompileInputs.cache
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\obj\Staging\AfterTheWarning.com_v6.csproj.CopyComplete
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\obj\Staging\afterthewarning.com.dll
-C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.MVC.dll
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.Library.dll
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.Extensions.dll
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.Core.dll
@@ -133,3 +132,6 @@ C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\de\MigraDoc.RtfRendering-gdi.resources.dll
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\de\PdfSharp-gdi.resources.dll
 C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\de\PdfSharp.Charting-gdi.resources.dll
+C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.UI.dll
+C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\SEOChecker.Providers.dll
+C:\Inetpub\vhosts\afterthewarning.com\dev.afterthewarning.com\AfterTheWarning_v6_dev\dev.afterthewarning.com\bin\LumenWorks.Framework.IO.dll
