@@ -9,168 +9,7 @@
 
 
 @{
-    //Instantiate variables
-    string searchUrl;
-    IPublishedContent ipHome;
-    Boolean firstItem = true;
-    Boolean isLoggedIn = User.Identity.IsAuthenticated;
-    Boolean activateIlluminationControls;
-    List<navigationLink> lstMainNavlinks = new List<navigationLink>();
-    List<navigationLink> lstMinorNavlinks = new List<navigationLink>();
-
-
-    //Obtain the url to the search page
-    searchUrl = Umbraco.TypedContent((int)Common.siteNode.Search).Url;
-
-
-    //Loop through nodes to create a list of all navigation links
-    //ipHome = Umbraco.AssignedContentItem.AncestorOrSelf(1);
-    ipHome = Umbraco.AssignedContentItem.Site();
-
-
-    //Make fields active if Illumination has occured.
-    activateIlluminationControls = ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls);
-
-    //Get main navigation
-    foreach (var ipLvl1 in ipHome.Children.Where(x => x.IsVisible()))
-    {
-        if (!activateIlluminationControls)
-        { if (ipLvl1.DocumentTypeAlias == Common.docType.IlluminationStoryList) { continue; } }
-
-
-        //Instantiate variable
-        navigationLink lnkLvl1 = new navigationLink();
-
-        //Add data to link record
-        lnkLvl1.id = ipLvl1.Id;
-        lnkLvl1.level = 1;
-        lnkLvl1.name = ipLvl1.Name;
-        lnkLvl1.url = ipLvl1.Url;
-
-        //Add level 2 nav
-        if (ipLvl1.GetPropertyValue<Boolean>(Common.NodeProperties.hideChildrenFromNavigation) == false)
-        {
-            if (ipLvl1.Children.Any(x => x.IsVisible()))
-            {
-                foreach (var ipLvl2 in ipLvl1.Children.Where(x => x.IsVisible()))
-                {
-                    //Instantiate variable
-                    navigationLink lnkLvl2 = new navigationLink();
-
-                    //Add data to link record
-                    lnkLvl2.id = ipLvl2.Id;
-                    lnkLvl2.level = 2;
-                    lnkLvl2.name = ipLvl2.Name;
-                    lnkLvl2.url = ipLvl2.Url;
-
-                    //Add level 3 nav
-                    if (ipLvl2.GetPropertyValue<Boolean>(Common.NodeProperties.hideChildrenFromNavigation) == false)
-                    {
-                        if (ipLvl2.Children.Any(x => x.IsVisible()))
-                        {
-                            foreach (var ipLvl3 in ipLvl2.Children.Where(x => x.IsVisible()))
-                            {
-                                //Skip the following doctypes
-                                if (ipLvl3.DocumentTypeAlias == Common.docType.UDateFoldersyFolderYear) { continue; }
-                                //Instantiate variable
-                                navigationLink lnkLvl3 = new navigationLink();
-
-                                //Add data to link record
-                                lnkLvl3.id = ipLvl3.Id;
-                                lnkLvl3.level = 3;
-                                lnkLvl3.name = ipLvl3.Name;
-                                lnkLvl3.url = ipLvl3.Url;
-
-                                //Add records to list
-                                lnkLvl2.lstChildLinks.Add(lnkLvl3);
-                            }
-                        }
-                    }
-
-                    //Add records to list
-                    lnkLvl1.lstChildLinks.Add(lnkLvl2);
-                }
-            }
-        }
-
-        //Add records to list
-        lstMainNavlinks.Add(lnkLvl1);
-    }
-
-    //Get minor navigation
-    foreach (var ipLvl1 in ipHome.Children.Where(x => x.GetPropertyValue<bool>(Common.NodeProperties.showInMinorNavigation) == true))
-    {
-        //Skip the following if the following exists.
-        if (isLoggedIn)
-        {
-            if (ipLvl1.DocumentTypeAlias == Common.docType.Login) { continue; }
-            if (ipLvl1.DocumentTypeAlias == Common.docType.CreateAccount) { continue; }
-        }
-        else
-        {
-            if (ipLvl1.DocumentTypeAlias == Common.docType.Logout) { continue; }
-            if (ipLvl1.DocumentTypeAlias == Common.docType.ManageAccount) { continue; }
-        }
-
-
-        //Instantiate variable
-        navigationLink lnkLvl1 = new navigationLink();
-
-        //Add data to link record
-        lnkLvl1.id = ipLvl1.Id;
-        lnkLvl1.level = 1;
-        lnkLvl1.name = ipLvl1.Name;
-        lnkLvl1.url = ipLvl1.Url;
-
-        //Add level 2 nav
-        if (ipLvl1.GetPropertyValue<Boolean>(Common.NodeProperties.hideChildrenFromNavigation) == false)
-        {
-            foreach (var ipLvl2 in ipLvl1.Children.Where(x => x.GetPropertyValue<bool>(Common.NodeProperties.showInMinorNavigation) == true))
-            {
-
-                if (!activateIlluminationControls)
-                {
-                    if (ipLvl2.DocumentTypeAlias == Common.docType.AddEditIlluminationStory) { continue; }
-                }
-
-                //Instantiate variable
-                navigationLink lnkLvl2 = new navigationLink();
-
-                //Add data to link record
-                lnkLvl2.id = ipLvl2.Id;
-                lnkLvl2.level = 2;
-                lnkLvl2.name = ipLvl2.Name;
-                lnkLvl2.url = ipLvl2.Url;
-
-                //Add level 3 nav
-                if (ipLvl2.GetPropertyValue<Boolean>(Common.NodeProperties.hideChildrenFromNavigation) == false)
-                {
-                    foreach (var ipLvl3 in ipLvl2.Children.Where(x => x.GetPropertyValue<bool>(Common.NodeProperties.showInMinorNavigation) == true))
-                    {
-                        //Instantiate variable
-                        navigationLink lnkLvl3 = new navigationLink();
-
-                        //Add data to link record
-                        lnkLvl3.id = ipLvl3.Id;
-                        lnkLvl3.level = 3;
-                        lnkLvl3.name = ipLvl3.Name;
-                        lnkLvl3.url = ipLvl3.Url;
-
-                        //Add records to list
-                        lnkLvl2.lstChildLinks.Add(lnkLvl3);
-                    }
-                }
-
-                //Add records to list
-                lnkLvl1.lstChildLinks.Add(lnkLvl2);
-            }
-        }
-
-        //Add records to list
-        lstMinorNavlinks.Add(lnkLvl1);
-    }
-
-
+    MainNavContent mainNavContent = Controllers.GeneralController.ObtainMainNavContent(User, Umbraco);
 }
 
 
@@ -180,13 +19,14 @@
             <div class="shrink cell">
                 <ul class="left nav navbar-nav">
                     @*//Loop thru nodes and add visible nodes to the menu*@
-                    @foreach (var lnkLvl1 in lstMainNavlinks)
+                    @foreach (var lnkLvl1 in mainNavContent.lstMainNavlinks)
                     {
                         //Insert spacers after 1st menu item
-                        if (firstItem) { firstItem = false; }
+                        if (mainNavContent.firstItem) { mainNavContent.firstItem = false; }
                         else
                         {
-                            <li class="spacerIcon">&#10013;</li> }
+                            <li class="spacerIcon">&#10013;</li>
+ }
 
                         @*//Add level 1 nav*@
                         <li>
@@ -235,14 +75,15 @@
             <div class="shrink cell">
                 <ul class="left nav navbar-nav">
                     @*//Loop thru nodes and add visible nodes to the menu*@
-                    @{firstItem = true; }
-                    @foreach (var lnkLvl1 in lstMinorNavlinks) //lstMainNavlinks
+                    @{mainNavContent.firstItem = true; }
+                    @foreach (var lnkLvl1 in mainNavContent.lstMinorNavlinks) //lstMainNavlinks
                     {
                         //Insert spacers after 1st menu item
-                        if (firstItem) { firstItem = false; }
+                        if (mainNavContent.firstItem) { mainNavContent.firstItem = false; }
                         else
                         {
-                            <li class="spacerIcon">&#10013;</li> }
+                            <li class="spacerIcon">&#10013;</li>
+ }
 
                         @*//Add level 1 nav*@
                         <li>
@@ -296,7 +137,7 @@
                         </li>
                     }
                     <li class="searchIcon">
-                        <a href="@searchUrl">
+                        <a href="@mainNavContent.searchUrl">
                             <img alt="Search" src="~/images/common/searchIcon.png" />
                         </a>
                     </li>
@@ -316,7 +157,7 @@
 <section class="top-bar hide-for-large" id="mblMenu">
     <ul class="vertical menu" data-responsive-menu="drilldown">
         @*//Loop thru menu list and add records to the menu*@
-        @foreach (var lnkLvl1 in lstMainNavlinks)
+        @foreach (var lnkLvl1 in mainNavContent.lstMainNavlinks)
         {
             @*//Add level 1 nav*@
             <li>
@@ -388,7 +229,7 @@
                 }
             </li>
         }
-        @foreach (var lnkLvl1 in lstMinorNavlinks)
+        @foreach (var lnkLvl1 in mainNavContent.lstMinorNavlinks)
         {
             @*//Add level 1 nav*@
             <li>
@@ -478,7 +319,7 @@
         }
 
         <li class="searchIcon">
-            <a href="@searchUrl">
+            <a href="@mainNavContent.searchUrl">
                 <img alt="Search" src="~/images/common/searchIcon.png" /> Search
             </a>
         </li>

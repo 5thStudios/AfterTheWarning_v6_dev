@@ -1,30 +1,31 @@
 ﻿@using Models;
-@inherits UmbracoViewPage
+@inherits UmbracoViewPage<IPublishedContent>
 
 
 @{
-    //Obtain current page as strongly typed ip
-    int? currentPageId = UmbracoContext.Current.PageId;
-    IPublishedContent ipCurrentPg = Umbraco.TypedContent(currentPageId);
+    //Obtain page doctypes
+    string doctype = Model.DocumentTypeAlias;
+    string parentDoctype = string.Empty;
+    if (doctype != Common.docType.Home) { parentDoctype = Model.Parent.DocumentTypeAlias; }
 
 
-    //
-    if (ipCurrentPg.DocumentTypeAlias == Common.docType.Home)
+    //Determine which heading to display
+    if (doctype == Common.docType.Home)
     {
         <h1>Welcome</h1>
     }
-    else if (ipCurrentPg.DocumentTypeAlias == Common.docType.Search)
+    else if (doctype == Common.docType.Search)
     {
         <h3>Results</h3>
     }
-    else if (ipCurrentPg.DocumentTypeAlias == Common.docType.ManageAccount)
+    else if (doctype == Common.docType.ManageAccount)
     {
         <nav class="breadcrumbs">
             <span class="divider">»</span>
             <a href="/" class="breadcrumb">Home</a>
         </nav>
     }
-    else if (ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.ManageAccount)
+    else if (parentDoctype == Common.docType.ManageAccount)
     {
         <nav class="breadcrumbs">
             <span class="divider">»</span>
@@ -33,19 +34,17 @@
     }
     else
     {
-        //Obtain the breadcrumb ancestors of the current page.
-        var lstBreadcrumbs = ipCurrentPg.Ancestors();
         bool isFirst = true;
 
         <nav class="breadcrumbs">
-            @if (lstBreadcrumbs.Count() == 1)
+            @if (Model.Ancestors().Count() == 1)
             {
                 <span class="divider">»</span>
                 <a href="/" class="breadcrumb">Home</a>
             }
             else
             {
-                foreach (IPublishedContent ipCrumb in lstBreadcrumbs.OrderBy(x => x.Level).ToList())
+                foreach (IPublishedContent ipCrumb in Model.Ancestors().OrderBy(x => x.Level).ToList())
                 {
                     //Add crumb only if the page can be displayed in the menu.
                     if (ipCrumb.HasProperty(Common.NodeProperties.umbracoNaviHide) && ipCrumb.GetPropertyValue<bool>(Common.NodeProperties.umbracoNaviHide) == false)
@@ -69,7 +68,3 @@
         </nav>
     }
 }
-
-
-
-@*http://www.jondjones.com/learn-umbraco-cms/umbraco-developers-guide/umbraco-component-tutorials/how-to-create-a-breadcrumb-using-umbraco-cms*@

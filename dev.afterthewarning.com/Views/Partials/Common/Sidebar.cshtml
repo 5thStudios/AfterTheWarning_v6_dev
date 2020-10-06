@@ -1,16 +1,12 @@
 ﻿@using Models;
-
 @inherits UmbracoViewPage
+
+
+
 @{
     //Obtain donation page url
     string donationUrl = Umbraco.TypedContent((int)(Common.siteNode.Donate)).Url;
     IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
-    //
-    //IPublishedContent homePage = Umbraco.AssignedContentItem.AncestorOrSelf("home");
-    //IPublishedContent articleList = homePage.Children.Where(x => x.DocumentTypeAlias == "articleList" && x.IsVisible()).FirstOrDefault();
-    //IEnumerable<IPublishedContent> articles = articleList.Children.Where(x => x.IsVisible() && x.DocumentTypeAlias == "article").OrderByDescending(x => x.GetPropertyValue<DateTime>("articleDate"));
-    //bool isHomePage = Umbraco.AssignedContentItem.Id == homePage.Id;
-    //int itemsToShow = isHomePage ? 3 : 99;
 }
 
 
@@ -21,9 +17,7 @@
 </div>
 
 @{Html.RenderAction("RenderLatestMessages", "Message");}
-
 @*@{ Html.RenderPartial("Partials/Common/DailyReading", @Model); }*@
-
 <div class="grid-x grid-padding-x">
     <div class="large-22 large-offset-1 cell">
         <hr />
@@ -39,7 +33,6 @@
         }
     </div>
 </div>
-
 
 @{ Html.RenderPartial("Partials/Common/PersonalAccounts", @Model); }
 

@@ -2927,6 +2927,11 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\PrayerController.cs" />
     <Compile Include="Helpers\HtmlExtensions.cs" />
+    <Compile Include="Models\MainNavContent.cs" />
+    <Compile Include="Models\SupportPnlContent.cs" />
+    <Compile Include="Models\PersonalAccountsContent.cs" />
+    <Compile Include="Models\PaginationContent.cs" />
+    <Compile Include="Models\TitlePanelContent.cs" />
     <Compile Include="Models\VisionaryContent.cs" />
     <Compile Include="Models\TOCContent.cs" />
     <Compile Include="Models\ScriptureContent.cs" />
@@ -3186,7 +3191,6 @@
     <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
     <Content Include="Views\Partials\Common\Sidebar.cshtml" />
     <Content Include="Views\Partials\Grid\Foundation6.cshtml" />
-    <Content Include="Views\Partials\Common\GridLayout.cshtml" />
     <Content Include="Views\Partials\Common\MainNavigation.cshtml" />
     <Content Include="Views\Partials\Common\FooterNavigation.cshtml" />
     <Content Include="Views\Partials\Common\TitlePanel.cshtml" />
@@ -3224,7 +3228,6 @@
     <Content Include="Views\Partials\Formulate\Responsive.Bootstrap.Angular.cshtml" />
     <Content Include="Views\ImportMessages.cshtml" />
     <Content Include="Views\Partials\Common\LatestUpdates.cshtml" />
-    <Content Include="Views\Partials\Common\DailyReading.cshtml" />
     <Content Include="Views\Partials\Common\PersonalAccounts.cshtml" />
     <Content Include="Views\Partials\ManageAccount\_createAcct.cshtml" />
     <Content Include="Views\Partials\ManageAccount\_login.cshtml" />
