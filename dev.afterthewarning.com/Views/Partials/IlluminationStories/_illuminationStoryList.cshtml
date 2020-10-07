@@ -5,31 +5,13 @@
 
 @{
     //Redirect to home if illumination settings are not active.
-    IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
-    if (ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls) != true)
+    if (!Controllers.IlluminationController.areIlluminationControlsActivated(Umbraco))
     {
         Response.Redirect(Umbraco.TypedContent((int)(Models.Common.siteNode.Home)).Url);
     }
 
-
-    //build base url for filter links
-    string baseUrl = (Request.Url.ToString());
-    if (baseUrl.Contains("?"))
-    {
-        baseUrl = (baseUrl.Substring(0, baseUrl.IndexOf("?")));
-    }
-
-
-    //Create links for dropdown and buttons
-    var urlViewAll = baseUrl;
-    var urlHeavenly = baseUrl + "?viewBy=Heavenly";
-    var urlHellish = baseUrl + "?viewBy=Hellish";
-    var urlPurgatorial = baseUrl + "?viewBy=Purgatorial";
-    var urlOtherUnsure = baseUrl + "?viewBy=OtherUnsure";
-    var urlAddEditIllumStory = Umbraco.TypedContent((int)Common.siteNode.AddEditIlluminationStory).Url;
-    var urlViewIllumStatistics = Umbraco.TypedContent((int)Common.siteNode.IlluminationStatistics).Url;
-    var urlDownloadStories = UmbracoContext.Current.PublishedContentRequest.PublishedContent.GetPropertyValue<IPublishedContent>(Common.NodeProperties.compiledStories).Url;
-
+    //Obtain content data
+    IlluminationStoryListContent illuminationStoryListContent = Controllers.IlluminationController.ObtainIlluminationStoryListContent(Umbraco, Request.Url.ToString());
 }
 
 
@@ -44,13 +26,13 @@
 
             <div class="grid-x grid-margin-x">
                 <div class="cell large-8">
-                    <a href="@urlAddEditIllumStory" class="button primary expanded avgHeight">Add My Story</a>
+                    <a href="@illuminationStoryListContent.urlAddEditIllumStory" class="button primary expanded avgHeight">Add My Story</a>
                 </div>
                 <div class="cell large-8">
-                    <a href="@urlViewIllumStatistics" class="button primary expanded avgHeight">Statistics</a>
+                    <a href="@illuminationStoryListContent.urlViewIllumStatistics" class="button primary expanded avgHeight">Statistics</a>
                 </div>
                 <div class="cell large-8">
-                    <a target="_blank" href="@urlDownloadStories" class="button primary expanded avgHeight">Download</a>
+                    <a target="_blank" href="@illuminationStoryListContent.urlDownloadStories" class="button primary expanded avgHeight">Download</a>
                 </div>
             </div>
         </div>
@@ -98,54 +80,39 @@
         <div class="cell large-24 illuminationFilter">
             <div class="grid-x large-up-5">
                 <div class="cell @(@Model.ViewBy == "" ? "active" : "")" data-experiencetype="All">
-                    <a href="@urlViewAll">
+                    <a href="@illuminationStoryListContent.urlViewAll">
                         <img alt="View All" src="~/images/common/view-all.png" />
                         <label>View All</label>
                     </a>
                 </div>
                 <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Heavenly ? "active" : "")" data-experiencetype="Heavenly">
-                    <a href="@urlHeavenly">
+                    <a href="@illuminationStoryListContent.urlHeavenly">
                         <img alt="Heavenly" src="~/images/common/heavenly.png" />
                         <label>Heavenly</label>
                     </a>
                 </div>
                 <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Hellish ? "active" : "")" data-experiencetype="Hellish">
-                    <a href="@urlHellish">
+                    <a href="@illuminationStoryListContent.urlHellish">
                         <img alt="Hellish" src="~/images/common/hellish.png" />
                         <label>Hellish</label>
                     </a>
                 </div>
                 <div class="cell @(@Model.ViewBy == Common.ViewByTypes.Purgatorial ? "active" : "")" data-experiencetype="Purgatorial">
-                    <a href="@urlPurgatorial">
+                    <a href="@illuminationStoryListContent.urlPurgatorial">
                         <img alt="Purgatorial" src="~/images/common/purgatorial.png" />
                         <label>Purgatorial</label>
                     </a>
                 </div>
                 <div class="cell @(@Model.ViewBy == Common.ViewByTypes.OtherUnsure ? "active" : "")" data-experiencetype="Other/Unsure">
-                    <a href="@urlOtherUnsure">
+                    <a href="@illuminationStoryListContent.urlOtherUnsure">
                         <img alt="Other/Unsure" src="~/images/common/other-unsure.png" />
                         <label>Other/Unsure</label>
                     </a>
                 </div>
             </div>
         </div>
-        @*<div class="cell large-8">
-            <div class="grid-x align-middle">
-                <div class="cell shrink text-right text-17U margin-up-17">Sort By &nbsp;&nbsp;</div>
-                <div class="cell auto">
-                    <select>
-                        <option value="title" selected>Title</option>
-                        <option value="titleDesc">Title [Z-A]</option>
-                        <option value="author">Author</option>
-                        <option value="authorDesc">Author [Z-A]</option>
-                    </select>
-                </div>
-            </div>
-        </div>*@
     </div>
-
     <br />
-
 
     <div class="storyList">
         @if (Model.lstStoryLink.Any())
@@ -198,14 +165,9 @@
         }
     </div>
 
-
-
-
     <br />
     <br />
     @{Html.RenderPartial("Partials/Common/Pagination", Model.Pagination); }
-
-
 </div>
 
 

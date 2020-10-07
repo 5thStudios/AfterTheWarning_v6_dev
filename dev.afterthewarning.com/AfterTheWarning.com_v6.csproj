@@ -2927,6 +2927,7 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\PrayerController.cs" />
     <Compile Include="Helpers\HtmlExtensions.cs" />
+    <Compile Include="Models\IlluminationStoryListContent.cs" />
     <Compile Include="Models\MainNavContent.cs" />
     <Compile Include="Models\SupportPnlContent.cs" />
     <Compile Include="Models\PersonalAccountsContent.cs" />
@@ -3234,9 +3235,6 @@
     <Content Include="Views\AddAccount.cshtml" />
     <Content Include="Views\Partials\ManageAccount\_editAcct.cshtml" />
     <Content Include="Views\Partials\ManageAccount\_forgotPassword.cshtml" />
-    <Content Include="Views\Partials\PrayerCorner\_newPrayer.cshtml" />
-    <Content Include="Views\Partials\PrayerCorner\_editPrayer.cshtml" />
-    <Content Include="Views\Partials\PrayerCorner\_prayerPledges.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_showIlluminationStory.cshtml" />
     <Content Include="Views\EditAccount.cshtml" />
     <Content Include="Scripts\vendor\jquery.simplePagination.js" />
@@ -3244,7 +3242,6 @@
     <Content Include="Views\Partials\IlluminationStories\_illuminationStoryInstructions.cshtml" />
     <Content Include="Views\Partials\IlluminationStories\_addIlluminationStory.cshtml" />
     <Content Include="Views\Partials\Common\Pagination.cshtml" />
-    <Content Include="Views\Partials\PrayerCorner\_prayerList.cshtml" />
     <Content Include="Views\Partials\MessagesFromHeaven\_msgList.cshtml" />
     <Content Include="Views\Partials\Search\_searchList.cshtml" />
     <Content Include="Views\Partials\Search\_searchPnl.cshtml" />

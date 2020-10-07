@@ -4,8 +4,7 @@
 
 @{     
     //Redirect to home if illumination settings are not active.
-    IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
-    if (ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls) != true)
+    if (!Controllers.IlluminationController.areIlluminationControlsActivated(Umbraco))
     {
         Response.Redirect(Umbraco.TypedContent((int)(Models.Common.siteNode.Home)).Url);
     }
@@ -15,12 +14,10 @@
     <div class="grid-x">
         <div class="cell">
             <h3>My Illumination Story</h3>
-
             <div id="pnlAddIlluminationStory" class="">
                 <br />
                 <h4>Submit Story</h4>
                 <p>Haven’t submitted your Illumination story yet?  Don’t wait for the moment to pass.  Click below to begin and share your story with the world today.</p>
-
                 <br />
                 <div class="grid-x">
                     <div class="cell large-12 large-offset-6">
@@ -28,7 +25,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

@@ -10,7 +10,7 @@ namespace Models
     {
         public String heightClass { get; set; }
         public String docType { get; set; }
-        public String topBanner { get; set; }
+        public HtmlString topBanner { get; set; }
         public String Name { get; set; }
         public String ParentName { get; set; }
         public String visionaryName { get; set; }

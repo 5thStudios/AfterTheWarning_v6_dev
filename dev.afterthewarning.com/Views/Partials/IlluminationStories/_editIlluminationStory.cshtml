@@ -1,30 +1,20 @@
-﻿@using ClientDependency.Core.Mvc;
-@using Umbraco.Web.PublishedContentModels;
-@using Umbraco.Core;
-@using Umbraco.Core.Models;
-@using Umbraco.Core.Services;
-@using Models;
-@using ContentModels = Umbraco.Web.PublishedContentModels;
-
-@inherits UmbracoViewPage<Models.illuminationStory>
+﻿@inherits UmbracoViewPage<Models.illuminationStory>
 
 
-@{ 
+
+@{
     //Redirect to home if illumination settings are not active.
-    IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
-    if (ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls) != true)
+    if (!Controllers.IlluminationController.areIlluminationControlsActivated(Umbraco))
     {
         Response.Redirect(Umbraco.TypedContent((int)(Models.Common.siteNode.Home)).Url);
     }
 }
-
 
 @using (Html.BeginUmbracoForm<Controllers.IlluminationController>("UpdateIlluminationStory", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.memberId);
     @Html.HiddenFor(x => x.storyId);
-
 
     <div id="pnlAddEditIlluminationStory">
         <h3>Update Your Illumination Story</h3>

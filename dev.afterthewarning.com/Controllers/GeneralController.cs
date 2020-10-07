@@ -301,5 +301,143 @@ namespace Controllers
 
             return supportPnlContent;
         }
+        public static TitlePanelContent ObtainTitlePanelContent(IPublishedContent ipModel)
+        {
+            TitlePanelContent titlePanelContent = new TitlePanelContent();
+
+
+            //Other variables
+            titlePanelContent.heightClass = "narrow";
+            List<DateTime> lstDateRange;
+
+            //Obtain page's doctype
+            titlePanelContent.docType = ipModel.DocumentTypeAlias;
+
+            //Check if the parent doctype should be used instead.
+            if (titlePanelContent.docType != Common.docType.Home && ipModel.Parent.DocumentTypeAlias == Common.docType.ManageAccount)
+            {
+                titlePanelContent.docType = Common.docType.ManageAccount;
+            }
+            else if (titlePanelContent.docType != Common.docType.Home && ipModel.Parent.DocumentTypeAlias == Common.docType.IlluminationStatistics)
+            {
+                titlePanelContent.docType = ipModel.Parent.DocumentTypeAlias;
+            }
+
+            //
+            switch (titlePanelContent.docType)
+            {
+                case Common.docType.Message:
+                    //Obtain list of all dates
+                    lstDateRange = ipModel.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+                    //Determine proper date range for messages
+                    if (lstDateRange != null)
+                    {
+                        switch (lstDateRange.Count)
+                        {
+                            case 0: //Leave blank
+                                break;
+
+                            case 1:
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                break;
+
+                            case 2:
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                titlePanelContent.sbDateRange.Append(" and ");
+                                titlePanelContent.sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                                break;
+
+                            default: //More than 2 dates in list
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                titlePanelContent.sbDateRange.Append(" thru ");
+                                titlePanelContent.sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                                break;
+                        }
+                    }
+
+                    //Obtain visionary's name
+                    titlePanelContent.visionaryName = ipModel.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).GetPropertyValue<String>(Common.NodeProperties.visionarysName);
+                    break;
+
+
+                case Common.docType.WebmasterMessage:
+                    //Obtain list of all dates
+                    lstDateRange = ipModel.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
+
+                    //Determine proper date range for messages
+                    if (lstDateRange != null)
+                    {
+                        switch (lstDateRange.Count)
+                        {
+                            case 0: //Leave blank
+                                break;
+
+                            case 1:
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                break;
+
+                            case 2:
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                titlePanelContent.sbDateRange.Append(" and ");
+                                titlePanelContent.sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                                break;
+
+                            default: //More than 2 dates in list
+                                titlePanelContent.sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
+                                titlePanelContent.sbDateRange.Append(" thru ");
+                                titlePanelContent.sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
+                                break;
+                        }
+                    }
+
+                    //Obtain name
+                    titlePanelContent.visionaryName = ipModel.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList).Name;
+                    break;
+
+
+                //case Common.docType.PrayerRequest:
+                //    titlePanelContent.strH1 = Model.GetPropertyValue<String>(Common.NodeProperties.prayerTitle);
+
+                //    //Generate user's name
+                //    var CmMember = new ContentModels.Member(Umbraco.TypedMember(Model.GetPropertyValue<int>(Common.NodeProperties.prayerRequestMember)));
+                //    StringBuilder sbAuthor = new StringBuilder();
+                //    sbAuthor.Append(CmMember.FirstName);
+                //    sbAuthor.Append("&nbsp;&nbsp;");
+                //    sbAuthor.Append(CmMember.LastName);
+                //    sbAuthor.Append(".");
+                //    titlePanelContent.strH3 = sbAuthor.ToString();
+                //    break;
+
+
+                case Common.docType.Home:
+                    titlePanelContent.heightClass = "tall";
+                    titlePanelContent.topBanner = ipModel.GetPropertyValue<HtmlString>(Common.NodeProperties.topBanner);
+                    break;
+
+
+                case Common.docType.IlluminationStatistics:
+                    titlePanelContent.ParentName = ipModel.Parent.Name;
+                    titlePanelContent.Name = ipModel.Name;
+                    break;
+
+
+                case Common.docType.Standard:
+                    titlePanelContent.title = ipModel.GetPropertyValue<string>(Common.NodeProperties.title);
+                    titlePanelContent.subtitle = ipModel.GetPropertyValue<string>(Common.NodeProperties.subtitle);
+                    break;
+
+
+                default:
+                    titlePanelContent.Name = ipModel.Name;
+                    titlePanelContent.ParentName = ipModel.Parent.Name;
+                    titlePanelContent.title = ipModel.GetPropertyValue<string>(Common.NodeProperties.title);
+                    titlePanelContent.subtitle = ipModel.GetPropertyValue<string>(Common.NodeProperties.subtitle);
+                    break;
+            }
+
+
+            return titlePanelContent;
+        }
     }
 }

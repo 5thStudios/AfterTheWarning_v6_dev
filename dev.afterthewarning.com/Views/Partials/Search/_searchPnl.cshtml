@@ -4,8 +4,7 @@
 
 @{
     //Determine if illumination controls are to be shown.
-    IPublishedContent ipHome = Umbraco.AssignedContentItem.Site();
-    Boolean activateIlluminationControls = ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls);
+    Boolean activateIlluminationControls = Controllers.IlluminationController.areIlluminationControlsActivated(Umbraco);
 
     //Obtain base url for reset button
     var baseUrl = Umbraco.TypedContent((int)Common.siteNode.Search).Url;

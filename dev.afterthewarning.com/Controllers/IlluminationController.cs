@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using Umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
@@ -15,20 +14,16 @@ using Umbraco.Web.Mvc;
 using ContentModels = Umbraco.Web.PublishedContentModels;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Umbraco.Web.PublishedContentModels;
-using X.PagedList;
 using Examine;
 using UmbracoExamine;
 using Examine.Providers;
 using Examine.SearchCriteria;
-using System.Diagnostics;
 using Newtonsoft.Json;
-
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.Rendering;
 using formulate.app.Types;
-using formulate.core.Models;
+
 
 namespace Controllers
 {
@@ -750,12 +745,35 @@ namespace Controllers
 
                 //Obtain the form and its view model
                 ConfiguredFormInfo pickedForm = cmModel.Parent.GetPropertyValue<ConfiguredFormInfo>("formPicker");
-                FormViewModel vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, cmModel);
-
+                PgContent.Vm = formulate.api.Rendering.GetFormViewModel(pickedForm.FormId, pickedForm.LayoutId, pickedForm.TemplateId, cmModel);                
             }
 
 
             return PgContent;
+        }
+        public static Models.IlluminationStoryListContent ObtainIlluminationStoryListContent(UmbracoHelper Umbraco, string Url)
+        {
+            IlluminationStoryListContent illuminationStoryListContent = new IlluminationStoryListContent();
+
+            //build base url for filter links
+            illuminationStoryListContent.baseUrl = Url;
+            if (illuminationStoryListContent.baseUrl.Contains("?"))
+            {
+                illuminationStoryListContent.baseUrl = (illuminationStoryListContent.baseUrl.Substring(0, illuminationStoryListContent.baseUrl.IndexOf("?")));
+            }
+
+            //Create links for dropdown and buttons
+            illuminationStoryListContent.urlViewAll = illuminationStoryListContent.baseUrl;
+            illuminationStoryListContent.urlHeavenly = illuminationStoryListContent.baseUrl + "?viewBy=Heavenly";
+            illuminationStoryListContent.urlHellish = illuminationStoryListContent.baseUrl + "?viewBy=Hellish";
+            illuminationStoryListContent.urlPurgatorial = illuminationStoryListContent.baseUrl + "?viewBy=Purgatorial";
+            illuminationStoryListContent.urlOtherUnsure = illuminationStoryListContent.baseUrl + "?viewBy=OtherUnsure";
+            illuminationStoryListContent.urlAddEditIllumStory = Umbraco.TypedContent((int)Common.siteNode.AddEditIlluminationStory).Url;
+            illuminationStoryListContent.urlViewIllumStatistics = Umbraco.TypedContent((int)Common.siteNode.IlluminationStatistics).Url;
+            illuminationStoryListContent.urlDownloadStories = UmbracoContext.Current.PublishedContentRequest.PublishedContent.GetPropertyValue<IPublishedContent>(Common.NodeProperties.compiledStories).Url;
+
+
+            return illuminationStoryListContent;
         }
         public static Models.AddEditIlluminationStoryContent DoesStoryExist(System.Security.Principal.IPrincipal User)
         {
@@ -775,7 +793,6 @@ namespace Controllers
 
             return PgContent;
         }
-
 
 
         public static Models.LineCharts ObtainStatistics_byAge(IPublishedContent ipByAge)
@@ -853,7 +870,8 @@ namespace Controllers
             int unknown = 0;
 
             //Obtain data from ip
-            List<Models.ExperienceByCountry> lstExperiences = JsonConvert.DeserializeObject<List<Models.ExperienceByCountry>>(ip.GetPropertyValue<string>(Common.NodeProperties.experiencesByCountry));
+            var jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            List<Models.ExperienceByCountry> lstExperiences = JsonConvert.DeserializeObject<List<Models.ExperienceByCountry>>(ip.GetPropertyValue<string>(Common.NodeProperties.experiencesByCountry), jsonSettings);
 
             //Extract data
             foreach (Models.ExperienceByCountry experience in lstExperiences)
@@ -1783,6 +1801,13 @@ namespace Controllers
             return lstIlluminationPdfStats;
         }
 
+
+        public static Boolean areIlluminationControlsActivated(UmbracoHelper Umbraco)
+        {
+            //Are Illumination Controls Active
+            IPublishedContent ipHome = Umbraco.TypedContent((int)(Common.siteNode.Home));
+            return ipHome.GetPropertyValue<Boolean>(Common.NodeProperties.activateIlluminationControls);
+        }
         #endregion
     }
 }

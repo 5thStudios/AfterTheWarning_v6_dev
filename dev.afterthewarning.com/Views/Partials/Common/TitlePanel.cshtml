@@ -1,158 +1,25 @@
 ﻿@using Models;
-@using System.Text;
-@using System.Web.Script.Serialization;
-@using ContentModels = Umbraco.Web.PublishedContentModels;
 @inherits UmbracoViewPage
 
 
 @{
-    TitlePanelContent titlePanelContent = new TitlePanelContent();
-    ////Obtain current page as strongly typed ip
-    //int? currentPageId = UmbracoContext.Current.PageId;
-    //IPublishedContent ipCurrentPg = Umbraco.TypedContent(currentPageId);
-
-
-    ////Other variables
-    //String strH1 = String.Empty;
-    //String strH3 = String.Empty;
-    //StringBuilder sbCite = new StringBuilder();
-    //String heightClass = "narrow";
-    //String visionaryName = String.Empty;
-    //List<DateTime> lstDateRange;
-    //StringBuilder sbDateRange = new StringBuilder();
-
-
-    ////Obtain page's doctype
-    //String docType = ipCurrentPg.DocumentTypeAlias;
-
-
-    ////Check if the parent doctype should be used instead.
-    //if (docType != Common.docType.Home && ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.ManageAccount)
-    //{
-    //    docType = Common.docType.ManageAccount;
-    //}
-    //else if (docType != Common.docType.Home && ipCurrentPg.Parent.DocumentTypeAlias == Common.docType.IlluminationStatistics)
-    //{
-    //    docType = ipCurrentPg.Parent.DocumentTypeAlias;
-    //}
-
-
-    ////
-    //switch (docType)
-    //{
-    //    case Common.docType.Message:
-    //        //Obtain list of all dates
-    //        lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
-
-    //        //Determine proper date range for messages
-    //        if (lstDateRange != null)
-    //        {
-    //            switch (lstDateRange.Count)
-    //            {
-    //                case 0: //Leave blank
-    //                    break;
-
-    //                case 1:
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    break;
-
-    //                case 2:
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    sbDateRange.Append(" and ");
-    //                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-    //                    break;
-
-    //                default: //More than 2 dates in list
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    sbDateRange.Append(" thru ");
-    //                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-    //                    break;
-    //            }
-    //        }
-
-    //        //Obtain visionary's name
-    //        visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.Visionary).GetPropertyValue<String>(Common.NodeProperties.visionarysName);
-    //        break;
-
-
-    //    case Common.docType.WebmasterMessage:
-    //        //Obtain list of all dates
-    //        lstDateRange = ipCurrentPg.GetPropertyValue<List<DateTime>>(Common.NodeProperties.dateOfMessages);
-
-    //        //Determine proper date range for messages
-    //        if (lstDateRange != null)
-    //        {
-    //            switch (lstDateRange.Count)
-    //            {
-    //                case 0: //Leave blank
-    //                    break;
-
-    //                case 1:
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    break;
-
-    //                case 2:
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    sbDateRange.Append(" and ");
-    //                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-    //                    break;
-
-    //                default: //More than 2 dates in list
-    //                    sbDateRange.Append(lstDateRange.First().ToString("MMMM dd"));
-    //                    sbDateRange.Append(" thru ");
-    //                    sbDateRange.Append(lstDateRange.Last().ToString("MMMM dd"));
-    //                    break;
-    //            }
-    //        }
-
-    //        //Obtain name
-    //        visionaryName = ipCurrentPg.AncestorsOrSelf().FirstOrDefault(x => x.DocumentTypeAlias == Common.docType.WebmasterMessageList).Name;
-    //        break;
-
-
-    //    case Common.docType.PrayerRequest:
-    //        strH1 = ipCurrentPg.GetPropertyValue<String>(Common.NodeProperties.prayerTitle);
-
-    //        //Generate user's name
-    //        var CmMember = new ContentModels.Member(Umbraco.TypedMember(ipCurrentPg.GetPropertyValue<int>(Common.NodeProperties.prayerRequestMember)));
-    //        StringBuilder sbAuthor = new StringBuilder();
-    //        sbAuthor.Append(CmMember.FirstName);
-    //        sbAuthor.Append("&nbsp;&nbsp;");
-    //        sbAuthor.Append(CmMember.LastName);
-    //        sbAuthor.Append(".");
-    //        strH3 = sbAuthor.ToString();
-    //        break;
-
-
-    //    case Common.docType.Home:
-    //        heightClass = "tall";
-    //        break;
-
-
-    //    default:
-    //        break;
-    //}
+    TitlePanelContent titlePanelContent = Controllers.GeneralController.ObtainTitlePanelContent(Model);
 }
 
 
-@*ORIGINAL*@
 <div class="grid-container titleSectionPnl">
     <div class="grid-x align-middle  @titlePanelContent.heightClass">
         <div class="large-20 large-offset-2 cell">
-
             @switch (titlePanelContent.docType)
             {
                 case Common.docType.Home:
                     <br />
-                    @ //                            //ipCurrentPg.GetPropertyValue(Common.NodeProperties.topBanner);
                     @titlePanelContent.topBanner
                     <br />
                     break;
                 case Common.docType.IlluminationStatistics:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@//                         //ipCurrentPg.Parent.Name</h1>
-                    <h3>@//                         //ipCurrentPg.Name</h3>
                     <h1>@titlePanelContent.ParentName</h1>
                     <h3>@titlePanelContent.Name</h3>
                     <br />
@@ -176,11 +43,11 @@
                 case Common.docType.Message:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
-                    <h3>By @visionaryName</h3>
-                    if (!string.IsNullOrEmpty(@sbDateRange.ToString()))
+                    <h1>@titlePanelContent.Name</h1>
+                    <h3>By @titlePanelContent.visionaryName</h3>
+                    if (!string.IsNullOrEmpty(@titlePanelContent.sbDateRange.ToString()))
                     {
-                        <cite>@sbDateRange.ToString()</cite>
+                        <cite>@titlePanelContent.sbDateRange.ToString()</cite>
                     }
                     <br />
                     <br />
@@ -188,11 +55,11 @@
                 case Common.docType.WebmasterMessage:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
-                    <h3>By @visionaryName</h3>
-                    if (!string.IsNullOrEmpty(@sbDateRange.ToString()))
+                    <h1>@titlePanelContent.Name</h1>
+                    <h3>By @titlePanelContent.visionaryName</h3>
+                    if (!string.IsNullOrEmpty(@titlePanelContent.sbDateRange.ToString()))
                     {
-                        <cite>@sbDateRange.ToString()</cite>
+                        <cite>@titlePanelContent.sbDateRange.ToString()</cite>
                     }
                     <br />
                     <br />
@@ -200,50 +67,50 @@
                 case Common.docType.BlockList:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.Visionary:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.VisionaryList:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
-                case Common.docType.PrayerRequest:
-                    <br class="hide-for-small-only" />
-                    <br />
-                    <h1>@strH1</h1>
-                    <h3>By @Html.Raw(strH3)</h3>
-                    <br />
-                    <br />
-                    break;
-                case Common.docType.PrayerList:
-                    <br class="hide-for-small-only" />
-                    <br />
-                    <h1>@ipCurrentPg.Name</h1>
-                    <br />
-                    <br />
-                    break;
+                @*case Common.docType.PrayerRequest:
+                        <br class="hide-for-small-only" />
+                        <br />
+                        <h1>@titlePanelContent.strH1</h1>
+                        <h3>By @Html.Raw(titlePanelContent.strH3)</h3>
+                        <br />
+                        <br />
+                        break;
+                    case Common.docType.PrayerList:
+                        <br class="hide-for-small-only" />
+                        <br />
+                        <h1>@titlePanelContent.Name</h1>
+                        <br />
+                        <br />
+                        break;*@
                 case Common.docType.IlluminationStoryList:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.IlluminationStory:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Parent.Name</h1>
+                    <h1>@titlePanelContent.ParentName</h1>
                     <br />
                     <br />
                     break;
@@ -257,39 +124,39 @@
                 case Common.docType.ContactUs:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.CreateAccount:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.ManageAccount:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Parent.Name</h1>
+                    <h1>@titlePanelContent.ParentName</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.Login:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.Name</h1>
+                    <h1>@titlePanelContent.Name</h1>
                     <br />
                     <br />
                     break;
                 case Common.docType.Standard:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.GetPropertyValue(Common.NodeProperties.title)</h1>
-                    <h3>@ipCurrentPg.GetPropertyValue(Common.NodeProperties.subtitle)</h3>
-                    if (!String.IsNullOrEmpty(sbCite.ToString()))
+                    <h1>@titlePanelContent.title</h1>
+                    <h3>@titlePanelContent.subtitle</h3>
+                    if (!String.IsNullOrEmpty(titlePanelContent.sbCite.ToString()))
                     {
-                        <cite>@Html.Raw(sbCite.ToString())</cite>
+                        <cite>@Html.Raw(titlePanelContent.sbCite.ToString())</cite>
                     }
                     <br />
                     <br />
@@ -297,13 +164,12 @@
                 default:
                     <br class="hide-for-small-only" />
                     <br />
-                    <h1>@ipCurrentPg.GetPropertyValue(Common.NodeProperties.title)</h1>
-                    <h3>@ipCurrentPg.GetPropertyValue(Common.NodeProperties.subtitle)</h3>
+                    <h1>@titlePanelContent.title</h1>
+                    <h3>@titlePanelContent.subtitle</h3>
                     <br />
                     <br />
                     break;
             }
-
         </div>
     </div>
 </div>
